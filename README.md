@@ -2,7 +2,7 @@
 
 [My Notes](notes.md)
 
-I don't have an application yet, but I might create a server for a game I wrote in Python.
+I don't have an application yet, but I might create a server for a game I wrote in Python. Now I am making another change.
 
 
 > [!NOTE]
