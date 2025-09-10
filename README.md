@@ -39,12 +39,12 @@ sequenceDiagram
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Set up webpage with main game screen, title up top, and scores to the left of the game screen
+- **CSS** - Stylize text, create gradient in background, display little animation whenever the most recent score, personal best, or overall best score updates
+- **React** - Handle transitions between homepage, game UI, and account creation screen
+- **Service** - To start game, log in, log out, create account, and share score on Facebook or Twitter
+- **DB/Login** - Store authentication tokens, accounts, most recent scores, and high scores
+- **WebSocket** - Handle interaction between player and the game UI, as well as updates to overall high score
 
 ## 🚀 AWS deliverable
 
