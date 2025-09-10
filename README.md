@@ -31,20 +31,23 @@ sequenceDiagram
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
-- Describe your key feature
+- Account creation page
+- Login page
+- Starsigt game UI
+- Most recent score
+- Personal best score
+- Overall best score
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
 - **HTML** - Set up webpage with main game screen, title up top, and scores to the left of the game screen
-- **CSS** - Stylize text, create gradient in background, display little animation whenever the most recent score, personal best, or overall best score updates
+- **CSS** - Stylize text, create gradient in background of game page, display little animation whenever the most recent score, personal best, or overall best score updates
 - **React** - Handle transitions between homepage, game UI, and account creation screen
 - **Service** - To start game, log in, log out, create account, and share score on Facebook or Twitter
 - **DB/Login** - Store authentication tokens, accounts, most recent scores, and high scores
-- **WebSocket** - Handle interaction between player and the game UI, as well as updates to overall high score
+- **WebSocket** - Handle interaction between player and game UI, as well as updates when someone sets a new overall high score
 
 ## 🚀 AWS deliverable
 
