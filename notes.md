@@ -17,3 +17,17 @@ use shell script to push from dev. environ. to prod. environ. when ready to upda
 Document object model: tree structure holding data in webpage
 
 Caddy: gets web certificate, handles https, directs traffic from main port to specialized port
+
+
+CSS: Cascading style sheets
+
+p {
+    color: green;
+}
+
+p is selector (select all paragraphs), "color: green" is rule (make them green)
+
+<head>
+<link rel="stylesheet" href="styles.css" />
+</head>
+
