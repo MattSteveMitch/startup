@@ -27,7 +27,25 @@ p {
 
 p is selector (select all paragraphs), "color: green" is rule (make them green)
 
+
+Ways to insert CSS into html:
+1. A style sheet
 <head>
 <link rel="stylesheet" href="styles.css" />
 </head>
+
+2. `style` attribute in html:
+<p style="color:green">Text here!</p>
+
+3. add <style> ELEMENT to <head> element in html
+<head>
+  <style>
+    p {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <p>CSS</p>
+</body>
 
