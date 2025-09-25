@@ -105,3 +105,6 @@ meaning let item2 flex twice as much as item1 if window size changes
   <link rel="stylesheet" href="link-to-bootstrap-stylesheet"\>
 <>
 Bootstrap is very popular starting point for style sheets
+
+
+To turn an image into a link, wrap <img></img> in an anchor tag
