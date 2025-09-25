@@ -108,3 +108,27 @@ Bootstrap is very popular starting point for style sheets
 
 
 To turn an image into a link, wrap <img></img> in an anchor tag
+
+
+JavaScript:
+
+interpreted
+dynamically typed
+declare variable using `let myStr = "hello world";`
+OR
+`const c = "hi";`
+`let arr = ["hi", 123.3];`
+`const words = ['hello', 'world'];`
+`words.forEach((word) => console.log(word));`
+function fun() {
+    let i = 0;
+    i++;
+    while (i < 5) {
+        console.log('hello');
+    }
+}
+In browser, console is hidden in developer tools
+
+How to embed in website?
+Within <head> element, insert <script src='index.js'></script>
+<button onclick="[JS code goes here]"></button>
