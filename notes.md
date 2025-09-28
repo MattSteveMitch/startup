@@ -71,8 +71,9 @@ flex:
 
 .container {
     display: flex;
+    flex-direction: column
 }
-meaning make children flexible
+meaning make children flexible in the vertical direction
 
 .item {
     flex: 0 0 50px;
@@ -87,6 +88,8 @@ meaning don't grow, don't shrink, start out at 50px
     flex: 2 0 50px;
 } 
 meaning let item2 flex twice as much as item1 if window size changes
+(.item is a placeholder in this case for a sub-element; .container is placeholder for super-element)
+50px means give both elements a maximum size of 50 pixels in the flex direction
 
 @media ((orientation: portrait)) { // If orientation is portrait, then do the following
     body {
@@ -94,16 +97,16 @@ meaning let item2 flex twice as much as item1 if window size changes
     }
 }
 
-@media ((orientation: portrait) and (max-height: 500px)) { // If orientation is portrait, then do the following
+@media ((orientation: portrait) and (max-height: 500px)) { // If orientation is portrait and height is less than 500px, then do the following
     body {
         display: none;
-    }
+    } /* Body vanishes */
 }
 
 
 <head>
   <link rel="stylesheet" href="link-to-bootstrap-stylesheet"\>
-<>
+</head>
 Bootstrap is very popular starting point for style sheets
 
 
@@ -132,3 +135,9 @@ In browser, console is hidden in developer tools
 How to embed in website?
 Within <head> element, insert <script src='index.js'></script>
 <button onclick="[JS code goes here]"></button>
+
+Flex property:
+body {
+    flex: 0 30px; /* 0 means */
+    flex-direction: column
+}
