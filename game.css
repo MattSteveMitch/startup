@@ -1,7 +1,7 @@
 * {
     font-family: Courier;
-    margin: 0px;
-    padding: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 h1 {
@@ -13,33 +13,58 @@ h1 {
 h2 {
     line-height: 0.2;
     font-size: 28px;
-    margin-bottom: 16px;
+    padding-top: 20px;
 }
 
 h2.subhead {
     font-size: 16px;
-    margin: 0px;
-    padding: 0px;
-    border: 0px;
     margin-bottom: 40px;
     padding-bottom: 10px;
 }
 
-h3 {
-    margin-top: 40px;
+p.best-score {
+    padding-top: 40px;
 }
 
-.score-display > p {
-    float: left;
+.score-display {
+    display: flex;
+    flex-direction: row;
 }
 
-section > p {
-    color: red;
+.share {
+    font-family: sans-serif;
+    font-size: 15px;
+}
+
+section:nth-child(2) {
+    padding-top: 20px;
+}
+
+section:nth-child(3) {
+    padding-top: 20px;
+}
+
+section:nth-child(4) {
+    margin-top: 200px;
+}
+
+.share > a {
+    text-decoration: none;
 }
 
 p.score {
     font-family: Impact;
-    padding-right: 30px;
+    padding-right: 25px;
     font-size: 40px;
-    padding-top: 0px;
+    padding-top: 15px;
+}
+
+div.window {
+    position: absolute;
+    left: 300px;
+    top: 50px;
+}
+
+div.best-hits {
+    padding-top: 70px;
 }
