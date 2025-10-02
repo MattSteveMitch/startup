@@ -1,3 +1,8 @@
+@font-face {
+    font-family: starsight;
+    src: url(starsight.ttf);
+}
+
 * {
     font-family: Courier;
     margin-top: 0px;
@@ -5,15 +10,14 @@
 }
 
 h1 {
-    font-family: Impact;
     text-align: center;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 h2 {
     line-height: 0.2;
     font-size: 28px;
-    padding-top: 20px;
+    padding-top: 30px;
 }
 
 h2.subhead {
@@ -22,8 +26,8 @@ h2.subhead {
     padding-bottom: 10px;
 }
 
-p.best-score {
-    padding-top: 25px;
+p.score-side-text {
+    padding-top: 15px;
 }
 
 .score-display {
@@ -49,8 +53,8 @@ section:nth-child(3) {
 }
 
 p.score {
-    font-family: Impact;
-    padding-right: 25px;
+    font-family: starsight;
+    padding-right: 15px;
     font-size: 40px;
 }
 
@@ -62,4 +66,22 @@ div.window {
 
 div.best-hits {
     padding-top: 70px;
+}
+
+.hit {
+    font-family: starsight;
+    font-size: 20px;
+    font-weight: bold;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+
+.hit-side-text {
+    font-size: 15px;
+    padding-right: 15px;
+    padding-top: 6px;
+}
+
+footer {
+    padding-top: 25px;
 }
