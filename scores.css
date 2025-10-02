@@ -1,0 +1,53 @@
+@font-face {
+    font-family: starsight;
+    src: url(starsight.ttf);
+}
+
+* {
+    font-family: Courier;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: rgb(160, 160, 160);
+}
+
+h1 {
+    text-align: center;
+    font-size: 30px;
+    background-color: rgb(200, 200, 200);
+}
+
+h2 {
+    font-family: starsight;
+    font-size: 25px;
+    font-weight: bold;
+    padding-top: 30px;
+}
+
+footer {
+    padding-top: 25px;
+}
+
+table {
+    font-size: 20px;
+    border: 2px solid black;
+    border-collapse: collapse;
+    margin: 0px;
+}
+
+td {
+    font-size: 15px;
+    border-left: 1px solid black;
+    padding-top: 7px;
+}
+
+th {
+    font-size: 20px;
+    text-align: left;
+    width: 300px;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+th.rank {
+    width: 70px;
+}
