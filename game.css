@@ -1,5 +1,7 @@
 * {
     font-family: Courier;
+    margin: 0px;
+    padding: 0px;
 }
 
 h1 {
@@ -11,6 +13,7 @@ h1 {
 h2 {
     line-height: 0.2;
     font-size: 28px;
+    margin-bottom: 16px;
 }
 
 h2.subhead {
@@ -18,10 +21,25 @@ h2.subhead {
     margin: 0px;
     padding: 0px;
     border: 0px;
-    line-height: 0;
     margin-bottom: 40px;
+    padding-bottom: 10px;
 }
 
 h3 {
     margin-top: 40px;
+}
+
+.score-display > p {
+    float: left;
+}
+
+section > p {
+    color: red;
+}
+
+p.score {
+    font-family: Impact;
+    padding-right: 30px;
+    font-size: 40px;
+    padding-top: 0px;
 }

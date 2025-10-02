@@ -136,8 +136,9 @@ How to embed in website?
 Within <head> element, insert <script src='index.js'></script>
 <button onclick="[JS code goes here]"></button>
 
-Flex property:
-body {
-    flex: 0 30px; /* 0 means */
-    flex-direction: column
-}
+<span> means select a piece of text within one element
+<p>Hello, <span style="color: blue;">this</span> is text!</p>
+
+p.foo means a paragraph with class="foo"
+.foo > p means an child of an element of class="foo"
+section > p means a child of a section that is a paragraph
