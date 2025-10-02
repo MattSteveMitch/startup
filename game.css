@@ -33,7 +33,11 @@ p.score-side-text {
 }
 
 div.score-display[name="current"] {
-    color: rgb(0, 80, 160);
+    color: rgb(0, 220, 130);
+}
+
+p.score[name="PR"] {
+    color: rgb(0, 100, 180);
 }
 
 .score-display {
