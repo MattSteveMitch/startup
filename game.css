@@ -23,7 +23,7 @@ h2.subhead {
 }
 
 p.best-score {
-    padding-top: 40px;
+    padding-top: 25px;
 }
 
 .score-display {
@@ -44,10 +44,6 @@ section:nth-child(3) {
     padding-top: 20px;
 }
 
-section:nth-child(4) {
-    margin-top: 200px;
-}
-
 .share > a {
     text-decoration: none;
 }
@@ -56,7 +52,6 @@ p.score {
     font-family: Impact;
     padding-right: 25px;
     font-size: 40px;
-    padding-top: 15px;
 }
 
 div.window {
