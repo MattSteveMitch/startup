@@ -12,24 +12,27 @@
 
 h1 {
     text-align: center;
-    font-size: 30px;
+    font-size: 25px;
     background-color: rgb(200, 200, 200);
 }
 
 h2.head {
-    font-size: 35px;
+    font-size: 30px;
     font-weight: bold;
-    padding-top: 25px;
-    margin-bottom: 0px;
+    padding-top: 5px;
 }
 
 h2.subhead {
-    font-size: 16px;
-    margin-bottom: 40px;
-    padding-bottom: 10px;
+    font-size: 14px;
+    margin-bottom: 50px;
+}
+
+h3 {
+    font-size: 18px;
 }
 
 p.score-side-text {
+    font-size: 14px;
     padding-top: 15px;
 }
 
@@ -70,12 +73,12 @@ p.score {
 
 div.window {
     position: absolute;
-    left: 300px;
-    top: 50px;
+    left: 260px;
+    top: 30px;
 }
 
 div.best-hits {
-    padding-top: 60px;
+    padding-top: 50px;
 }
 
 .hit {
@@ -87,11 +90,25 @@ div.best-hits {
 }
 
 .hit-side-text {
-    font-size: 15px;
+    font-size: 12px;
     padding-right: 15px;
     padding-top: 6px;
 }
 
 footer {
-    padding-top: 25px;
+    padding-top: 20px;
+}
+
+@media (max-width: 1110px) {
+    h2.head {
+        padding-top: 550px;
+    }
+    
+    h2.subhead {
+        padding-top: 0px;
+    }
+
+    div.window {
+        left: 50px;
+    }
 }
