@@ -23,12 +23,12 @@ h2.head {
 }
 
 h2.subhead {
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 50px;
 }
 
 h3 {
-    font-size: 18px;
+    font-size: 15px;
 }
 
 p.score-side-text {
@@ -92,7 +92,7 @@ div.best-hits {
 .hit-side-text {
     font-size: 12px;
     padding-right: 15px;
-    padding-top: 6px;
+    padding-top: 9px;
 }
 
 footer {
