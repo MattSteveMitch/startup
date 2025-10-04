@@ -8,6 +8,30 @@
     margin-top: 0px;
     margin-bottom: 0px;
     background-color: rgb(160, 160, 160);
+    margin: 0px;
+}
+
+main {
+    margin-left: 5px;
+}
+
+nav {
+    margin-left: 5px;
+}
+
+nav > a {
+    background-color: white;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    border-top: none;
+    border: 3px solid rgb(200, 200, 200);
+}
+
+nav > a.current {
+    background-color: rgb(160, 160, 160);
+    border: none;
 }
 
 h1 {
@@ -24,4 +48,10 @@ input {
 button {
     margin-top: 10px;
     background-color: rgb(200, 200, 200);
+}
+
+footer {
+    margin-top: 50px;
+    font-size: 17px;
+    font-weight: bold;
 }

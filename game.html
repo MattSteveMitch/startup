@@ -2,9 +2,16 @@
 <head>
    <link rel="stylesheet" href="game.css" />
    <h1>Play Starsight</h1>
+    <nav>
+       <a class="current" href="game.html">Game</a>
+       <a href="scores.html">Scores</a>
+       <a href="index.html">Log out</a>
+    </nav>
 </head>
-<body>
-   <h2 class="head">Scores</h2>
+
+<main>
+   <section class="sidebar">
+   <h2 class="head">Scores summary</h2>
    <h2 class="subhead">(lower scores are better)</h2>
    <div>
       <section>
@@ -33,10 +40,6 @@
             <p class="score-side-text">Set by Grond2</p>
       </section>
    </div>
-
-   <div class="window">
-      <img src="game_window_placeholder.png" alt="Game window" width=850>
-   </div>
   
    <div class="best-hits">
       <section>
@@ -50,8 +53,10 @@
          </div>
       </section>
    </div>
+   </section>
 
-   <footer>
-      <a href="scores.html">See top scores</a>
-   </footer>
-</body>
+   <section class="window">
+      <img src="game_window_placeholder.png" alt="Game window" width=850>
+   </section>
+
+</main>

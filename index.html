@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <head>
    <link rel="stylesheet" href="index.css">
+   <h1>Log into Starsight</h1>
+   <nav>
+      <a class="current" href="index.html">Log in</a>
+      <a href="game.html">Game</a>
+      <a href="scores.html">Scores</a>
+   </nav>
 </head>
-<body>
+<main>
    <div>
-      <h1>Log into Starsight</h1>
       <form action="game.html">
          <section>
             <label for="username">Username:</label>
@@ -19,7 +24,16 @@
          </section>
 
          <button type="submit">Log in</button>
-         <a href="register.html">Create account</a>
+         <a href="register.html">
+            <button type="button">Create account</button>
+         </a>
+
+         <footer>
+            <p>View on</p>
+            <a href="https://github.com/MattSteveMitch/startup">
+               <img src="github.png" alt="Github logo" width=70>
+            </a>
+         </footer>
       </form>
    </div>
-</body>
+</main>

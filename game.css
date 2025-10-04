@@ -8,6 +8,31 @@
     margin-top: 0px;
     margin-bottom: 0px;
     background-color: rgb(160, 160, 160);
+    margin: 0px;
+}
+
+main {
+    margin-left: 5px;
+}
+
+nav {
+    margin-left: 5px;
+    margin-bottom: 4px;
+}
+
+nav > a {
+    background-color: white;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    border: 3px solid rgb(200, 200, 200);
+    border-bottom: 3px solid rgb(200, 200, 200);
+}
+
+nav > a.current {
+    background-color: rgb(160, 160, 160);
+    border: none;
 }
 
 h1 {
@@ -17,9 +42,8 @@ h1 {
 }
 
 h2.head {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
-    padding-top: 5px;
 }
 
 h2.subhead {
@@ -71,12 +95,6 @@ p.score {
     font-size: 40px;
 }
 
-div.window {
-    position: absolute;
-    left: 260px;
-    top: 30px;
-}
-
 div.best-hits {
     padding-top: 50px;
 }
@@ -99,16 +117,29 @@ footer {
     padding-top: 20px;
 }
 
-@media (max-width: 1110px) {
-    h2.head {
-        padding-top: 550px;
-    }
-    
-    h2.subhead {
-        padding-top: 0px;
-    }
+main {
+    display: flex;
+    flex-direction: row;
+}
 
-    div.window {
-        left: 50px;
+section.window {
+    text-align: center;
+    flex: 1 0 850px;
+    padding-top: 30px;
+}
+
+section.sidebar {
+    flex: 0 0 260px;
+    padding-top: 30px;
+}
+
+@media (max-width: 1115px) {
+    section.sidebar {
+        position: absolute;
+        top: 600px;
     }
+}
+
+nav {
+    text-decoration: none;
 }

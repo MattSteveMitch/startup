@@ -31,6 +31,7 @@ For anyone who's read and enjoyed the [Skyward series](https://www.brandonsander
     - Overall best score (updates using websocket)
     - Personal best hit to enemy spaceship
     - Overall best hit to enemy spaceship
+- Page for top 10 of each kind of score (Personal best, Overall best, Personal best hit, Overall best hit)
 
 ### Technologies
 
@@ -47,32 +48,32 @@ I am going to use the required technologies in the following ways.
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Server deployed and accessible with custom domain name** - [My server link](https://yourdomainnamehere.click).
+- [x] **Server deployed and accessible with custom domain name** - [My server link](https://starsight.click).
 
 ## 🚀 HTML deliverable
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **HTML pages** - I did not complete this part of the deliverable.
-- [ ] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [ ] **Links** - I did not complete this part of the deliverable.
-- [ ] **Text** - I did not complete this part of the deliverable.
-- [ ] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [ ] **Images** - I did not complete this part of the deliverable.
-- [ ] **Login placeholder** - I did not complete this part of the deliverable.
-- [ ] **DB data placeholder** - I did not complete this part of the deliverable.
-- [ ] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **HTML pages** - Scores page, game page, login page, and account creation page.
+- [x] **Proper HTML element usage** - Body, div, headers, sections, footer, etc.
+- [x] **Links** - To Facebook, Twitter, this repo, navigation between pages
+- [x] **Text** - Scores on scores page and game page
+- [x] **3rd party API placeholder** - Buttons to share score on Facebook, Twitter
+- [x] **Images** - Logos for FB, Twitter, that link to their respective home pages, Github logo linking to this repo, placeholder for game window
+- [x] **Login placeholder** - I did not complete this part of the deliverable.
+- [x] **DB data placeholder** - High scores on scores page
+- [x] **WebSocket placeholder** - Image for game window
 
 ## 🚀 CSS deliverable
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Header, footer, and main content body** - I did not complete this part of the deliverable.
-- [ ] **Navigation elements** - I did not complete this part of the deliverable.
-- [ ] **Responsive to window resizing** - I did not complete this part of the deliverable.
-- [ ] **Application elements** - I did not complete this part of the deliverable.
-- [ ] **Application text content** - I did not complete this part of the deliverable.
-- [ ] **Application images** - I did not complete this part of the deliverable.
+- [x] **Header, footer, and main content body** - These are present in the website
+- [x] **Navigation elements** - You can navigate between pages
+- [x] **Responsive to window resizing** - Score summary only appears if there's room; game window is centered in remaining space
+- [x] **Application elements** - Many types of elements
+- [x] **Application text content** - Scores and such
+- [x] **Application images** - Logos for FB, Twitter, that link to their respective home pages, Github logo linking to this repo, placeholder for game window
 
 ## 🚀 React part 1: Routing deliverable
 
