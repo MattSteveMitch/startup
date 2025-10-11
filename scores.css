@@ -22,7 +22,7 @@ nav {
 nav > a {
     background-color: white;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 22px;
     color: black;
     font-weight: bold;
     border-top: none;
@@ -36,15 +36,15 @@ nav > a.current {
 
 h1 {
     text-align: center;
-    font-size: 25px;
+    font-size: 28px;
     background-color: rgb(200, 200, 200);
 }
 
 h2 {
     font-family: starsight;
-    font-size: 30px;
-    font-weight: bold;
-    padding-top: 30px;
+    font-size: 33px;
+    font-weight: normal;
+    padding-top: 33px;
     padding-bottom: 5px;
 }
 
@@ -53,7 +53,7 @@ footer {
 }
 
 table {
-    font-size: 20px;
+    font-size: 22px;
     border: 2px solid black;
     border-collapse: collapse;
 }
@@ -63,10 +63,10 @@ table > th {
 }
 
 td {
-    font-size: 14px;
-    padding-top: 4px;
+    font-size: 15px;
+    padding-top: 5px;
     border-left: 1px solid black;
-    padding-right: 10px;
+    padding-right: 11px;
 }
 
 th {
@@ -79,21 +79,18 @@ table.hit > tr {
 }
 
 th.rank {
-    width: 70px;
+    width: 77px;
 }
 
 th.player {
-    width: 100px;
+    width: 110px;
 }
 
 tr.spare > td {
-    font-size: 11px;
+    font-size: 12px;
     padding-top: 0px;
     padding-bottom: 4px;
     border-bottom: 1px solid black;
     font-weight: bold;
 }
 
-footer {
-    padding-top: 20px;
-}
