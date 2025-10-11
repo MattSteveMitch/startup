@@ -142,3 +142,98 @@ Within <head> element, insert <script src='index.js'></script>
 p.foo means a paragraph with class="foo"
 .foo > p means an child of an element of class="foo"
 section > p means a child of a section that is a paragraph
+
+computer > signal to router
+looks up domain name to find IP address
+routes signal to server, port 443
+Caddy receives signal, reroutes signal to correct gate for subdomain if applicable
+if no subdomain, Caddy sends index.html
+else, another entity serves up whatever is requested; if nothing particular requested, sends the particular index.html for that port
+
+index.html references other files needed to build webpage (CSS, JS/React, etc.)
+
+Vite "compiles"/transpiles the files together into two complete files
+Like compiled code, this new code is optimized, abstract, hard to read
+
+JS:
+
+function doMath(operation, a, b) {
+  return operation(a,b);
+}
+
+console.log(doMath(function (a, b) {return a - b; }, 5, 3));
+console.log(doMath((a, b) => a-b, 5, 3));
+// These latter two statements are equivalent; they pass in an anonymous (or lambda) 
+// function to `doMath` and operands 5 and 3
+
+Arrow function definitions (equivalent):
+() => 3;
+() => { return 3; };
+
+
+() => { 3; }; // This is not the same as the other two; it executes the statement `3`, 
+// which returns nothing
+
+function makeClosure(init) {
+  let closureval=init;
+  return () => `closure ${++closureval}`;
+}
+
+const a = [1, 2, 3];
+console.log(a.map((i) => i + 1));
+console.log(a.reduce((v1, v2) => v1 + v2));
+console.log(a.sort((v1, v2) => v2 - v1)); // Passing in comparison function; negatives
+// and 0 evaluate to false, positives to true
+
+JS object (like a JSON): 
+
+const obj = {
+  num: 3,
+  name: "Josh",
+  numbers: [1, 2, 3],
+  subobj: {e: false}
+}
+
+JS class (different from object!):
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Employee extends Person {
+  constructor(name) {
+    super(name);
+  }
+}
+
+const i = [1, 2, 3, 4];
+const [t, s] = i; // same as t=1; s=2;
+const [m, , , n] = i; // m=1; n=4;
+// this is called destructuring
+
+const o = {a: 1, b: 'animals', c: ['fish', 'cats']};
+
+const root = ReactDOM.
+const [var, updateVar] = React.useState(10); // Returns the number 10 and a function
+// to update var
+
+function UseEffectDemo() {
+  React.useEffect(  () => {console.log("rendered");}  );
+
+  return <div>Something!</div>
+}
+
+A React.useEffect is a thing that sets a function to be called every time an element is re-rendered
+Only at top level of function!
+
+React.useEffect(  () => {console.log("rendered");} [memberVar,  memberVar2] ); 
+// I think this means only call function when memberVar or memberVar2 are updated
+
+
+`<Element />` calls `function Element()`
+`<Element member1={biscuit} member2={biscuit} + 10 />` calls `function Element(args)`
+args.member1 will then be the value of biscuit (`{}` is like a dereference operator)
+
+let x = 10; // Sets x equal to 10; if it is changed locally, it will resume its initial value when you go out of scope
