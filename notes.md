@@ -237,3 +237,17 @@ React.useEffect(  () => {console.log("rendered");} [memberVar,  memberVar2] );
 args.member1 will then be the value of biscuit (`{}` is like a dereference operator)
 
 let x = 10; // Sets x equal to 10; if it is changed locally, it will resume its initial value when you go out of scope
+
+Promise: object that acts as a placeholder for pending data with a function to get the data. When created, the Promise calls the function
+
+const userName = new Promise(getSomeData);
+
+userName
+    .then((receivedUserName) => {console.log(receivedUserName);}) // On success
+    .catch((receivedUsername => {console.log("Error!");})) // On failure
+    .finally((receivedUsername) => {console.log("Done");}) // After .catch or .then
+
+
+HTTp request
+GET POST PUT DELETE
+
