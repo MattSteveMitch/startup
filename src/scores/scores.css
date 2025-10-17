@@ -1,0 +1,53 @@
+h2 {
+    font-family: starsight;
+    font-size: 33px;
+    font-weight: normal;
+    padding-top: 33px;
+    padding-bottom: 5px;
+}
+
+footer {
+    padding-top: 25px;
+}
+
+table {
+    font-size: 22px;
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+table > th {
+    color: red;
+}
+
+td {
+    font-size: 15px;
+    padding-top: 5px;
+    border-left: 1px solid black;
+    padding-right: 11px;
+}
+
+th {
+    text-align: left;
+    border-left: 1px solid black;
+}
+
+table.hit > tr {
+    border-bottom: 1px solid black;
+}
+
+th.rank {
+    width: 77px;
+}
+
+th.player {
+    width: 110px;
+}
+
+tr.spare > td {
+    font-size: 12px;
+    padding-top: 0px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid black;
+    font-weight: bold;
+}

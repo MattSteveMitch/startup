@@ -1,0 +1,101 @@
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+nav {
+    margin-bottom: 4px;
+}
+
+nav > a {
+    border-bottom: 3px solid rgb(200, 200, 200);
+}
+
+h2.head {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+h2.subhead {
+    font-size: 14px;
+    margin-bottom: 45px;
+}
+
+h3 {
+    font-size: 17px;
+}
+
+p.score-side-text {
+    font-size: 16px;
+    padding-top: 18px;
+}
+
+div.score-display[name="current"] {
+    color: rgb(0, 220, 130);
+}
+
+p.score[name="PR"] {
+    color: rgb(0, 100, 180);
+}
+
+.score-display {
+    display: flex;
+    flex-direction: row;
+}
+
+.share {
+    font-size: 16px;
+}
+
+section:nth-child(2) {
+    padding-top: 16px;
+}
+
+section:nth-child(3) {
+    padding-top: 16px;
+}
+
+.share > a {
+    text-decoration: none;
+}
+
+p.score {
+    font-family: starsight;
+    padding-right: 17px;
+    font-size: 46px;
+}
+
+div.best-hits {
+    padding-top: 45px;
+}
+
+.hit {
+    font-family: starsight;
+    font-size: 25px;
+    padding-right: 11px;
+    padding-top: 3px;
+}
+
+.hit-side-text {
+    font-size: 13px;
+    padding-right: 17px;
+    padding-top: 10px;
+}
+
+section.window {
+    text-align: center;
+    flex: 1 0 880px;
+    padding-top: 15px;
+}
+
+section.sidebar {
+    flex: 0 0 265px;
+    padding-top: 22px;
+}
+
+@media (max-width: 1150px) {
+    section.sidebar {
+        position: absolute;
+        top: 660px;
+    }
+}
