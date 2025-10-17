@@ -117,15 +117,15 @@ div.best-hits {
 section.window {
     text-align: center;
     flex: 1 0 880px;
-    padding-top: 7px;
+    padding-top: 15px;
 }
 
 section.sidebar {
-    flex: 0 0 286px;
+    flex: 0 0 265px;
     padding-top: 22px;
 }
 
-@media (max-width: 1171px) {
+@media (max-width: 1150px) {
     section.sidebar {
         position: absolute;
         top: 660px;
