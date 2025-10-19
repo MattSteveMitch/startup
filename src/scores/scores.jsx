@@ -6,22 +6,18 @@ function ScoresHeading() {
     return <h1>Best Scores</h1>;
 }
 
-export function Scores() {
-    const scoresHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
-    scoresHeadingRoot.render(<ScoresHeading />);
-    return (
-        <div className="body">
-
-   <link rel="stylesheet" href="scores.css" />
+function ScoresBody() {
+        return (
+        <div className="scoresBody">
 
 <main>
     <section>
         <h2>Least deaths to complete the game</h2>
-        <table class="score">
-            <th class="rank">Rank</th>
-            <th class="player">Player</th>
+        <table className="score">
+            <th className="rank">Rank</th>
+            <th className="player">Player</th>
             <th>Score</th>
-            <tr class="spare">
+            <tr className="spare">
                 <td></td>
                 <td></td>
                 <td>(number of deaths)</td>
@@ -82,10 +78,10 @@ export function Scores() {
     <section>
         <h2>Most damaging hits to Krell ship</h2>
         <table>
-            <th class="rank">Rank</th>
-            <th class="player">Player</th>
+            <th className="rank">Rank</th>
+            <th className="player">Player</th>
             <th>Damage dealt</th>
-            <tr class="spare">
+            <tr className="spare">
                 <td></td>
                 <td></td>
                 <td></td>
@@ -145,10 +141,10 @@ export function Scores() {
 
     <section>
         <h2>Personal best scores</h2>
-        <table class="score">
+        <table className="score">
             <th></th>
             <th>Score</th>
-            <tr class="spare">
+            <tr className="spare">
                 <td></td>
                 <td>(number of deaths)</td>
             </tr>
@@ -200,7 +196,7 @@ export function Scores() {
         <table>
             <th></th>
             <th>Damage dealt</th>
-            <tr class="spare">
+            <tr className="spare">
                 <td></td>
                 <td></td>
             </tr>
@@ -251,4 +247,11 @@ export function Scores() {
 
 </div>
     );
+}
+
+export function Scores() {
+    const scoresHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
+    scoresHeadingRoot.render(<ScoresHeading />);
+    const scoresBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
+    scoresBodyRoot.render(<ScoresBody />);
 }

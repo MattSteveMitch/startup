@@ -1,8 +1,10 @@
+@scope (.gameBody) {
+
 main {
     display: flex;
     flex-direction: row;
 }
-
+/*/*
 nav {
     margin-bottom: 4px;
 }
@@ -10,7 +12,7 @@ nav {
 nav > a {
     border-bottom: 3px solid rgb(200, 200, 200);
 }
-
+/**/
 h2.head {
     font-size: 30px;
     font-weight: bold;
@@ -103,4 +105,6 @@ section.sidebar {
         position: absolute;
         top: 660px;
     }
+}
+
 }

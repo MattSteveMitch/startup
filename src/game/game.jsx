@@ -6,13 +6,9 @@ function GameHeading() {
     return <h1>Play Starsight</h1>;
 }
 
-
-export function Game() {
-    const gameHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
-    gameHeadingRoot.render(<GameHeading />);
+function GameBody() {
     return (
-        <div className="body">
-    <link rel="stylesheet" href="game.css" />
+        <div className="gameBody">
 
 <main>
    <section className="sidebar">
@@ -70,4 +66,11 @@ export function Game() {
 
 </div>
     );
+}
+
+export function Game() {
+    const gameHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
+    gameHeadingRoot.render(<GameHeading />);
+    const gameBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
+    gameBodyRoot.render(<GameBody />);
 }

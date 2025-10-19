@@ -25,8 +25,6 @@ export default function App() {
          </Routes>
 
       </BrowserRouter>
-
-      <div id="body"></div>
       </main>
     );
 }

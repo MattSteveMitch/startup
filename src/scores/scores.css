@@ -1,3 +1,5 @@
+@scope (.scoresBody) {
+
 h2 {
     font-family: starsight;
     font-size: 33px;
@@ -14,6 +16,10 @@ table {
     font-size: 22px;
     border: 2px solid black;
     border-collapse: collapse;
+}
+
+section {
+    display: block;
 }
 
 td {
@@ -46,4 +52,5 @@ tr.spare > td {
     padding-bottom: 4px;
     border-bottom: 1px solid black;
     font-weight: bold;
+}
 }

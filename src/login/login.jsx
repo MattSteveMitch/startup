@@ -7,11 +7,9 @@ function LoginHeading() {
     return <h1>Log into Starsight</h1>;
 }
 
-export function Login() {
-    const loginHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
-    loginHeadingRoot.render(<LoginHeading />);
+function LoginBody() {
     return (
-        <div className="body">
+        <div className="loginBody">
 
 <main>
    <div>
@@ -45,4 +43,11 @@ export function Login() {
 
 </div>
     );
+}
+
+export function Login() {
+    const loginHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
+    loginHeadingRoot.render(<LoginHeading />);
+    const loginBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
+    loginBodyRoot.render(<LoginBody />);
 }
