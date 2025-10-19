@@ -7,14 +7,15 @@ import {Scores} from "./scores/scores";
 
 //import "app.css" // If this doesn't work, use "./" at beginning of file path
 
+
 export default function App() {
     return (
       <BrowserRouter>
       <main>
          <nav>
-            <NavLink className="current" to="/">Log in</NavLink>
-            <NavLink to="game">Game</NavLink>
-            <NavLink to="scores">Scores</NavLink>
+            <NavLink className="navlink" id="current" to="/">Log in</NavLink>
+            <NavLink className="navlink" to="game">Game</NavLink>
+            <NavLink className="navlink" to="scores">Scores</NavLink>
          </nav>
 
          <Routes>
