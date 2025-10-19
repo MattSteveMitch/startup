@@ -17,13 +17,13 @@ export function Login() {
    <div>
       <form action="game.html">
          <section>
-            <label for="username">Username:</label>
+            <label htmlFor="username">Username:</label>
             <input type="username">
             </input>
          </section>
 
          <section>
-            <label for="password">Password:</label>
+            <label htmlFor="password">Password:</label>
             <input type="password">
             </input>
          </section>
@@ -36,7 +36,7 @@ export function Login() {
          <footer>
             <p>View on</p>
             <a href="https://github.com/MattSteveMitch/startup">
-               <img src="github.png" alt="Github logo" width={70}></img>
+               <img src="src/images/github.png" alt="Github logo" width={70}></img>
             </a>
          </footer>
       </form>

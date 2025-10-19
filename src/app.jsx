@@ -10,8 +10,8 @@ import {Scores} from "./scores/scores";
 
 export default function App() {
     return (
-      <BrowserRouter>
       <main>
+      <BrowserRouter>
          <nav>
             <NavLink className="navlink" id="current" to="/">Log in</NavLink>
             <NavLink className="navlink" to="game">Game</NavLink>
@@ -24,7 +24,9 @@ export default function App() {
             <Route path="/scores" element={<Scores />} />
          </Routes>
 
-      </main>
       </BrowserRouter>
+
+      <div id="body"></div>
+      </main>
     );
 }
