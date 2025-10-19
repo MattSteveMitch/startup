@@ -1,4 +1,5 @@
 import React from "react";
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import {Route, NavLink, BrowserRouter, Routes} from "react-router-dom";
 import {Login} from "./login/login";
 import {Game} from "./game/game";
@@ -8,13 +9,12 @@ import {Scores} from "./scores/scores";
 
 export default function App() {
     return (
-
+      <BrowserRouter>
       <main>
-         <h1>Log into Starsight</h1>
          <nav>
             <NavLink className="current" to="/">Log in</NavLink>
-            <NavLink to="/game">Game</NavLink> // If this doesn't work, remove "/" at beginning of file path
-            <NavLink to="/scores">Scores</NavLink>
+            <NavLink to="game">Game</NavLink>
+            <NavLink to="scores">Scores</NavLink>
          </nav>
 
          <Routes>
@@ -24,5 +24,6 @@ export default function App() {
          </Routes>
 
       </main>
+      </BrowserRouter>
     );
 }
