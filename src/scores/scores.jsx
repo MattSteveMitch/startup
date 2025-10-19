@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./scores.css";
 
 function ScoresHeading() {
-    return <h1>Scores</h1>;
+    return <h1>Best Scores</h1>;
 }
 
 export function Scores() {

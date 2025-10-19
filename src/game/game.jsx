@@ -53,7 +53,8 @@ export function Game() {
          <p className="hit">118</p>
       </section>
       <section>
-         <h3>Overall best hit:</h3>         <div className="score-display">
+         <h3>Overall best hit:</h3>
+         <div className="score-display">
             <p className="hit">158</p>
             <p className="hit-side-text">Set by Nolendil</p>
          </div>
