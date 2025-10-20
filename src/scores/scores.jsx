@@ -73,10 +73,63 @@ function ScoresBody() {
                 <td>41</td>
             </tr>
         </table>
+
+        <div className="personal">
+        <h3>Personal bests</h3>
+        <table className="score">
+            <th></th>
+            <th>Score</th>
+            <tr className="spare">
+                <td></td>
+                <td>(number of deaths)</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>12</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>13</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>21</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>22</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>22</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>22</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>26</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>30</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>35</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>41</td>
+            </tr>
+        </table>
+        </div>
     </section>
 
     <section>
         <h2>Most damaging hits to Krell ship</h2>
+        <h3>Overall bests</h3>
         <table>
             <th className="rank">Rank</th>
             <th className="player">Player</th>
@@ -137,62 +190,9 @@ function ScoresBody() {
                 <td>68.1</td>
             </tr>
         </table>
-    </section>
 
-    <section>
-        <h2>Personal best scores</h2>
-        <table className="score">
-            <th></th>
-            <th>Score</th>
-            <tr className="spare">
-                <td></td>
-                <td>(number of deaths)</td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>12</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>13</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>21</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>22</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>22</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>22</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>26</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>30</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>35</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>41</td>
-            </tr>
-        </table>
-    </section>
-
-    <section>
-        <h2>Personal best hits</h2>
+        <div className="personal">
+        <h3>Personal bests</h3>
         <table>
             <th></th>
             <th>Damage dealt</th>
@@ -241,6 +241,7 @@ function ScoresBody() {
                 <td>68.1</td>
             </tr>
         </table>
+        </div>
     </section>
 
 </main>
