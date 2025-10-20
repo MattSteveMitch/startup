@@ -4,13 +4,14 @@ import {Route, NavLink, BrowserRouter, Routes} from "react-router-dom";
 import {Login} from "./login/login";
 import {Game} from "./game/game";
 import {Scores} from "./scores/scores";
+import "./app.css";
 
 //import "app.css" // If this doesn't work, use "./" at beginning of file path
 
 
 export default function App() {
     return (
-      <main>
+      <main className="nav">
       <BrowserRouter>
          <nav>
             <NavLink className="navlink" id="current" to="/">Log in</NavLink>
@@ -23,8 +24,8 @@ export default function App() {
             <Route path="/game" element={<Game />} />
             <Route path="/scores" element={<Scores />} />
          </Routes>
-
       </BrowserRouter>
+      <p></p>
       </main>
     );
 }

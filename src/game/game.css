@@ -7,8 +7,10 @@ main {
 /*/*
 nav {
     margin-bottom: 4px;
+    height: 30px;
 }
-
+/**/
+/*/*
 nav > a {
     border-bottom: 3px solid rgb(200, 200, 200);
 }

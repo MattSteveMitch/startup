@@ -23,10 +23,10 @@ function GameBody() {
          </div>
          <div className="share">Share:
             <a href="https://facebook.com/">
-               <img src="src/images/fb_logo.png" alt="Facebook logo" width={23} />
+               <img src="images/fb_logo.png" alt="Facebook logo" width={23} />
             </a>
             <a href="https://x.com/">
-               <img src="src/images/x_logo.png" alt="X Twitter logo" width={20} />
+               <img src="images/x_logo.png" alt="X Twitter logo" width={20} />
             </a>
          </div>
       </section>
@@ -59,7 +59,7 @@ function GameBody() {
    </section>
 
    <section className="window">
-      <img src="src/images/game_window_placeholder.png" alt="Game window" width={880}></img>
+      <img src="images/game_window_placeholder.png" alt="Game window" width={880}></img>
    </section>
 
 </main>

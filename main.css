@@ -25,7 +25,6 @@ nav > .navlink {
     font-size: 22px;
     color: black;
     font-weight: bold;
-    border-top: none;
     border: 3px solid rgb(200, 200, 200);
     margin-right: 5px;
 }

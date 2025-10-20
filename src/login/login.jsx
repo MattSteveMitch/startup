@@ -34,7 +34,7 @@ function LoginBody() {
          <footer>
             <p>View on</p>
             <a href="https://github.com/MattSteveMitch/startup">
-               <img src="src/images/github.png" alt="Github logo" width={70}></img>
+               <img src="images/github.png" alt="Github logo" width={70}></img>
             </a>
          </footer>
       </form>
