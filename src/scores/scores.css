@@ -2,11 +2,7 @@
 
 h2 {
     padding-top: 33px;
-    padding-bottom: 0px;
-}
-
-h3 {
-    margin-top: 30px;
+    padding-bottom: 16px;
 }
 
 main {
@@ -51,9 +47,31 @@ th.player {
 tr.spare > td {
     font-size: 12px;
     padding-top: 0px;
-    padding-bottom: 4px;
     border-bottom: 1px solid black;
     font-weight: bold;
+}
+
+.personal {
+    > h3 {
+        margin-top: 30px;
+    }
+
+    > table { 
+        > th {
+            font-size: 20px;
+        }
+
+        > tr {
+            > td {
+                padding-top: 2px;
+                font-size: 16px;
+            }
+        }
+
+        > .spare > td {
+            font-size: 11px;
+        }
+    }
 }
 
 @media (max-width: 1000px) {

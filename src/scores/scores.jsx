@@ -13,6 +13,7 @@ function ScoresBody() {
 <main>
     <section>
         <h2>Least deaths to complete the game</h2>
+        <h3>Overall best</h3>
         <table className="score">
             <th className="rank">Rank</th>
             <th className="player">Player</th>
@@ -75,7 +76,7 @@ function ScoresBody() {
         </table>
 
         <div className="personal">
-        <h3>Personal bests</h3>
+        <h3>Personal best</h3>
         <table className="score">
             <th></th>
             <th>Score</th>
@@ -129,7 +130,7 @@ function ScoresBody() {
 
     <section>
         <h2>Most damaging hits to Krell ship</h2>
-        <h3>Overall bests</h3>
+        <h3>Overall best</h3>
         <table>
             <th className="rank">Rank</th>
             <th className="player">Player</th>
@@ -192,7 +193,7 @@ function ScoresBody() {
         </table>
 
         <div className="personal">
-        <h3>Personal bests</h3>
+        <h3>Personal best</h3>
         <table>
             <th></th>
             <th>Damage dealt</th>
