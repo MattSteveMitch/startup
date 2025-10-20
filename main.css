@@ -42,6 +42,14 @@ h1 {
     background-color: rgb(200, 200, 200);
 }
 
+h2 {
+    font-size: 40px;
+    font-weight: normal;
+    font-family: starsight;
+    color: black;
+    -webkit-text-stroke: rgb(160, 160, 160) 1px;
+}
+
 input {
     margin-top: 20px;
     background-color: white;

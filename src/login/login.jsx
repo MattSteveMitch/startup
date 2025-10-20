@@ -15,13 +15,13 @@ function LoginBody() {
    <div>
       <form action="game.html">
          <section>
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="username">Username: </label>
             <input type="username">
             </input>
          </section>
 
          <section>
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="password">Password: </label>
             <input type="password">
             </input>
          </section>

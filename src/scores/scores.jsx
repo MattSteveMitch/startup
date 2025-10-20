@@ -11,10 +11,10 @@ function ScoresBody() {
         <div className="scoresBody">
 
 <main>
-    <section>
+    <section className="score">
         <h2>Least deaths to complete the game</h2>
         <h3>Overall best</h3>
-        <table className="score">
+        <table>
             <th className="rank">Rank</th>
             <th className="player">Player</th>
             <th>Score</th>
@@ -77,7 +77,7 @@ function ScoresBody() {
 
         <div className="personal">
         <h3>Personal best</h3>
-        <table className="score">
+        <table>
             <th></th>
             <th>Score</th>
             <tr className="spare">

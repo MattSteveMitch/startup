@@ -5,6 +5,10 @@ h2 {
     padding-bottom: 16px;
 }
 
+h3 {
+    color: rgb(80, 80, 80);
+}
+
 main {
     display: flex;
     flex-direction: row;
@@ -33,7 +37,7 @@ th {
 }
 
 section:nth-child(2) {
-    margin-left: 100px;
+    padding-left: 70px;
 }
 
 th.rank {
@@ -49,6 +53,12 @@ tr.spare > td {
     padding-top: 0px;
     border-bottom: 1px solid black;
     font-weight: bold;
+    height: 14px;
+}
+
+.score {
+    padding-right: 30px;
+    border-right: 1px solid black;
 }
 
 .personal {
@@ -74,14 +84,20 @@ tr.spare > td {
     }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
     main {
         display: block;
     }
 
     section:nth-child(2) {
-        margin-left: 0px;
-        margin-top: 100px;
+        padding-left: 0px;
+        margin-top: 50px;
+    }
+
+    .score {
+        border-right: none;
+        border-bottom: 1px solid black;
+        padding-bottom: 30px;
     }
 }
 

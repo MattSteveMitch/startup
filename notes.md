@@ -234,7 +234,7 @@ React.useEffect(  () => {console.log("rendered");} [memberVar,  memberVar2] );
 
 `<Element />` calls `function Element()`
 `<Element member1={biscuit} member2={biscuit} + 10 />` calls `function Element(args)`
-args.member1 will then be the value of biscuit (`{}` is like a dereference operator)
+args.member1 will then be set to the value of biscuit (`{}` is like a dereference operator)
 
 let x = 10; // Sets x equal to 10; if it is changed locally, it will resume its initial value when you go out of scope
 
