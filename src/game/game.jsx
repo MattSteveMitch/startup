@@ -68,9 +68,10 @@ function GameBody() {
     );
 }
 
-export function Game() {
+export function Game(args) {
     const gameHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
     gameHeadingRoot.render(<GameHeading />);
     const gameBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
     gameBodyRoot.render(<GameBody />);
+    args.switchFun("game");
 }
