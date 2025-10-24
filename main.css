@@ -29,8 +29,8 @@ nav > .navlink {
     margin-right: 5px;
 }
 
-/*/* 
-nav > #current {
+/*/*/ 
+nav > .curr {
     background-color: rgb(160, 160, 160);
     border: none;
 }

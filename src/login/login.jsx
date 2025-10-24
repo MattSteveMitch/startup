@@ -45,9 +45,10 @@ function LoginBody() {
     );
 }
 
-export function Login() {
+export function Login(args) {
     const loginHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
     loginHeadingRoot.render(<LoginHeading />);
     const loginBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
     loginBodyRoot.render(<LoginBody />);
+    args.switchFun("login");
 }

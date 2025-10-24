@@ -251,9 +251,10 @@ function ScoresBody() {
     );
 }
 
-export function Scores() {
+export function Scores(args) {
     const scoresHeadingRoot = ReactDOM.createRoot(document.getElementById("heading"));
     scoresHeadingRoot.render(<ScoresHeading />);
     const scoresBodyRoot = ReactDOM.createRoot(document.getElementById("body"));
     scoresBodyRoot.render(<ScoresBody />);
+    args.switchFun("scores");
 }

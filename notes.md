@@ -251,3 +251,11 @@ userName
 HTTp request
 GET POST PUT DELETE
 
+Authentication/Authorization
+
+Secure password storage:
+Bcrypt library handles secure password hashing
+
+cookie: data automatically passed back and forth between server and client; server may update cookie and send updated cookie back with response; browser will store new cookie and send it back
+cookies often store authtokens
+

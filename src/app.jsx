@@ -34,9 +34,9 @@ function MyNav(args) { /* Yes, the entire reason why I created this function was
 
    return (
       <nav className="myNav">
-         <NavLink id="login" className={isCurr[0]} to="/">Log in</NavLink>
-         <NavLink id="game" className={isCurr[1]} to="game">Game</NavLink>
-         <NavLink id="scores" className={isCurr[2]} to="scores">Scores</NavLink>
+         <NavLink id="login" className={isCurr[0] + " navlink"} to="/">Log in</NavLink>
+         <NavLink id="game" className={isCurr[1] + " navlink"} to="game">Game</NavLink>
+         <NavLink id="scores" className={isCurr[2] + " navlink"} to="scores">Scores</NavLink>
       </nav>
    );
 }
@@ -59,7 +59,7 @@ export default function App() {
             <Route path="*" element={<NotFound />}/>
          </Routes>
       </BrowserRouter>
-      <p></p>
+      <p style={{height: 3}}></p>
       </main>
     );
 }
