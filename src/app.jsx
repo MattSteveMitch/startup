@@ -6,7 +6,8 @@ import {Game} from "./game/game";
 import {Scores} from "./scores/scores";
 import "./app.css";
 
-function NotFound() {
+function NotFound(args) {
+   args.switchFun("");
    return (
    <h2 style={{paddingTop: 50, fontSize: 50, paddingLeft: 10}}>
       Error 404: Not Found
@@ -56,7 +57,7 @@ export default function App() {
             <Route path="/" element={<Login switchFun={switchPage} />} />
             <Route path="/game" element={<Game switchFun={switchPage} />} />
             <Route path="/scores" element={<Scores switchFun={switchPage} />} />
-            <Route path="*" element={<NotFound />}/>
+            <Route path="*" element={<NotFound switchFun={switchPage} />}/>
          </Routes>
       </BrowserRouter>
       <p style={{height: 3}}></p>
