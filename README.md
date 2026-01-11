@@ -18,14 +18,14 @@ For anyone who's read and enjoyed the [Skyward series](https://www.brandonsander
 
 ### Design
 
-![Design image](page.png)
+[Game page](game.png) [Signup page](register.png) [Login page](login.png) [Scores page](scores.png)
 
 ### Key features
 
 - Account creation page
 - Login page
 - Starsigt game UI
-- Scores:
+- Scores sidebar:
     - Most recent score
     - Personal best score
     - Overall best score (updates using websocket)
@@ -37,9 +37,9 @@ For anyone who's read and enjoyed the [Skyward series](https://www.brandonsander
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Set up webpage with main game screen, title up top, and scores to the left of the game screen
-- **CSS** - Stylize text, create gradient in background of game page, display little animation whenever the most recent score, personal best, or overall best score updates
-- **React** - Handle transitions between homepage, game UI, and account creation screen
+- **HTML** - Set up webpage with main game screen, title, and scores to the left of the game screen
+- **CSS** - Stylize text, display little animation whenever the most recent score, personal best, or overall best score updates, arrange title up top and scores on left side of screen
+- **React** - Handle transitions between homepage, game UI, and account creation screen. Also handle registering of interactions with game
 - **Service** - To start game, log in, log out, create account, and share score on Facebook or Twitter
 - **DB/Login** - Store authentication tokens, accounts, most recent scores, and high scores
 - **WebSocket** - Handle interaction between player and game UI, as well as updates when someone sets a new overall high score
