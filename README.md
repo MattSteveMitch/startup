@@ -18,7 +18,7 @@ For anyone who's read and enjoyed the [Skyward series](https://www.brandonsander
 
 ### Design
 
-[Game page](game.png) [Signup page](register.png) [Login page](login.png) [Scores page](scores.png)
+![Game page](game.png) ![Signup page](register.png) ![Login page](login.png) ![Scores page](scores.png)
 
 ### Key features
 
