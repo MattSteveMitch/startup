@@ -1,9 +1,24 @@
+
+
 1. `git pull`
 2. modify files and stuff
 3. `git add [modified file]`
 4. `git commit -m [message in ""]`
 5. `git push`
 
+
+`git branch new_branch` make new branch
+"sacred timeline" branch is called "master"
+`git checkout other_branch` to switch to new branch
+`git merge other_branch` to merge current branch with other
+`git restore .` discard changes back to most recent commit
+`git reset --soft [hash of some commit]` delete all commits after the given one, but don't change files to match that commit
+`git reset --hard [hash of some commit]` delete all commits after the given one, and revert current files to match that commit
+`git fetch` + `git status` tells you how your local copy differs from main repo
+
+Tim Berners-Lee: Used existing concept of hypertext, created html
+Hakon Wium Lie: "Tim, your page is ugly." solution: CSS!
+Brendan Eich: JavaScript: direct interaction with webpage, instead of filling out form and sending to the server, which runs cgi program
 
 `ssh -i "Starsight access.pem" ubuntu@18.205.75.196`
 terminate elastic IP address when not needed
