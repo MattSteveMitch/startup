@@ -1,5 +1,3 @@
-
-
 1. `git pull`
 2. modify files and stuff
 3. `git add [modified file]`
@@ -20,6 +18,16 @@ Tim Berners-Lee: Used existing concept of hypertext, created html
 Hakon Wium Lie: "Tim, your page is ugly." solution: CSS!
 Brendan Eich: JavaScript: direct interaction with webpage, instead of filling out form and sending to the server, which runs cgi program
 
+Send request to DNS server for IP address of the domain name, then go to that IP address
+
+TLD: top-level domain (.edu, .com, .org, .info, .me)
+
+SLD: second-level domain (coolmathgames, byu)
+
+A record: gives IP address directly
+CNAME: points to an A record (enter subdomain or alias (byu.com, lds.org), it points you to the canonical name)
+
+
 `ssh -i "Starsight access.pem" ubuntu@18.205.75.196`
 terminate elastic IP address when not needed
 
@@ -34,13 +42,33 @@ Document object model: tree structure holding data in webpage
 Caddy: gets web certificate, handles https, directs traffic from main port to specialized port
 
 
+<a></a> anchor
+href: hyperlink reference
+head: not rendered, just metadata
+
+
 CSS: Cascading style sheets
 
 p {
     color: green;
 }
 
+`font-size: 3em;` means make it 3 times its normal size
+`font-size: .1vh` means 10% of view heigt
+
 p is selector (select all paragraphs), "color: green" is rule (make them green)
+
+<meta> name="viewport" content="width=device-width, initial-scale=1"</meta>
+
+`float: right;`  Makes it stick to the right side of the screen
+
+display types:
+block: fills width of parent container
+inline: does not resize to fill
+flex: change position of children based on available space
+
+minmax: 100px, 1fr
+1fr means 1 fractional unit
 
 
 Ways to insert CSS into html:
@@ -50,7 +78,7 @@ Ways to insert CSS into html:
 </head>
 
 2. `style` attribute in html:
-`<p style="color:green">Text here!</p>`
+`<p style="color:green; font-size:20px">Text here!</p>`
 
 3. add <style> ELEMENT to <head> element in html
 <head>
@@ -63,6 +91,19 @@ Ways to insert CSS into html:
 <body>
   <p>CSS</p>
 </body>
+
+#r means select where id="r"
+.r means select where class="r"
+
+special electors:
+list: `body, section` body or section
+descendent: `body section` section that's descendant of body
+child: `body > section` section that's direct child of body
+pseudo: `p:hover` paragraph when the cursor hovers over it
+
+content, padding, border, margin
+
+class="class1 class2";
 
 
 Responsive styles:
@@ -88,12 +129,20 @@ flex:
     display: flex;
     flex-direction: column
 }
-meaning make children flexible in the vertical direction
+meaning make CHILDREN flexible in the vertical direction
+
+flex-direction: column-reverse
+means reverse elements
+display: grid;  means populate left to right, then wrap to next row (I think)
 
 .item {
-    flex: 0 0 50px;
+    flex: 0 0 50px; 
 }
+grow, shrink, basis: if leftover room, grow by this much (fractional units); if not enough room, shrink by this much
 meaning don't grow, don't shrink, start out at 50px
+
+flex: 0 0 20%;
+
 
 .item1 {
     flex: 1 0 50px;
@@ -106,11 +155,13 @@ meaning let item2 flex twice as much as item1 if window size changes
 (.item is a placeholder in this case for a sub-element; .container is placeholder for super-element)
 50px means give both elements a maximum size of 50 pixels in the flex direction
 
+
 @media ((orientation: portrait)) { // If orientation is portrait, then do the following
     body {
         flex-direction: column;
     }
 }
+
 
 @media ((orientation: portrait) and (max-height: 500px)) { // If orientation is portrait and height is less than 500px, then do the following
     body {
@@ -123,7 +174,7 @@ meaning let item2 flex twice as much as item1 if window size changes
   <link rel="stylesheet" href="link-to-bootstrap-stylesheet"\>
 </head>
 Bootstrap is very popular starting point for style sheets
-
+Tailwind is also popular
 
 To turn an image into a link, wrap <img></img> in an anchor tag
 
