@@ -1,5 +1,5 @@
 #!/bin/bash
-
+'
 while getopts f: flag
 do
     case "${flag}" in
@@ -27,9 +27,9 @@ printf "\n----> Copy the distribution files to the target.\n"
 scp -r -i "../Starsight access.pem" $files ubuntu@starsight.click:services/startup/public
 
 exit 0
-
-
 '
+
+
 #!/bin/bash
 
 while getopts k:h:s: flag
@@ -59,4 +59,3 @@ ENDSSH
 # Step 2
 printf "\n----> Copy the distribution package to the target.\n"
 scp -r -i "$key" * ubuntu@$hostname:services/$service/public
-'
