@@ -16,28 +16,38 @@ main {
 }
 
 nav {
-    margin-left: 5px;
+    display: block;
 }
 
-nav > a {
+nav > .navlink {
     background-color: white;
     text-decoration: none;
     font-size: 22px;
     color: black;
     font-weight: bold;
-    border-top: none;
     border: 3px solid rgb(200, 200, 200);
+    margin-right: 5px;
 }
 
-nav > a.current {
+/*/*/ 
+nav > .curr {
     background-color: rgb(160, 160, 160);
     border: none;
 }
+/**/
 
 h1 {
     text-align: center;
     font-size: 28px;
     background-color: rgb(200, 200, 200);
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: normal;
+    font-family: starsight;
+    color: black;
+    -webkit-text-stroke: rgb(160, 160, 160) 1px;
 }
 
 input {
@@ -50,13 +60,17 @@ label {
     font-size: 16px;
 }
 
+
+
 button {
+    font-weight: bold;
     font-size: 16px;
     margin-top: 16px;
     background-color: rgb(200, 200, 200);
 }
 
 footer {
+    margin-left: 5px;
     margin-top: 50px;
     font-size: 17px;
     font-weight: bold;
