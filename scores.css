@@ -16,23 +16,26 @@ main {
 }
 
 nav {
-    margin-left: 5px;
+    display: flex;
 }
 
-nav > a {
+nav > .navlink {
     background-color: white;
     text-decoration: none;
     font-size: 22px;
     color: black;
     font-weight: bold;
-    border-top: none;
     border: 3px solid rgb(200, 200, 200);
+    margin-right: 10px;
 }
 
-nav > a.current {
+/*/*/ 
+nav > .current {
     background-color: rgb(160, 160, 160);
-    border: none;
+    border-color: rgb(160, 160, 160);
+    border-top: 0px;
 }
+/**/
 
 h1 {
     text-align: center;
@@ -41,15 +44,36 @@ h1 {
 }
 
 h2 {
-    font-family: starsight;
-    font-size: 33px;
+    font-size: 40px;
     font-weight: normal;
-    padding-top: 33px;
-    padding-bottom: 5px;
+    font-family: starsight;
+    color: black;
+    -webkit-text-stroke: rgb(160, 160, 160) 1px;
 }
 
-footer {
-    padding-top: 25px;
+input {
+    margin-top: 20px;
+    background-color: white;
+    font-size: 18px;
+}
+
+label {
+    font-size: 16px;
+}
+
+
+h2 {
+    padding-top: 33px;
+    padding-bottom: 16px;
+}
+
+h3 {
+    color: rgb(80, 80, 80);
+}
+
+main {
+    display: flex;
+    flex-direction: row;
 }
 
 table {
@@ -58,12 +82,12 @@ table {
     border-collapse: collapse;
 }
 
-table > th {
-    color: red;
+section {
+    display: block;
 }
 
 td {
-    font-size: 15px;
+    font-size: 17px;
     padding-top: 5px;
     border-left: 1px solid black;
     padding-right: 11px;
@@ -74,8 +98,8 @@ th {
     border-left: 1px solid black;
 }
 
-table.hit > tr {
-    border-bottom: 1px solid black;
+section:nth-child(2) {
+    padding-left: 70px;
 }
 
 th.rank {
@@ -89,8 +113,53 @@ th.player {
 tr.spare > td {
     font-size: 12px;
     padding-top: 0px;
-    padding-bottom: 4px;
     border-bottom: 1px solid black;
     font-weight: bold;
+    height: 14px;
+}
+
+.score {
+    padding-right: 30px;
+    border-right: 1px solid black;
+}
+
+.personal {
+    > h3 {
+        margin-top: 30px;
+    }
+
+    > table { 
+        > th {
+            font-size: 20px;
+        }
+
+        > tr {
+            > td {
+                padding-top: 2px;
+                font-size: 16px;
+            }
+        }
+
+        > .spare > td {
+            font-size: 11px;
+        }
+    }
+}
+
+@media (max-width: 1100px) {
+    main {
+        display: block;
+    }
+
+    section:nth-child(2) {
+        padding-left: 0px;
+        margin-top: 50px;
+    }
+
+    .score {
+        border-right: none;
+        border-bottom: 1px solid black;
+        padding-bottom: 30px;
+    }
 }
 

@@ -5,8 +5,6 @@
 
 * {
     font-family: Courier;
-    margin-top: 0px;
-    margin-bottom: 0px;
     background-color: rgb(160, 160, 160);
     margin: 0px;
 }
@@ -16,7 +14,7 @@ main {
 }
 
 nav {
-    display: block;
+    display: flex;
 }
 
 nav > .navlink {
@@ -26,13 +24,18 @@ nav > .navlink {
     color: black;
     font-weight: bold;
     border: 3px solid rgb(200, 200, 200);
-    margin-right: 5px;
+    margin-right: 10px;
+}
+
+header {
+    margin-bottom: 5px;
 }
 
 /*/*/ 
-nav > .curr {
+nav > .current {
     background-color: rgb(160, 160, 160);
-    border: none;
+    border-color: rgb(160, 160, 160);
+    border-top: 0px;
 }
 /**/
 
@@ -40,14 +43,6 @@ h1 {
     text-align: center;
     font-size: 28px;
     background-color: rgb(200, 200, 200);
-}
-
-h2 {
-    font-size: 40px;
-    font-weight: normal;
-    font-family: starsight;
-    color: black;
-    -webkit-text-stroke: rgb(160, 160, 160) 1px;
 }
 
 input {

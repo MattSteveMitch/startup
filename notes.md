@@ -54,7 +54,7 @@ p {
 }
 
 `font-size: 3em;` means make it 3 times its normal size
-`font-size: .1vh` means 10% of view heigt
+`font-size: 10vh` means 10% of view heigt
 
 p is selector (select all paragraphs), "color: green" is rule (make them green)
 
@@ -138,8 +138,8 @@ display: grid;  means populate left to right, then wrap to next row (I think)
 .item {
     flex: 0 0 50px; 
 }
-grow, shrink, basis: if leftover room, grow by this much (fractional units); if not enough room, shrink by this much
 meaning don't grow, don't shrink, start out at 50px
+grow, shrink, basis: if leftover room, grow by this much (fractional units); if not enough room, shrink by this much
 
 flex: 0 0 20%;
 
@@ -189,6 +189,13 @@ OR
 `let arr = ["hi", 123.3];`
 `const words = ['hello', 'world'];`
 `words.forEach((word) => console.log(word));`
+`setInterval(function, milliseconds)` calls a function every `milliseconds` milliseconds
+`console.log("Hello world")` prints to console
+`document.body.innerHTML = <h1>cow</h1>`
+`document.body.innerText = "cow"`
+`document.body.querySelector('#id')` selects elements by id
+`document.body.querySelector('.class')` selects elements by class
+
 function fun() {
     let i = 0;
     i++;
@@ -204,6 +211,11 @@ Within <head> element, insert <script src='index.js'></script>
 
 <span> means select a piece of text within one element
 <p>Hello, <span style="color: blue;">this</span> is text!</p>
+
+Node.js allows you to run javascript outside of browser
+`node [js program]` runs program on command line
+`node` opens js shell
+
 
 p.foo means a paragraph with class="foo"
 .foo > p means an child of an element of class="foo"
