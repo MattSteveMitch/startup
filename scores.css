@@ -37,6 +37,13 @@ nav > .current {
 }
 /**/
 
+.navlink:hover {
+    background-color: rgb(200, 200, 200);
+    border-color: rgb(160, 160, 160);
+    border-top: 0px;
+}
+
+
 h1 {
     text-align: center;
     font-size: 28px;
