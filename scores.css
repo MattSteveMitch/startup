@@ -56,20 +56,6 @@ h2 {
     font-family: starsight;
     color: black;
     -webkit-text-stroke: rgb(160, 160, 160) 1px;
-}
-
-input {
-    margin-top: 20px;
-    background-color: white;
-    font-size: 18px;
-}
-
-label {
-    font-size: 16px;
-}
-
-
-h2 {
     padding-top: 33px;
     padding-bottom: 16px;
 }
@@ -87,10 +73,6 @@ table {
     font-size: 22px;
     border: 2px solid black;
     border-collapse: collapse;
-}
-
-section {
-    display: block;
 }
 
 td {
@@ -136,18 +118,18 @@ tr.spare > td {
     }
 
     > table { 
-        > th {
+        th {
             font-size: 20px;
         }
 
-        > tr {
-            > td {
+        tr {
+            td {
                 padding-top: 2px;
                 font-size: 16px;
             }
         }
 
-        > .spare > td {
+        .spare td {
             font-size: 11px;
         }
     }
