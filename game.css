@@ -36,7 +36,7 @@ nav > .current {
 }
 
 .navlink:hover {
-    background-color: rgb(200, 200, 200);
+    background-color: rgb(224, 224, 224);
     border-color: rgb(160, 160, 160);
     border-top: 0px;
 }
