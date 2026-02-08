@@ -1,0 +1,100 @@
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+
+@scope (main) {
+
+h2.subhead {
+    font-family: Courier;
+    color: black;
+    -webkit-text-stroke: 0px;
+    font-size: 14px;
+    margin-bottom: 45px;
+}
+
+h3 {
+    font-size: 17px;
+}
+
+div.score-display[name="current"] {
+    color: rgb(0, 220, 130);
+    font-weight: bold;
+    -webkit-text-stroke: rgb(0, 165, 97) 1px;
+}
+
+p.score-side-text {
+    font-size: 16px;
+    padding-top: 18px;
+    -webkit-text-stroke: 0px;
+}
+
+p.score[name="PR"] {
+    color: rgb(0, 100, 180);
+}
+
+.score-display {
+    color: rgb(90, 90, 90);
+    display: flex;
+    flex-direction: row;
+}
+
+.share {
+    font-size: 16px;
+}
+
+.share > a {
+    margin-left: 5px;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+section.best-score {
+    padding-top: 16px;
+}
+
+p.score {
+    font-family: starsight;
+    padding-right: 17px;
+    font-size: 46px;
+}
+
+div.best-hits {
+    padding-top: 45px;
+}
+
+.hit {
+    font-family: starsight;
+    font-size: 25px;
+    color: rgb(80, 80, 80);
+    padding-right: 11px;
+    padding-top: 3px;
+}
+
+.hit-side-text {
+    font-size: 13px;
+    padding-right: 17px;
+    padding-top: 10px;
+}
+
+section.window {
+    text-align: center;
+    flex: 1 0 880px;
+    padding-top: 15px;
+}
+
+section.sidebar {
+/*    flex: 0 0 265px; */
+    padding-top: 22px;
+    color: rgb(30, 30, 30);
+}
+
+@media (max-width: 1150px) {
+    section.sidebar {
+        position: absolute;
+        top: 660px;
+    }
+}
+
+}

@@ -1,0 +1,54 @@
+@font-face {
+    font-family: starsight;
+    src: url(starsight.ttf);
+}
+
+* {
+    font-family: Courier;
+    background-color: rgb(160, 160, 160);
+    margin: 0px;
+}
+
+main {
+    margin-left: 5px;
+}
+
+nav {
+    display: flex;
+}
+
+nav > .navlink {
+    background-color: white;
+    text-decoration: none;
+    font-size: 22px;
+    color: black;
+    font-weight: bold;
+    border: 3px solid rgb(200, 200, 200);
+    margin-right: 10px;
+}
+
+nav > .current {
+    background-color: rgb(160, 160, 160);
+    border-color: rgb(160, 160, 160);
+    border-top: 0px;
+}
+
+.navlink:hover {
+    background-color: rgb(224, 224, 224);
+    border-color: rgb(160, 160, 160);
+    border-top: 0px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+    background-color: rgb(200, 200, 200);
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: normal;
+    font-family: starsight;
+    color: black;
+    -webkit-text-stroke: rgb(160, 160, 160) 1px;
+}
