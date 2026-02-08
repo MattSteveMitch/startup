@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import "./home.css";
 
 export function Home() {
     return (
@@ -16,13 +17,13 @@ export function Home() {
                 <div>
                     <form action="game.html">
                         <section>
-                            <label for="username">Username:</label>
+                            <label htmlFor="username">Username:</label>
                             <input type="username">
                             </input>
                         </section>
 
                         <section>
-                            <label for="password">Password:</label>
+                            <label htmlFor="password">Password:</label>
                             <input type="password">
                             </input>
                         </section>
@@ -43,5 +44,5 @@ export function Home() {
                 <p>Matthew Mitchell</p>
             </footer>
         </div>
-    )
+    );
 }
