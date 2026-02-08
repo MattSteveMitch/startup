@@ -205,6 +205,24 @@ function fun() {
 }
 In browser, console is hidden in developer tools
 
+JSX: integrates HTML into javascript
+
+`const x = <p id="2" cow="moo">text {1+1}</p>` JSX
+becomes
+`const x = React.createElement("p", {id: '2', cow: "moo"}, "text", 1+1);` pure JavaScript
+creates
+`<p id="2" cow="moo">text 2</p>` HTML
+
+`const root = ReactDOM.createRoot(document.querySelector('#root'));`
+selects an element with the id of 'root'
+`root.render(<Function />);` replaces the inside of the id=root element:
+`<div id='root'>Loading...</div>` becomes `<div id='root'>This is the root element!</div>`
+
+`const Hello = ({phrase, phrase2}) => {return <div>Hello {phrase} {phrase2}</div>}` Hello extracts the `phrase` and `phrase2` properties of the parameter
+
+
+
+
 How to embed in website?
 Within <head> element, insert <script src='index.js'></script>
 <button onclick="[JS code goes here]"></button>
@@ -230,8 +248,11 @@ else, another entity serves up whatever is requested; if nothing particular requ
 
 index.html references other files needed to build webpage (CSS, JS/React, etc.)
 
-Vite "compiles"/transpiles the files together into two complete files
+Vite "compiles"/transpiles the files from jsx to javascript and html
+builds things together into two complete files
+
 Like compiled code, this new code is optimized, abstract, hard to read
+
 
 JS:
 
@@ -294,14 +315,23 @@ const [m, , , n] = i; // m=1; n=4;
 const o = {a: 1, b: 'animals', c: ['fish', 'cats']};
 
 const root = ReactDOM.
-const [var, updateVar] = React.useState(10); // Returns the number 10 and a function
-// to update var
+const [var, updateVar] = React.useState(10); // Returns the number 10 and a setter function that you
+// can call to update var
+
+
 
 function UseEffectDemo() {
   React.useEffect(  () => {console.log("rendered");}  );
 
   return <div>Something!</div>
 }
+
+`<BrowserRouter>` (my understanding):
+
+`<BrowserRouter>`: component that wraps the `<Routes>` component and creates the components specified by `<Routes>` as its own children. When `<Routes>` gives it a new component to render, it removes the previous component that it created
+`<Routes>` component should be a child of the BrowserRouter; it retrieves different components depending on the current path specified in the URL, gives them to the parent `<BrowserRouter>`
+`<NavLinks>` should be descendants of BrowserRouter; they change the current path in the URL
+
 
 A React.useEffect is a thing that sets a function to be called every time an element is re-rendered
 Only at top level of function!
