@@ -27,10 +27,10 @@ export function Game() {
                             </div>
                             <div className="share">Share:
                                 <a href="https://facebook.com/">
-                                    <img src="images/fb_logo.png" alt="Facebook logo" width="23" />
+                                    <img src="fb_logo.png" alt="Facebook logo" width="23" />
                                 </a>
                                 <a href="https://x.com/">
-                                    <img src="images/x_logo.png" alt="X Twitter logo" width="20" />
+                                    <img src="x_logo.png" alt="X Twitter logo" width="20" />
                                 </a>
                             </div>
                         </section>
@@ -63,7 +63,7 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <img src="images/game_window_placeholder.png" alt="Game window" width="880" />
+                    <img src="game_window_placeholder.png" alt="Game window" width="880" />
                 </section>
 
             </main>

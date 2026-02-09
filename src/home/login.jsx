@@ -39,7 +39,7 @@ export function Login() {
             <footer>
                 <p>View on</p>
                 <a href="https://github.com/MattSteveMitch/startup">
-                    <img src="images/github.png" alt="Github logo" width="70" />
+                    <img src="github.png" alt="Github logo" width="70" />
                 </a>
                 <p>Matthew Mitchell</p>
             </footer>
