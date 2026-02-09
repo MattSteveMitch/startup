@@ -1,16 +1,16 @@
-/*
-h2 {
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+h2.score-page {
     padding-top: 33px;
     padding-bottom: 16px;
 }
 
-h3 {
+h3.score-page {
     color: rgb(80, 80, 80);
-}
-
-main {
-    display: flex;
-    flex-direction: row;
+    font-size: 19px;
 }
 
 table {
@@ -31,7 +31,7 @@ th {
     border-left: 1px solid black;
 }
 
-section:nth-child(2) {
+.hits {
     padding-left: 70px;
 }
 
@@ -51,7 +51,7 @@ tr.spare > td {
     height: 14px;
 }
 
-.score {
+section.score {
     padding-right: 30px;
     border-right: 1px solid black;
 }
@@ -84,15 +84,14 @@ tr.spare > td {
         display: block;
     }
 
-    section:nth-child(2) {
+    .hits {
         padding-left: 0px;
         margin-top: 50px;
     }
 
-    .score {
+    section.score {
         border-right: none;
         border-bottom: 1px solid black;
         padding-bottom: 30px;
     }
 }
-*/

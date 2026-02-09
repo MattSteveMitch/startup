@@ -14,8 +14,9 @@ h2.subhead {
     margin-bottom: 45px;
 }
 
-h3 {
+h3.game-page {
     font-size: 17px;
+    color: rgb(30, 30, 30);
 }
 
 div.score-display[name="current"] {
@@ -42,6 +43,7 @@ p.score[name="PR"] {
 
 .share {
     font-size: 16px;
+    color: rgb(30, 30, 30);
 }
 
 .share > a {
@@ -85,9 +87,7 @@ section.window {
 }
 
 section.sidebar {
-/*    flex: 0 0 265px; */
     padding-top: 22px;
-    color: rgb(30, 30, 30);
 }
 
 @media (max-width: 1150px) {

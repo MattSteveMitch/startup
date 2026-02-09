@@ -20,7 +20,7 @@ export function Game() {
                     <h2 className="subhead">(lower scores are better)</h2>
                     <div>
                         <section>
-                            <h3>Most recent score:</h3>
+                            <h3 className="game-page">Most recent score:</h3>
                             <div className="score-display" name="current">
                                 <p className="score">22</p>
                                 <p className="score-side-text">New personal best!</p>
@@ -35,11 +35,11 @@ export function Game() {
                             </div>
                         </section>
                         <section className="best-score">
-                            <h3>Personal best score:</h3>
+                            <h3 className="game-page">Personal best score:</h3>
                             <p className="score" name="PR">22</p>
                         </section>
                         <section className="best-score">
-                            <h3>Overall best score:</h3>
+                            <h3 className="game-page">Overall best score:</h3>
                             <div className="score-display">
                                 <p className="score">12</p>
                                 <p className="score-side-text">Set by Grond2</p>
@@ -49,11 +49,11 @@ export function Game() {
 
                     <div className="best-hits">
                         <section>
-                            <h3>Personal best hit:</h3>
+                            <h3 className="game-page">Personal best hit:</h3>
                             <p className="hit">118</p>
                         </section>
                         <section>
-                            <h3>Overall best hit:</h3>
+                            <h3 className="game-page">Overall best hit:</h3>
                             <div className="score-display">
                                 <p className="hit">158</p>
                                 <p className="hit-side-text">Set by Nolendil</p>

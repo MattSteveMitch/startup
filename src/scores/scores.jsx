@@ -16,8 +16,8 @@ export function Scores() {
 
             <main>
                 <section className="score">
-                    <h2>Least deaths to complete the game</h2>
-                    <h3>Overall best</h3>
+                    <h2 className="score-page">Least deaths to complete the game</h2>
+                    <h3 className="score-page">Overall best</h3>
                     <table>
                         <th className="rank">Rank</th>
                         <th className="player">Player</th>
@@ -80,7 +80,7 @@ export function Scores() {
                     </table>
 
                     <div className="personal">
-                        <h3>Personal best</h3>
+                        <h3 className="score-page">Personal best</h3>
                         <table>
                             <th></th>
                             <th>Score</th>
@@ -132,9 +132,9 @@ export function Scores() {
                     </div>
                 </section>
 
-                <section>
-                    <h2>Most damaging hits to Krell ship</h2>
-                    <h3>Overall best</h3>
+                <section className="hits">
+                    <h2 className="score-page">Most damaging hits to Krell ship</h2>
+                    <h3 className="score-page">Overall best</h3>
                     <table>
                         <th className="rank">Rank</th>
                         <th className="player">Player</th>
@@ -197,7 +197,7 @@ export function Scores() {
                     </table>
 
                     <div className="personal">
-                        <h3>Personal best</h3>
+                        <h3 className="score-page">Personal best</h3>
                         <table>
                             <th></th>
                             <th>Damage dealt</th>
