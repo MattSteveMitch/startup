@@ -2,7 +2,7 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import "./home.css";
 
-export function Home() {
+export function Login() {
     return (
         <div className="body">
             <header>
@@ -15,7 +15,7 @@ export function Home() {
             </header>
             <main>
                 <div>
-                    <form action="game.html">
+                    <form action="/game">
                         <section>
                             <label htmlFor="username">Username:</label>
                             <input type="username">
@@ -29,7 +29,7 @@ export function Home() {
                         </section>
 
                         <button type="submit">Log in</button>
-                        <a href="register.html">
+                        <a href="/register">
                             <button type="button">Create account</button>
                         </a>
                     </form>
