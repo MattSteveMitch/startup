@@ -15,6 +15,7 @@ input {
 
 label {
     font-size: 16px;
+    margin-right: 9px;
 }
 
 
@@ -22,6 +23,7 @@ button {
     font-weight: bold;
     font-size: 16px;
     margin-top: 16px;
+    margin-right: 9px;
     background-color: rgb(200, 200, 200);
     cursor: pointer;
 }

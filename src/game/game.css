@@ -49,6 +49,7 @@ p.score[name="PR"] {
 .share > a {
     margin-left: 5px;
     vertical-align: middle;
+    margin-left: 8px;
     text-decoration: none;
 }
 
@@ -83,11 +84,11 @@ div.best-hits {
 section.window {
     text-align: center;
     flex: 1 0 880px;
-    padding-top: 15px;
+    padding-top: 5px;
 }
 
 section.sidebar {
-    padding-top: 22px;
+    padding-top: 20px;
 }
 
 @media (max-width: 1150px) {

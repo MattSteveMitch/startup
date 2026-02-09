@@ -4,6 +4,7 @@ import {Login} from "/src/home/login";
 import {Game} from "/src/game/game";
 import {Scores} from "/src/scores/scores";
 import {Register} from "/src/home/register";
+import {NotFound} from "./not_found";
 import "./app.css"
 
 
@@ -16,6 +17,7 @@ export default function App() {
                     <Route path="/game" element={<Game />}></Route>
                     <Route path="/scores" element={<Scores />}></Route>
                     <Route path="/register" element={<Register />}></Route>
+                    <Route path="*" element={<NotFound />}></Route>
                 </Routes>
             </BrowserRouter>
         </div>
