@@ -79,9 +79,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Bundled using Vite** - I did not complete this part of the deliverable.
-- [ ] **Components** - I did not complete this part of the deliverable.
-- [ ] **Router** - I did not complete this part of the deliverable.
+- [x] **Bundled using Vite** - Bundled using Vite
+- [x] **Components** - Same pages as before, with some visual tweaks and a lot of reformatting, added Not Found page
+- [x] **Router** - I used a BrowserRouter to navigate between pages
 
 ## 🚀 React part 2: Reactivity deliverable
 
