@@ -54,6 +54,7 @@ tr.spare > td {
 section.score {
     padding-right: 30px;
     border-right: 1px solid black;
+    padding-bottom: 30px;
 }
 
 .personal {
@@ -92,6 +93,5 @@ section.score {
     section.score {
         border-right: none;
         border-bottom: 1px solid black;
-        padding-bottom: 30px;
     }
 }

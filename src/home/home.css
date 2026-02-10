@@ -1,6 +1,13 @@
-main {
-    display: block;
-    margin-top: 5px;
+.body.home {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main.home {
+    margin-top: 10px;
+    margin-left: 15px;
+    flex: 1 0 180px;
 }
 
 button:hover {
@@ -18,7 +25,6 @@ label {
     margin-right: 9px;
 }
 
-
 button {
     font-weight: bold;
     font-size: 16px;
@@ -30,7 +36,12 @@ button {
 
 footer {
     margin-left: 5px;
-    margin-top: 50px;
     font-size: 17px;
     font-weight: bold;
+}
+
+p#author {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    font-size: 12px;
 }

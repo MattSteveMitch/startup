@@ -4,7 +4,7 @@ import "./home.css";
 
 export function Login() {
     return (
-        <div className="body">
+        <div className="body home">
             <header>
                 <h1>Log into Starsight</h1>
                 <nav>
@@ -13,7 +13,7 @@ export function Login() {
                     <NavLink className="navlink" to="/scores">Scores</NavLink>
                 </nav>
             </header>
-            <main>
+            <main className="home">
                 <div>
                     <form action="/game">
                         <section>
@@ -41,7 +41,7 @@ export function Login() {
                 <a href="https://github.com/MattSteveMitch/startup">
                     <img src="github.png" alt="Github logo" width="70" />
                 </a>
-                <p>Matthew Mitchell</p>
+                <p id="author">Matthew Mitchell</p>
             </footer>
         </div>
     );

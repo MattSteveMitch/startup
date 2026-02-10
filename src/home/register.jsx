@@ -4,7 +4,7 @@ import "./home.css"
 
 export function Register() {
     return (
-        <div className="body">
+        <div className="body home">
             <header>
                 <h1>Sign up for Starsight account</h1>
                 <nav>
@@ -14,7 +14,7 @@ export function Register() {
                 </nav>
             </header>
 
-            <main>
+            <main className="home">
                 <div>
                     <form action="/">
                         <section>
