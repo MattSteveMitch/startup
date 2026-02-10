@@ -5,6 +5,10 @@ import "./game.css";
 export function Game() {
     return (
         <div className="body">
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>Play Starsight</title>
+            </div>
             <header>
                 <h1>Play Starsight</h1>
                 <nav>

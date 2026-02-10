@@ -5,6 +5,10 @@ import "./home.css";
 export function Login() {
     return (
         <div className="body home">
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>Log into Starsight</title>
+            </div>
             <header>
                 <h1>Log into Starsight</h1>
                 <nav>

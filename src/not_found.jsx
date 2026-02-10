@@ -4,8 +4,12 @@ import {NavLink} from "react-router-dom";
 export function NotFound() {
     return (
         <div className="body">
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>Page not found</title>
+            </div>
             <header>
-                <h1>Page Not Found</h1>
+                <h1>Page not found</h1>
                 <nav>
                     <NavLink className="navlink" to="/">Home</NavLink>
                     <NavLink className="navlink" to="/game">Game</NavLink>

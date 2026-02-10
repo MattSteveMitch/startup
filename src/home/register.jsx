@@ -5,6 +5,11 @@ import "./home.css"
 export function Register() {
     return (
         <div className="body home">
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>Sign up for Starsight account</title>
+            </div>
+
             <header>
                 <h1>Sign up for Starsight account</h1>
                 <nav>

@@ -1,9 +1,15 @@
 import React from "react";
+import ReactDOM from "react-dom/client";
 import "./secret.css";
 
 export function Secret() {
     return (
         <main className="secret">
+            <div className="page-info">
+                <link rel="icon" href="src/secret/letter.png" />
+                <title>Secret</title>
+            </div>
+
             <pre>hlE:^!  y&lt;;&gt;  hvA  ds*kvOredE  nlOd~ElIz  ske=rte  m&#125;'&#91;jA!</pre>
             <pre>Ds*  z*  tNEwra  kr:'ta=dE  bY  nlOd~ElI.</pre>
             <pre>$a nZag drobtalOkF,     $a nZag gb~EtalO</pre>

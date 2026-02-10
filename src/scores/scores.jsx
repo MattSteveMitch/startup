@@ -5,6 +5,11 @@ import "./scores.css";
 export function Scores() {
     return (
         <div className="body">
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>Best Scores</title>
+            </div>
+
             <header>
                 <h1>Best Scores</h1>
                 <nav>
