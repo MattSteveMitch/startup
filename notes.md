@@ -312,11 +312,89 @@ const [t, s] = i; // same as t=1; s=2;
 const [m, , , n] = i; // m=1; n=4;
 // this is called destructuring
 
-const o = {a: 1, b: 'animals', c: ['fish', 'cats']};
+`const [b, c, ...others] = a;` means assign b to the first element of a, c to the second, and others to the rest of the list
+
+
+`const o = {a: 1, b: 'animals', c: ['fish', 'cats']};`
+`const {a, c} = o;` Means extract the `a` and `c` attributes of the object, naming them as such.
+`const {a: count, b: type} = o;` Means extract the `a` and `b` attributes of the object, renaming them as `count` and `type`. Default values can be given, e.g. `const {a, b, d="I don't know"} = o;`
 
 const root = ReactDOM.
 const [var, updateVar] = React.useState(10); // Returns the number 10 and a setter function that you
 // can call to update var
+to update the value, updateVar can be given a value, or a function:
+`updateVar((varVal) => varVal + 1;)` is thread safe
+`updateVar(var + 1;)` is not thread safe
+
+
+`function App() {`
+`  const [count, setCount] = React.useState(0);`
+
+`  return (`
+`    <div>`
+`      <h1>Count: {count}</h1>`
+`      <button onClick={() => setCount((prevCount) => prevCount + 1)}>n++</button>`
+`      <button onClick={() => setCount((prevCount) => prevCount - 1)}>n--</button>`
+`    </div>`
+`  );`
+`}`
+Thread safe!
+
+
+
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  function counterOpFactory(op) {
+    return () => setCount((prevCount) => op(prevCount));
+  }
+
+  const incOp = counterOpFactory((c) => c + 1);
+  const decOp = counterOpFactory((c) => c - 1);
+  const tenXOp = counterOpFactory((c) => c * 10);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={incOp}>n++</button>
+      <button onClick={decOp}>n--</button>
+      <button onClick={tenXOp}>n*10</button>
+    </div>
+  );
+}
+Less messy, uses a closure, also thread safe
+
+onChange = {onChange}
+event.target.value
+
+
+
+JS Objects are like maps where the value can be of any type, even different types within the same map (Object)
+
+Any function that returns an object is considered a constructor and can be invoked with the `new` operator.
+
+`function Person(name) {`
+`  return {`
+`    log: function () {`
+`      console.log('My name is ' + this.name);`
+`    },`
+`    name: name,`
+`  };`
+`}`
+
+`const p = new Person('Eich');`
+`p.log()` My name is Eich
+
+However, in order to use inheritance, you need to use the `class` functionality
+
+`setTimeout(() => console.log('time is up'), 2000);` Means "execute this later, after this amount of time, but in the meantime continue executing code"
+`setInterval` works the same way, except it keeps executing the code every _____ milliseconds
+
+JSON.stringify: JS Object to JSON
+JSON.parse: JSON to JS object
+
+
+localStorage is a global Object stored on the client's side (their browser) that can be manipulated with removeItem(name), getItem(name), setItem(name, value), and clear()
 
 
 
@@ -325,6 +403,21 @@ function UseEffectDemo() {
 
   return <div>Something!</div>
 }
+
+
+`console.log('hello %s', 'world');`
+`console.log('hello %c world', 'color: green;');` formats everything after `%c`
+`console.time('timerName')` creates and starts a timer
+`console.time('timerName')` stops that timer
+`console.count('countName')` count how many times this specific counter has been invoked
+
+default parameters exist in JS
+
+arrow function: `(x, y) => x + y;`, `(x, y) => {x++; y++; return x + y;}`
+arrow function inherits the entire environment in which it was declared; any variable that it can reference persists after it "should" be forgotten
+this is called a closure
+
+
 
 `<BrowserRouter>` (my understanding):
 
@@ -336,9 +429,10 @@ function UseEffectDemo() {
 A React.useEffect is a thing that sets a function to be called every time an element is re-rendered
 Only at top level of function!
 
-React.useEffect(  () => {console.log("rendered");} [memberVar,  memberVar2] ); 
+`React.useEffect(  () => {console.log("rendered");} [memberVar,  memberVar2] ); `
 // I think this means only call function when memberVar or memberVar2 are updated
-
+`React.useEffect(  () => {console.log("rendered");} [] ); ` means only call when component is first rendered
+If the function that you pass to useEffect returns a function, that's called a cleanup function, it means that that function is called when the component is destroyed rather than rerendered.
 
 `<Element />` calls `function Element()`
 `<Element member1={biscuit} member2={biscuit} + 10 />` calls `function Element(args)`
