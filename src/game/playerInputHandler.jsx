@@ -1,14 +1,22 @@
+function drawLine(canvas, color, pos1, pos2, width) {
+    canvas.strokeStyle = color;
+    canvas.lineWidth = width;
+    canvas.beginPath();
+    canvas.moveTo(pos1[0], pos1[1]);
+    canvas.lineTo(pos2[0], pos2[1]);
+    canvas.stroke();
+}
 
+
+function drawLineQuick(canvas, pos1, pos2) {
+    canvas.beginPath();
+    canvas.moveTo(pos1[0], pos1[1]);
+    canvas.lineTo(pos2[0], pos2[1]);
+    canvas.stroke();
+}
 
 export function keyPress(event, window, y) {
-  //  console.log("in keyPress: " + window);
-    window.strokeStyle = "blue";
-    window.lineWidth = 5;
-
-    window.beginPath();
-    window.moveTo(150, y);
-    window.lineTo(220, y);
-    window.stroke();
+    drawLine(window, "blue", [150, y], [220, y], 5);
 
     switch (event.code) {
         case "Slash":

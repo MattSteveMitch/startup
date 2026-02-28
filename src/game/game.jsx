@@ -1,17 +1,24 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {keyPress} from "./playerInputHandler.jsx"
+import {runGame} from "./runGame.jsx"
 import "./game.css";
 
 export function Game() {
-    var windowRef = React.useRef(null);
+    const windowRef = React.useRef(null);
     var window;
     var y = 0;
+    const thumbnail = new Image(880, 560);
+    thumbnail.src = "assets/thumbnail.png";
 
     React.useEffect(() => {
+        const handler = (event) => {y += 20; keyPress(event, window, y);};
         window = windowRef.current.getContext("2d");
-        console.log(y);
-        document.addEventListener("keydown", (event) => {y += 20; keyPress(event, window, y);}, true);
+        document.addEventListener("keydown", handler);
+        thumbnail.onload = () => {window.drawImage(thumbnail, 0, 0, 880, 560);};
+        window.drawImage(thumbnail, 0, 0, 880, 560);
+
+        return (() => {document.removeEventListener("keydown", handler);});
     });
 
     return (
@@ -78,7 +85,7 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <canvas ref={windowRef} src="game_window_placeholder.png" alt="Game window" width={880} height={350} id="game-screen" />
+                    <canvas ref={windowRef} alt="Game window" width={880} height={560} id="game-screen" onClick={runGame} />
                 </section>
 
             </main>

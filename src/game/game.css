@@ -84,7 +84,16 @@ div.best-hits {
 section.window {
     text-align: center;
     flex: 1 0 880px;
-    padding-top: 5px;
+    margin-top: 5px;
+}
+
+canvas {
+    cursor: pointer;
+    background-color: white;
+}
+
+canvas:hover {
+    opacity: 0.8;
 }
 
 section.sidebar {
