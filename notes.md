@@ -322,6 +322,8 @@ const [m, , , n] = i; // m=1; n=4;
 const root = ReactDOM.
 const [var, updateVar] = React.useState(10); // Returns the number 10 and a setter function that you
 // can call to update var
+This lets var persist outside of the function's scope
+
 to update the value, updateVar can be given a value, or a function:
 `updateVar((varVal) => varVal + 1;)` is thread safe
 `updateVar(var + 1;)` is not thread safe
@@ -440,7 +442,34 @@ args.member1 will then be set to the value of biscuit (`{}` is like a dereferenc
 
 let x = 10; // Sets x equal to 10; if it is changed locally, it will resume its initial value when you go out of scope
 
+
 Promise: object that acts as a placeholder for pending data with a function to get the data. When created, the Promise calls the function
+can be used for an efficient fibonacci calculator
+
+promise states: pending, fulfilled, or rejected
+
+
+Browser rendering is single-threaded! Make everything asynchronous as much as you can
+
+
+`function callback(resolve) {`
+`  resolve('done');`
+`}`
+
+`const p = new Promise(callback);`
+`p.then((result) => console.log(result)); ` Outputs "done"
+
+
+
+let p = new Promise((resolve, reject) => {
+  if (Math.random > 0.5) {
+    resolve("Success!");
+  }
+  else {
+    reject("Failure!");
+  }
+});
+
 
 const userName = new Promise(getSomeData);
 
@@ -449,9 +478,19 @@ userName
     .catch((receivedUsername => {console.log("Error!");})) // On failure
     .finally((receivedUsername) => {console.log("Done");}) // After .catch or .then
 
+fetch() function:
+creates a Promise internally
+`fetch(URL).then((resource) => console.log(resource));`
+`x = fetch(URL).then((resource) => console.log(resource));` sets x equal to the Promise, then moves on
+
+Promises can be chained: promise1(...).then().then()
+fetch(url).then(r => r.json).then(j => console.log(j))
+`await fetch(url)` means put everything after this in the "then" block of this promise
+
+Caching
 
 HTTp request
-GET POST PUT DELETE
+GET POST PUT DELETE OPTIONS
 
 Authentication/Authorization
 
@@ -461,3 +500,9 @@ Bcrypt library handles secure password hashing
 cookie: data automatically passed back and forth between server and client; server may update cookie and send updated cookie back with response; browser will store new cookie and send it back
 cookies often store authtokens
 
+
+Express: 
+
+`var ptr = React.useRef()` makes a container/pointer for a value
+`<div ref={ptr}></div>` means store this HTML element in ptr
+ptr.current is like a dereference?

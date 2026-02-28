@@ -1,8 +1,19 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import {keyPress} from "./playerInputHandler.jsx"
 import "./game.css";
 
 export function Game() {
+    var windowRef = React.useRef(null);
+    var window;
+    var y = 0;
+
+    React.useEffect(() => {
+        window = windowRef.current.getContext("2d");
+        console.log(y);
+        document.addEventListener("keydown", (event) => {y += 20; keyPress(event, window, y);}, true);
+    });
+
     return (
         <div className="body">
             <div className="page-info">
@@ -67,7 +78,7 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <img src="game_window_placeholder.png" alt="Game window" width="880" />
+                    <canvas ref={windowRef} src="game_window_placeholder.png" alt="Game window" width={880} height={350} id="game-screen" />
                 </section>
 
             </main>
