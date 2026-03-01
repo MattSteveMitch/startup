@@ -506,3 +506,69 @@ Express:
 `var ptr = React.useRef()` makes a container/pointer for a value
 `<div ref={ptr}></div>` means store this HTML element in ptr
 ptr.current is like a dereference?
+
+
+
+Here's my rudimentary model of a Promise object (in pseudocode):
+
+class Promise {  // Of course, this must all be implemented using thread-safety practices
+// Also, I'm guessing when it compiles, if there is no .then, .catch, or .finally specified,
+// the computer fills it in with an empty function
+  public:
+
+  constructor(fun1) {
+    this.finalVal = null;
+    this.isPending = true;
+    this.isResolved = false;
+    this.thenFunction = null;
+    this.catchFunction = null;
+    this.finallyFunction = null;
+    // guard the latter three functions with semaphores; set them all to "blocked"
+    startNewThread(task: activate(fun1));
+  }
+
+  fun activate(fun1) {
+    fun1(this.resolve, this.reject);
+    wait until isPending is false
+    if this.isResolved:
+      wait for access from the semaphore, then do:
+      thenFunction(finalVal);
+    else:
+      wait for access from the semaphore, then do:
+      catchFunction(finalVal);
+
+    wait for access from the semaphore, then do:
+    finallyFunction(finalVal);
+  }
+
+  fun then(fun1) {
+    // semaphore already has access reserved for us
+    this.thenFunction = fun1;
+    release access
+  }
+  
+  fun catch(fun1) {
+    // semaphore already has access reserved for us
+    this.catchFunction = fun1;
+    release access
+  }
+  
+  fun finally(fun1) {
+    // semaphore already has access reserved for us
+    this.finallyFunction = fun1;
+    release access
+  }
+  
+  private:
+
+  fun resolve(resultVal) {
+    this.finalVal = resultVal;
+    this.isResolved = true;
+    this.isPending = false;
+  }
+
+  fun reject(rejectVal) {
+    this.finalVal = rejectVal;
+    this.isPending = false;
+  }
+}

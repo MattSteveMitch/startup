@@ -1,26 +1,40 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {keyPress} from "./playerInputHandler.jsx"
-import {runGame} from "./runGame.jsx"
+import {keyPress} from "./playerInputHandler.jsx";
+import {runGame} from "./runGame.jsx";
+import {loadImages} from "./loadImages.jsx";
 import "./game.css";
+
+const names = ["thumbnail", "play-button"];
 
 export function Game() {
     const windowRef = React.useRef(null);
     var window;
     var y = 0;
-    const thumbnail = new Image(880, 560);
+/*    const thumbnail = new Image();
     thumbnail.src = "assets/thumbnail.png";
+    const playArrow = new Image();
+    playArrow.src = "assets/play-button.png";
+*/
+    var imageMap = Object();
 
     React.useEffect(() => {
         const handler = (event) => {y += 20; keyPress(event, window, y);};
         window = windowRef.current.getContext("2d");
         document.addEventListener("keydown", handler);
-        thumbnail.onload = () => {window.drawImage(thumbnail, 0, 0, 880, 560);};
-        window.drawImage(thumbnail, 0, 0, 880, 560);
+        var imagesProm = loadImages(names);
+        imagesProm.then((images) => {
+            for (let i = 0; i < names.length; i++) {
+                imageMap[names[i]] = images[i];
+            }
+            console.log(imageMap.thumbnail.complete);
+            window.drawImage(imageMap.thumbnail, 0, 0, 880, 560);
+        });
 
         return (() => {document.removeEventListener("keydown", handler);});
     });
 
+    
     return (
         <div className="body">
             <div className="page-info">
@@ -47,7 +61,7 @@ export function Game() {
                                 <p className="score">22</p>
                                 <p className="score-side-text">New personal best!</p>
                             </div>
-                            <div className="share">Share:
+                            <div className="share" onClick={runGame}>Share:
                                 <a href="https://facebook.com/">
                                     <img src="fb_logo.png" alt="Facebook logo" width="23" />
                                 </a>
@@ -85,7 +99,7 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <canvas ref={windowRef} alt="Game window" width={880} height={560} id="game-screen" onClick={runGame} />
+                    <canvas ref={windowRef} alt="Game window" onClick={runGame} width={880} height={560} id="game-screen" />
                 </section>
 
             </main>
