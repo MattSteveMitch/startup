@@ -11,11 +11,6 @@ export function Game() {
     const windowRef = React.useRef(null);
     var window;
     var y = 0;
-/*    const thumbnail = new Image();
-    thumbnail.src = "assets/thumbnail.png";
-    const playArrow = new Image();
-    playArrow.src = "assets/play-button.png";
-*/
     var imageMap = Object();
 
     React.useEffect(() => {
