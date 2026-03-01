@@ -5,7 +5,10 @@ import {runGame} from "./runGame.jsx";
 import {loadImages} from "./loadImages.jsx";
 import "./game.css";
 
-const names = ["thumbnail", "play-button"];
+const names = ["thumbnail", "play_button"];
+const windowWidth = 880;
+const windowHeight = 560;
+const buttonSize = windowHeight / 4;
 
 export function Game() {
     const windowRef = React.useRef(null);
@@ -23,13 +26,16 @@ export function Game() {
                 imageMap[names[i]] = images[i];
             }
             console.log(imageMap.thumbnail.complete);
-            window.drawImage(imageMap.thumbnail, 0, 0, 880, 560);
+            window.drawImage(imageMap.thumbnail, 0, 0, windowWidth, windowHeight);
+            window.globalAlpha = 0.6;
+            window.drawImage(imageMap.play_button, (windowWidth - buttonSize) / 2, (windowHeight - buttonSize) / 2, buttonSize, buttonSize);
+            window.globalAlpha = 1;
         });
 
         return (() => {document.removeEventListener("keydown", handler);});
     });
 
-    
+
     return (
         <div className="body">
             <div className="page-info">
@@ -94,7 +100,9 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <canvas ref={windowRef} alt="Game window" onClick={runGame} width={880} height={560} id="game-screen" />
+                    <canvas ref={windowRef} alt="Game window"
+                        width={windowWidth} height={windowHeight}
+                        onClick={() => {runGame(); window.drawImage(imageMap.thumbnail, 0, 0, windowWidth, windowHeight);} } />
                 </section>
 
             </main>
