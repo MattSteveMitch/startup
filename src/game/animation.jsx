@@ -1,0 +1,148 @@
+function drawLine(canvas, color, pos1, pos2, width) {
+    canvas.strokeStyle = color;
+    canvas.lineWidth = width;
+    canvas.beginPath();
+    canvas.moveTo(pos1[0], pos1[1]);
+    canvas.lineTo(pos2[0], pos2[1]);
+    canvas.stroke();
+}
+
+
+function drawLineQuick(canvas, pos1, pos2) {
+    canvas.beginPath();
+    canvas.moveTo(pos1[0], pos1[1]);
+    canvas.lineTo(pos2[0], pos2[1]);
+    canvas.stroke();
+}
+
+export function loadImages(names) {
+    var images = new Array(names.length).fill(null);
+    var promises = new Array(names.length).fill(null);
+
+    for (let i = 0; i < names.length; i++) {
+        images[i] = new Image();
+        images[i].src = "assets/" + names[i] + ".png";
+        promises[i] = new Promise((resolve, reject) => {
+            images[i].onload = () => {resolve(images[i]);};
+        });
+    }
+
+    return Promise.all(promises);
+}
+
+export function loadThumbnail() {
+    const thumbnail = new Image();
+    thumbnail.src = "assets/thumbnail.png";
+
+    const play_button = new Image();
+    play_button.src = "assets/play_button.png";
+
+    const thumbnail_loaded = new Promise(
+        (resolve, reject) => {thumbnail.onload = resolve(thumbnail);}
+    );
+
+    const play_button_loaded = new Promise(
+        (resolve, reject) => {play_button.onload = resolve(play_button);}
+    );
+
+    return Promise.all([thumbnail_loaded, play_button_loaded]);
+}
+
+export function updateGraphics(lastFrameTime, graphics, gameWindow) {
+    if (localStorage.getItem("loaded")) {
+        gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);
+        //console.log("started = " + localStorage.getItem("started"));
+        //console.log("!started = " + (localStorage.getItem("started")));
+        if (!(localStorage.getItem("started"))) {
+            gameWindow.globalAlpha = 0.6;
+            gameWindow.drawImage(
+                graphics.play_button, 
+                (graphics.windowWidth - graphics.buttonSize) / 2, 
+                (graphics.windowHeight - graphics.buttonSize) / 2, 
+                graphics.buttonSize, graphics.buttonSize
+            );
+            gameWindow.globalAlpha = 1;
+        }
+    }
+    else {
+
+    }
+
+    requestAnimationFrame((frameEndTime) => {updateGraphics(frameEndTime, graphics, gameWindow);});
+    return;
+}
+
+/*
+    rotationangle += 3
+    if alive:
+        if SHIPTYPE == MBOT:
+            graphicsstring = "m"
+        else:
+            graphicsstring = "p"
+    else:
+        graphicsstring = ""
+
+    graphicsstring += str(round(pos[0])) + " " + str(round(pos[1])) + "\n" # Starts with position of the ship
+    graphicsstring += str(round(angledeg)) + "\n" # The angle of the ship
+
+#    graphicsstring += "b\n" # Render background on top of everything, erasing it all
+    if framessincearrow<110:
+        arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
+
+    shield = str(round(rotationangle)) # Shield is rotated at the given angle
+    # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
+    # the other shield layer rotated at the opposite angle as this one
+
+    if framessincearrow<110 and alive:
+        graphicsstring += arrow
+    graphicsstring += "\n"
+    
+    if LLactive:
+        graphicsstring += str(round(LLtip[0])) + " " + str(round(LLtip[1]))
+    graphicsstring += "\n"
+    
+    graphicsstring += str(round(magn(accel)*20000)) + "\n" # Magnitude of acceleration of the ship,
+    # for the purposes of flame length and steering arrow length
+    
+    if krellshot!=None:
+        graphicsstring += str(round(krellshot.pos1[0])) + " " + str(round(krellshot.pos1[1])) + "\n" + \
+        str(round(krellshot.pos2[0])) + " " + str(round(krellshot.pos2[1]))
+    graphicsstring += "\n"
+
+    for this in destructors:
+        graphicsstring += str(round(this.pos1[0])) + " " + str(round(this.pos1[1])) + " " + \
+        str(round(this.pos2[0])) + " " + str(round(this.pos2[1])) + "\n"
+    graphicsstring += "\n"
+
+    for meteor in obstacles:
+        if meteor.life and not meteor.offscreen:
+            graphicsstring += str(round(meteor.pos[0])) + " " + str(round(meteor.pos[1])) + "\n"
+    graphicsstring += "\n"
+
+    for expl in explosions2:
+        r, p = expl.radius, expl.pos
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
+    graphicsstring += "\n"
+
+    if krell.shield > 0:
+        graphicsstring += shield
+    graphicsstring += "\n"
+
+    for expl in explosions:
+        r, p = expl.radius, expl.pos
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
+    graphicsstring += "\n"
+
+    if krell.shield>0:
+        status = str(math.ceil(krell.shield))
+    else:
+        status = str(math.ceil(krell.health))
+    graphicsstring += status + "\n"
+
+    if done or not krell.life:
+        graphicsstring += "d"
+
+
+#    graphicsstring += "\n----------------------------------------------------\n"
+    sendgraphicsstring(graphicsstring)
+*/
