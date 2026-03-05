@@ -1,9 +1,9 @@
 export function keyPress(event, window, y, imageMap, width, height) {
-    drawLine(window, "blue", [150, y], [220, y], 5);
+/*    drawLine(window, "blue", [150, y], [220, y], 5);
     if (Math.random() > 0.5) {
         window.drawImage(imageMap.thumbnail, 0, 0, width, height);
     }
-
+*/
     switch (event.code) {
         case "Slash":
             console.log("slash pressed");
