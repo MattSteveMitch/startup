@@ -5,7 +5,7 @@ import {loadImages, loadThumbnail, updateGraphics} from "./animation.jsx";
 import {runGame} from "./runGame.jsx";
 import "./game.css";
 
-const img_names = ["arrow", "background1", "bubble", "bubble2", "explosion", "flame", "logo", "m-bot", "poco", "rock", "text"];
+const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion", "flame", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
 
 const graphicsMap = Object();
 graphicsMap.windowHeight = 560;
@@ -16,13 +16,13 @@ export function Game() {
     const graphicsMapRef = React.useRef(graphicsMap);
     const windowRef = React.useRef(null);
     var gameWindow;
-    var y = 0;
+    localStorage.setItem("x", 0);
     localStorage.setItem("loaded", "");
 
     React.useEffect(() => {
         localStorage.setItem("started", "");
 
-        const handler = (event) => {y += 20; keyPress(event, gameWindow, y, graphicsMap);};
+        const handler = (event) => {keyPress(event);};
 
         gameWindow = windowRef.current.getContext("2d");
         var thumbnail_loaded = loadThumbnail();
@@ -107,7 +107,7 @@ export function Game() {
                         onClick={() => {
                             runGame(windowRef);
                             loadImages(graphicsMapRef, img_names);
-                        } } />
+                        }} />
                 </section>
 
             </main>

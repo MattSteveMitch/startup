@@ -76,7 +76,10 @@ export function updateGraphics(lastFrameTime, graphics, gameWindow) {
     }
     else {
         if (localStorage.getItem("loaded")) {
-            gameWindow.drawImage(graphics.background1, 0, 0, graphics.windowWidth, graphics.windowHeight);
+            let x = localStorage.getItem("x");
+            gameWindow.drawImage(graphics.background2, 0, 0, graphics.windowWidth, graphics.windowHeight);
+           // console.log(y);
+            gameWindow.drawImage(graphics["m-bot"], x, 233);
         }
         else {
             gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);

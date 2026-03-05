@@ -1,9 +1,5 @@
-export function keyPress(event, window, y, imageMap, width, height) {
-/*    drawLine(window, "blue", [150, y], [220, y], 5);
-    if (Math.random() > 0.5) {
-        window.drawImage(imageMap.thumbnail, 0, 0, width, height);
-    }
-*/
+export function keyPress(event) {
+    let x;
     switch (event.code) {
         case "Slash":
             console.log("slash pressed");
@@ -26,6 +22,15 @@ export function keyPress(event, window, y, imageMap, width, height) {
             break;
         case "ArrowRight":
             console.log("right pressed");
+            x = parseInt(localStorage.getItem("x"));
+            localStorage.setItem("x", x + 20);
+            console.log(localStorage.getItem("x"));
+            break;
+        case "ArrowLeft":
+            console.log("right pressed");
+            x = parseInt(localStorage.getItem("x"));
+            localStorage.setItem("x", x - 20);
+            console.log(localStorage.getItem("x"));
             break;
         case "KeyP":
             if (!localStorage.getItem("shipType")) {
