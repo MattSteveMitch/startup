@@ -87,12 +87,12 @@ section.window {
     margin-top: 5px;
 }
 
-canvas {
+canvas.unclicked {
     cursor: pointer;
     background-color: white;
 }
 
-canvas:hover {
+canvas.unclicked:hover {
     opacity: 0.8;
 }
 

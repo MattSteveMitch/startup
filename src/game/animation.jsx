@@ -15,7 +15,7 @@ function drawLineQuick(canvas, pos1, pos2) {
     canvas.stroke();
 }
 
-export function loadImages(names) {
+function loadImagesProm(names) {
     var images = new Array(names.length).fill(null);
     var promises = new Array(names.length).fill(null);
 
@@ -28,6 +28,18 @@ export function loadImages(names) {
     }
 
     return Promise.all(promises);
+}
+
+export function loadImages(graphicsRef, img_names) {
+    var imagesProm = loadImagesProm(img_names);
+    //console.log("before: " + Object.keys(graphicsRef.current).length);
+    imagesProm.then((images) => {
+        for (let i = 0; i < img_names.length; i++) {
+            graphicsRef.current[img_names[i]] = images[i];
+        }
+        localStorage.setItem("loaded", "t");
+        //console.log("after: " + Object.keys(graphicsRef.current).length);
+    });
 }
 
 export function loadThumbnail() {
@@ -49,23 +61,26 @@ export function loadThumbnail() {
 }
 
 export function updateGraphics(lastFrameTime, graphics, gameWindow) {
-    if (localStorage.getItem("loaded")) {
+    //console.log("started = " + localStorage.getItem("started"));
+    //console.log("!started = " + (localStorage.getItem("started")));
+    if (!(localStorage.getItem("started"))) {
         gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);
-        //console.log("started = " + localStorage.getItem("started"));
-        //console.log("!started = " + (localStorage.getItem("started")));
-        if (!(localStorage.getItem("started"))) {
-            gameWindow.globalAlpha = 0.6;
-            gameWindow.drawImage(
-                graphics.play_button, 
-                (graphics.windowWidth - graphics.buttonSize) / 2, 
-                (graphics.windowHeight - graphics.buttonSize) / 2, 
-                graphics.buttonSize, graphics.buttonSize
-            );
-            gameWindow.globalAlpha = 1;
-        }
+        gameWindow.globalAlpha = 0.6;
+        gameWindow.drawImage(
+            graphics.play_button, 
+            (graphics.windowWidth - graphics.buttonSize) / 2, 
+            (graphics.windowHeight - graphics.buttonSize) / 2, 
+            graphics.buttonSize, graphics.buttonSize
+        );
+        gameWindow.globalAlpha = 1;
     }
     else {
-
+        if (localStorage.getItem("loaded")) {
+            gameWindow.drawImage(graphics.background1, 0, 0, graphics.windowWidth, graphics.windowHeight);
+        }
+        else {
+            gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);
+        }
     }
 
     requestAnimationFrame((frameEndTime) => {updateGraphics(frameEndTime, graphics, gameWindow);});

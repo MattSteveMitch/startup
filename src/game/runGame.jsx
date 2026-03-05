@@ -1,5 +1,5 @@
-export function runGame() {
+export function runGame(windowRef) {
+    windowRef.current.className = "";
     console.log("running");
     localStorage.setItem("started", true);
-//    window.drawImage(imageMap.thumbnail, 0, 0, windowWidth, windowHeight);
 }

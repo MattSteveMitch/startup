@@ -1,17 +1,19 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {keyPress} from "./playerInputHandler.jsx";
-import {runGame} from "./runGame.jsx";
 import {loadImages, loadThumbnail, updateGraphics} from "./animation.jsx";
+import {runGame} from "./runGame.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "bubble", "bubble2", "explosion", "flame", "logo", "m-bot", "poco", "rock", "text"];
+
 const graphicsMap = Object();
 graphicsMap.windowHeight = 560;
 graphicsMap.windowWidth = 880;
 graphicsMap.buttonSize = graphicsMap.windowHeight / 4;
 
 export function Game() {
+    const graphicsMapRef = React.useRef(graphicsMap);
     const windowRef = React.useRef(null);
     var gameWindow;
     var y = 0;
@@ -23,21 +25,14 @@ export function Game() {
         const handler = (event) => {y += 20; keyPress(event, gameWindow, y, graphicsMap);};
 
         gameWindow = windowRef.current.getContext("2d");
-        var imgs_loaded = loadThumbnail();
-        imgs_loaded.then((thumbnail_imgs) => {
+        var thumbnail_loaded = loadThumbnail();
+        thumbnail_loaded.then((thumbnail_imgs) => {
             graphicsMap.thumbnail = thumbnail_imgs[0];
             graphicsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {updateGraphics(lastFrameTime, graphicsMap, gameWindow);});
         });
 
         document.addEventListener("keydown", handler);
-        var imagesProm = loadImages(img_names);
-        imagesProm.then((images) => {
-            for (let i = 0; i < img_names.length; i++) {
-                graphicsMap[img_names[i]] = images[i];
-            }
-            localStorage.setItem("loaded", "t");
-        });
 
         return (() => {document.removeEventListener("keydown", handler);});
     });
@@ -107,9 +102,12 @@ export function Game() {
                 </section>
 
                 <section className="window">
-                    <canvas ref={windowRef} alt="Game window"
+                    <canvas ref={windowRef} alt="Game window" className="unclicked"
                         width={graphicsMap.windowWidth} height={graphicsMap.windowHeight}
-                        onClick={() => {runGame();} } />
+                        onClick={() => {
+                            runGame(windowRef);
+                            loadImages(graphicsMapRef, img_names);
+                        } } />
                 </section>
 
             </main>
