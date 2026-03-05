@@ -2,34 +2,41 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import {keyPress} from "./playerInputHandler.jsx";
 import {runGame} from "./runGame.jsx";
-import {loadImages} from "./loadImages.jsx";
+import {loadImages, loadThumbnail, updateGraphics} from "./animation.jsx";
 import "./game.css";
 
-const names = ["thumbnail", "play_button"];
-const windowWidth = 880;
-const windowHeight = 560;
-const buttonSize = windowHeight / 4;
+const img_names = ["arrow", "background1", "bubble", "bubble2", "explosion", "flame", "logo", "m-bot", "poco", "rock", "text"];
+const graphicsMap = Object();
+graphicsMap.windowHeight = 560;
+graphicsMap.windowWidth = 880;
+graphicsMap.buttonSize = graphicsMap.windowHeight / 4;
 
 export function Game() {
     const windowRef = React.useRef(null);
-    var window;
+    var gameWindow;
     var y = 0;
-    var imageMap = Object();
+    localStorage.setItem("loaded", "");
 
     React.useEffect(() => {
-        const handler = (event) => {y += 20; keyPress(event, window, y);};
-        window = windowRef.current.getContext("2d");
+        localStorage.setItem("started", "");
+
+        const handler = (event) => {y += 20; keyPress(event, gameWindow, y, graphicsMap);};
+
+        gameWindow = windowRef.current.getContext("2d");
+        var imgs_loaded = loadThumbnail();
+        imgs_loaded.then((thumbnail_imgs) => {
+            graphicsMap.thumbnail = thumbnail_imgs[0];
+            graphicsMap.play_button = thumbnail_imgs[1];
+            requestAnimationFrame((lastFrameTime) => {updateGraphics(lastFrameTime, graphicsMap, gameWindow);});
+        });
+
         document.addEventListener("keydown", handler);
-        var imagesProm = loadImages(names);
+        var imagesProm = loadImages(img_names);
         imagesProm.then((images) => {
-            for (let i = 0; i < names.length; i++) {
-                imageMap[names[i]] = images[i];
+            for (let i = 0; i < img_names.length; i++) {
+                graphicsMap[img_names[i]] = images[i];
             }
-            console.log(imageMap.thumbnail.complete);
-            window.drawImage(imageMap.thumbnail, 0, 0, windowWidth, windowHeight);
-            window.globalAlpha = 0.6;
-            window.drawImage(imageMap.play_button, (windowWidth - buttonSize) / 2, (windowHeight - buttonSize) / 2, buttonSize, buttonSize);
-            window.globalAlpha = 1;
+            localStorage.setItem("loaded", "t");
         });
 
         return (() => {document.removeEventListener("keydown", handler);});
@@ -62,7 +69,7 @@ export function Game() {
                                 <p className="score">22</p>
                                 <p className="score-side-text">New personal best!</p>
                             </div>
-                            <div className="share" onClick={runGame}>Share:
+                            <div className="share">Share:
                                 <a href="https://facebook.com/">
                                     <img src="fb_logo.png" alt="Facebook logo" width="23" />
                                 </a>
@@ -101,8 +108,8 @@ export function Game() {
 
                 <section className="window">
                     <canvas ref={windowRef} alt="Game window"
-                        width={windowWidth} height={windowHeight}
-                        onClick={() => {runGame(); window.drawImage(imageMap.thumbnail, 0, 0, windowWidth, windowHeight);} } />
+                        width={graphicsMap.windowWidth} height={graphicsMap.windowHeight}
+                        onClick={() => {runGame();} } />
                 </section>
 
             </main>

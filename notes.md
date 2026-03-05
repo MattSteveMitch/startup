@@ -493,12 +493,23 @@ HTTp request
 GET POST PUT DELETE OPTIONS
 
 Authentication/Authorization
+authentication: who are you
+Authorization: given who you are, what are you allowed to do
 
 Secure password storage:
 Bcrypt library handles secure password hashing
+Salting, hashing, comparing
+Salting: 
+bcrypt.hash
+uuid gives unique authtoken
+
 
 cookie: data automatically passed back and forth between server and client; server may update cookie and send updated cookie back with response; browser will store new cookie and send it back
 cookies often store authtokens
+
+cookie fields: secure; HttpOnly; SameSite=Strict 
+These are all important for security; (optional Expires field)
+
 
 
 Express: 
@@ -572,3 +583,14 @@ class Promise {  // Of course, this must all be implemented using thread-safety 
     this.isPending = false;
   }
 }
+
+CanvasRenderingContext2D object can be obtained with `anyObject.current.getContext("2d")`
+`gameWindow.drawImage(image, left, top, width, height)`
+
+To load an image,
+`var img = new Image();`
+`img.src = "path/to/image/file";`
+create a Promise that sets `img.onload = () => {resolve(img);};`
+the Promise's result will then be the fully fleshed-out image
+
+Each call to requestAnimationFrame sets the browser to update the graphics once (assuming you pass it a function that updates the graphics) as soon as the browser is about to re-render the page (usually every 1/60th of a second). Usually people make the callback function call requestAnimationFrame, so that it follows a continuous cycle of updating the graphics at regular intervals, but if the callback function doesn't call requestAnimationFrame again, then requestAnimationFrame only updates the graphics once.
