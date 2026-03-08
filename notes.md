@@ -594,3 +594,6 @@ create a Promise that sets `img.onload = () => {resolve(img);};`
 the Promise's result will then be the fully fleshed-out image
 
 Each call to requestAnimationFrame sets the browser to update the graphics once (assuming you pass it a function that updates the graphics) as soon as the browser is about to re-render the page (usually every 1/60th of a second). Usually people make the callback function call requestAnimationFrame, so that it follows a continuous cycle of updating the graphics at regular intervals, but if the callback function doesn't call requestAnimationFrame again, then requestAnimationFrame only updates the graphics once.
+
+
+To pass state up, pass a setter function (obtained using React.useState()) down!

@@ -1,5 +1,5 @@
-export function runGame(windowRef) {
+export function runGame(windowRef, setStarted) {
     windowRef.current.className = "";
     console.log("running");
-    localStorage.setItem("started", true);
+    setStarted(true);
 }

@@ -1,3 +1,6 @@
+const pi = 3.14159265358979;
+export const windowSize = [880, 560];
+
 function drawLine(canvas, color, pos1, pos2, width) {
     canvas.strokeStyle = color;
     canvas.lineWidth = width;
@@ -7,6 +10,15 @@ function drawLine(canvas, color, pos1, pos2, width) {
     canvas.stroke();
 }
 
+/*function drawModified(canvas, img, pos, rotationAngle, is_deg, scaling_ratio) {
+    var angleRad = rotationAngle;
+    if (is_deg) {
+        angleRad = pi * rotationAngle / 180;
+    }
+    canvas.translate(windowSize[0] / 2 - pos[0], windowSize[1] / 2 - pos[1]);
+    canvas.rotate(-angleRad);
+    
+}*/
 
 function drawLineQuick(canvas, pos1, pos2) {
     canvas.beginPath();
@@ -30,15 +42,14 @@ function loadImagesProm(names) {
     return Promise.all(promises);
 }
 
-export function loadImages(graphicsRef, img_names) {
+export function loadImages(graphicsRef, img_names, setLoaded) {
     var imagesProm = loadImagesProm(img_names);
     //console.log("before: " + Object.keys(graphicsRef.current).length);
     imagesProm.then((images) => {
         for (let i = 0; i < img_names.length; i++) {
             graphicsRef.current[img_names[i]] = images[i];
         }
-        localStorage.setItem("loaded", "t");
-        //console.log("after: " + Object.keys(graphicsRef.current).length);
+        setLoaded(true);
     });
 }
 
@@ -60,33 +71,32 @@ export function loadThumbnail() {
     return Promise.all([thumbnail_loaded, play_button_loaded]);
 }
 
-export function updateGraphics(lastFrameTime, graphics, gameWindow) {
-    //console.log("started = " + localStorage.getItem("started"));
-    //console.log("!started = " + (localStorage.getItem("started")));
-    if (!(localStorage.getItem("started"))) {
-        gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);
+export function updateGraphics(graphics, gameWindow, eventsMap) {
+    //console.log("gg " + graphics.background2);
+    if (!(eventsMap.started)) {
+        gameWindow.drawImage(graphics.thumbnail, 0, 0, windowSize[0], windowSize[1]);
         gameWindow.globalAlpha = 0.6;
         gameWindow.drawImage(
             graphics.play_button, 
-            (graphics.windowWidth - graphics.buttonSize) / 2, 
-            (graphics.windowHeight - graphics.buttonSize) / 2, 
+            (windowSize[0] - graphics.buttonSize) / 2, 
+            (windowSize[1] - graphics.buttonSize) / 2, 
             graphics.buttonSize, graphics.buttonSize
         );
         gameWindow.globalAlpha = 1;
     }
     else {
-        if (localStorage.getItem("loaded")) {
-            let x = localStorage.getItem("x");
-            gameWindow.drawImage(graphics.background2, 0, 0, graphics.windowWidth, graphics.windowHeight);
-           // console.log(y);
-            gameWindow.drawImage(graphics["m-bot"], x, 233);
+        if (eventsMap.started && eventsMap.loaded) {
+            gameWindow.drawImage(graphics.background2, 0, 0, windowSize[0], windowSize[1]);;
+            //console.log(eventsMap);
+            let mouse = eventsMap.mousePos;
+            gameWindow.drawImage(graphics["m-bot"], mouse[0], mouse[1]);
         }
         else {
-            gameWindow.drawImage(graphics.thumbnail, 0, 0, graphics.windowWidth, graphics.windowHeight);
+            gameWindow.drawImage(graphics.thumbnail, 0, 0, windowSize[0], windowSize[1]);
         }
     }
 
-    requestAnimationFrame((frameEndTime) => {updateGraphics(frameEndTime, graphics, gameWindow);});
+    requestAnimationFrame(() => {updateGraphics(graphics, gameWindow, eventsMap);});
     return;
 }
 

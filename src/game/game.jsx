@@ -1,41 +1,48 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import {keyPress} from "./playerInputHandler.jsx";
-import {loadImages, loadThumbnail, updateGraphics} from "./animation.jsx";
-import {runGame} from "./runGame.jsx";
+import { NavLink } from "react-router-dom";
+import { handleKeyPress, handleKeyRelease, handleMouseMove } from "./playerInputHandler.jsx";
+import { loadImages, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
+import { runGame } from "./runGame.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion", "flame", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
 
 const graphicsMap = Object();
-graphicsMap.windowHeight = 560;
-graphicsMap.windowWidth = 880;
-graphicsMap.buttonSize = graphicsMap.windowHeight / 4;
+const eventsMap = Object();
+
+var brake, started, respawning, shooting, gameWindow;
+// brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
+graphicsMap.buttonSize = windowSize[1] / 4;
 
 export function Game() {
+    [eventsMap.mousePos, eventsMap.setMouse] = React.useState([0, 0]);
+    [brake, eventsMap.toggleBrake] = React.useState(false);
+    [started, eventsMap.setStart] = React.useState(false);
+    eventsMap.alive = React.useState(true);
+    [respawning, eventsMap.setRespawning] = React.useState(false);
+    [shooting, eventsMap.toggleShooting] = React.useState(false);
+    [eventsMap.loaded, eventsMap.setLoaded] = React.useState(false);
+    [eventsMap.started, eventsMap.setStarted] = React.useState(false);
     const graphicsMapRef = React.useRef(graphicsMap);
     const windowRef = React.useRef(null);
-    var gameWindow;
-    localStorage.setItem("x", 0);
-    localStorage.setItem("loaded", "");
 
     React.useEffect(() => {
-        localStorage.setItem("started", "");
-
-        const handler = (event) => {keyPress(event);};
+        const handler = (event) => { handleKeyPress(event, eventsMap); };
 
         gameWindow = windowRef.current.getContext("2d");
         var thumbnail_loaded = loadThumbnail();
         thumbnail_loaded.then((thumbnail_imgs) => {
             graphicsMap.thumbnail = thumbnail_imgs[0];
             graphicsMap.play_button = thumbnail_imgs[1];
-            requestAnimationFrame((lastFrameTime) => {updateGraphics(lastFrameTime, graphicsMap, gameWindow);});
+            requestAnimationFrame((lastFrameTime) => {
+                updateGraphics(graphicsMap, gameWindow, eventsMap);
+            });
         });
 
         document.addEventListener("keydown", handler);
 
-        return (() => {document.removeEventListener("keydown", handler);});
-    });
+        return (() => { document.removeEventListener("keydown", handler); });
+    }, []);
 
 
     return (
@@ -103,13 +110,15 @@ export function Game() {
 
                 <section className="window">
                     <canvas ref={windowRef} alt="Game window" className="unclicked"
-                        width={graphicsMap.windowWidth} height={graphicsMap.windowHeight}
+                        width={windowSize[0]} height={windowSize[1]}
                         onClick={() => {
-                            runGame(windowRef);
-                            loadImages(graphicsMapRef, img_names);
-                        }} />
+                            if (!eventsMap.started) {
+                                runGame(windowRef, eventsMap.setStarted);
+                            }
+                            loadImages(graphicsMapRef, img_names, eventsMap.setLoaded);
+                        }}
+                        onMouseMove={(event) => { handleMouseMove(event, eventsMap); }} />
                 </section>
-
             </main>
         </div>
     );

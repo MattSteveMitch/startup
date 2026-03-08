@@ -1,11 +1,11 @@
-export function keyPress(event) {
+export function handleKeyPress(event, eventsMap) {
     let x;
     switch (event.code) {
         case "Slash":
-            console.log("slash pressed");
+            eventsMap.toggleShooting(true);
             break;
         case "Space":
-            console.log("space pressed");
+            eventsMap.toggleBrake(true);
             break;
         case "Enter":
             console.log("enter pressed");
@@ -47,4 +47,20 @@ export function keyPress(event) {
             console.log(localStorage.getItem("shipType"));
             break;
     }
+}
+
+export function handleKeyRelease(event, eventsMap) {
+    switch (event.code) {
+        case "Slash":
+            eventsMap.toggleShooting(false);
+            break;
+        case "Space":
+            eventsMap.toggleBrake(false);
+    }
+}
+
+export function handleMouseMove(newPos, eventsMap) {
+    //console.log("mouse: " + newPos.offsetX);
+    eventsMap.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
+    //console.log(eventsMap.mousePos);
 }
