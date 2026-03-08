@@ -10,15 +10,22 @@ function drawLine(canvas, color, pos1, pos2, width) {
     canvas.stroke();
 }
 
-/*function drawModified(canvas, img, pos, rotationAngle, is_deg, scaling_ratio) {
+function drawCentered(canvas, img, pos) {
+    canvas.drawImage(img, pos[0] - (img.width / 2), pos[1] - (img.height / 2));
+}
+
+function drawModified(canvas, img, pos, rotationAngle, is_deg) {
     var angleRad = rotationAngle;
     if (is_deg) {
         angleRad = pi * rotationAngle / 180;
     }
-    canvas.translate(windowSize[0] / 2 - pos[0], windowSize[1] / 2 - pos[1]);
-    canvas.rotate(-angleRad);
-    
-}*/
+    canvas.save();
+    canvas.translate(pos[0], pos[1]);
+    canvas.rotate(angleRad);
+    drawCentered(canvas, img, [0, 0]);
+
+    canvas.restore();
+}
 
 function drawLineQuick(canvas, pos1, pos2) {
     canvas.beginPath();
@@ -88,8 +95,10 @@ export function updateGraphics(graphics, gameWindow, eventsMap) {
         if (eventsMap.started && eventsMap.loaded) {
             gameWindow.drawImage(graphics.background2, 0, 0, windowSize[0], windowSize[1]);;
             //console.log(eventsMap);
+            gameWindow.save();
             let mouse = eventsMap.mousePos;
-            gameWindow.drawImage(graphics["m-bot"], mouse[0], mouse[1]);
+            drawModified(gameWindow, graphics["m-bot"], mouse, eventsMap.LLAngle, true);
+            //drawCentered(gameWindow, graphics["m-bot"], mouse);
         }
         else {
             gameWindow.drawImage(graphics.thumbnail, 0, 0, windowSize[0], windowSize[1]);

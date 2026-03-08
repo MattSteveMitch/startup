@@ -60,7 +60,14 @@ export function handleKeyRelease(event, eventsMap) {
 }
 
 export function handleMouseMove(newPos, eventsMap) {
-    //console.log("mouse: " + newPos.offsetX);
     eventsMap.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
-    //console.log(eventsMap.mousePos);
+}
+
+export function handleScroll(event, eventsMap) {
+    if (event.nativeEvent.deltaY < 0) {
+        eventsMap.setLLAngle(eventsMap.LLAngle - 45);
+    }
+    else {
+        eventsMap.setLLAngle(eventsMap.LLAngle + 45);
+    }
 }

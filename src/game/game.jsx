@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { handleKeyPress, handleKeyRelease, handleMouseMove } from "./playerInputHandler.jsx";
+import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll } from "./playerInputHandler.jsx";
 import { loadImages, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import "./game.css";
@@ -10,7 +10,7 @@ const img_names = ["arrow", "background1", "background2", "background3", "bubble
 const graphicsMap = Object();
 const eventsMap = Object();
 
-var brake, started, respawning, shooting, gameWindow;
+var started, respawning, shooting, brake, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 graphicsMap.buttonSize = windowSize[1] / 4;
 
@@ -23,13 +23,14 @@ export function Game() {
     [shooting, eventsMap.toggleShooting] = React.useState(false);
     [eventsMap.loaded, eventsMap.setLoaded] = React.useState(false);
     [eventsMap.started, eventsMap.setStarted] = React.useState(false);
+    [eventsMap.LLAngle, eventsMap.setLLAngle] = React.useState(false);
     const graphicsMapRef = React.useRef(graphicsMap);
     const windowRef = React.useRef(null);
 
     React.useEffect(() => {
         const handler = (event) => { handleKeyPress(event, eventsMap); };
-
         gameWindow = windowRef.current.getContext("2d");
+        gameWindow.save();
         var thumbnail_loaded = loadThumbnail();
         thumbnail_loaded.then((thumbnail_imgs) => {
             graphicsMap.thumbnail = thumbnail_imgs[0];
@@ -117,7 +118,8 @@ export function Game() {
                             }
                             loadImages(graphicsMapRef, img_names, eventsMap.setLoaded);
                         }}
-                        onMouseMove={(event) => { handleMouseMove(event, eventsMap); }} />
+                        onMouseMove={(event) => { handleMouseMove(event, eventsMap); }} 
+                        onWheel={(event) => {handleScroll(event, eventsMap);}}/>
                 </section>
             </main>
         </div>
