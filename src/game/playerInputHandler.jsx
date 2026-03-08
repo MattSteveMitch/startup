@@ -1,3 +1,5 @@
+const pi = 3.14159265358979;
+
 export function handleKeyPress(event, eventsMap) {
     let x;
     switch (event.code) {
@@ -47,6 +49,8 @@ export function handleKeyPress(event, eventsMap) {
             console.log(localStorage.getItem("shipType"));
             break;
     }
+   // console.log("brake: " + eventsMap.brake);
+    //console.log("shooting: " + eventsMap.shooting);
 }
 
 export function handleKeyRelease(event, eventsMap) {
@@ -57,6 +61,8 @@ export function handleKeyRelease(event, eventsMap) {
         case "Space":
             eventsMap.toggleBrake(false);
     }
+//    console.log("brake: " + eventsMap.brake);
+  //  console.log("shooting: " + eventsMap.shooting);
 }
 
 export function handleMouseMove(newPos, eventsMap) {
@@ -64,10 +70,14 @@ export function handleMouseMove(newPos, eventsMap) {
 }
 
 export function handleScroll(event, eventsMap) {
-    if (event.nativeEvent.deltaY < 0) {
-        eventsMap.setLLAngle(eventsMap.LLAngle - 45);
+    if (event.deltaY < 0) {
+        eventsMap.setLLAngle(eventsMap.LLAngle - (pi / 4));
     }
     else {
-        eventsMap.setLLAngle(eventsMap.LLAngle + 45);
+        eventsMap.setLLAngle(eventsMap.LLAngle + (pi / 4));
     }
+}
+
+export function handleClick(event, eventsMap) {
+    console.log("clicked");
 }

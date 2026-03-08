@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll } from "./playerInputHandler.jsx";
+import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadImages, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import "./game.css";
@@ -10,27 +10,47 @@ const img_names = ["arrow", "background1", "background2", "background3", "bubble
 const graphicsMap = Object();
 const eventsMap = Object();
 
-var started, respawning, shooting, brake, gameWindow;
+var started, respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 graphicsMap.buttonSize = windowSize[1] / 4;
 
 export function Game() {
     [eventsMap.mousePos, eventsMap.setMouse] = React.useState([0, 0]);
-    [brake, eventsMap.toggleBrake] = React.useState(false);
+    [eventsMap.brake, eventsMap.toggleBrake] = React.useState(false);
     [started, eventsMap.setStart] = React.useState(false);
+    [click, eventsMap.setClick] = React.useState(false);
+    [eventsMap.rightClick, eventsMap.setRClick] = React.useState(false);
     eventsMap.alive = React.useState(true);
     [respawning, eventsMap.setRespawning] = React.useState(false);
-    [shooting, eventsMap.toggleShooting] = React.useState(false);
+    [eventsMap.shooting, eventsMap.toggleShooting] = React.useState(false);
     [eventsMap.loaded, eventsMap.setLoaded] = React.useState(false);
     [eventsMap.started, eventsMap.setStarted] = React.useState(false);
-    [eventsMap.LLAngle, eventsMap.setLLAngle] = React.useState(false);
+    [eventsMap.LLAngle, eventsMap.setLLAngle] = React.useState(0);
     const graphicsMapRef = React.useRef(graphicsMap);
     const windowRef = React.useRef(null);
 
     React.useEffect(() => {
-        const handler = (event) => { handleKeyPress(event, eventsMap); };
+        const keyDownHandler = (event) => {
+            event.preventDefault();
+            handleKeyPress(event, eventsMap); 
+        };
+
+        const keyUpHandler = (event) => {
+            event.preventDefault();
+            handleKeyRelease(event, eventsMap);
+        };
+
+        const scrollHandler = (event) => {
+            event.preventDefault();
+            handleScroll(event, eventsMap);
+        };
+
+        const rightClickHandler = (event) => {
+            event.preventDefault();
+            eventsMap.setRClick(!eventsMap.rightClick);
+        };
+
         gameWindow = windowRef.current.getContext("2d");
-        gameWindow.save();
         var thumbnail_loaded = loadThumbnail();
         thumbnail_loaded.then((thumbnail_imgs) => {
             graphicsMap.thumbnail = thumbnail_imgs[0];
@@ -39,10 +59,20 @@ export function Game() {
                 updateGraphics(graphicsMap, gameWindow, eventsMap);
             });
         });
+        
+        const windowEventTarget = document.getElementById("gameWindow");
+        windowEventTarget.addEventListener("wheel", scrollHandler, {passive: false});
+        windowEventTarget.addEventListener("contextmenu", rightClickHandler, {passive: false});
+        //gameWindow.addEventListener("wheel", scrollHandler, {passive: false});
+        document.addEventListener("keydown", keyDownHandler, {passive: false});
+        document.addEventListener("keyup", keyUpHandler, {passive: false});
 
-        document.addEventListener("keydown", handler);
 
-        return (() => { document.removeEventListener("keydown", handler); });
+        return (() => { 
+            document.removeEventListener("keydown", keyDownHandler);
+            document.addEventListener("keyup", keyUpHandler);
+            windowEventTarget.removeEventListener("wheel", scrollHandler, {passive: false});
+        });
     }, []);
 
 
@@ -111,15 +141,18 @@ export function Game() {
 
                 <section className="window">
                     <canvas ref={windowRef} alt="Game window" className="unclicked"
-                        width={windowSize[0]} height={windowSize[1]}
-                        onClick={() => {
+                        width={windowSize[0]} height={windowSize[1]} id="gameWindow"
+                        onClick={(event) => {
                             if (!eventsMap.started) {
                                 runGame(windowRef, eventsMap.setStarted);
+                                loadImages(graphicsMapRef, img_names, eventsMap.setLoaded);
                             }
-                            loadImages(graphicsMapRef, img_names, eventsMap.setLoaded);
+                            else {
+                                handleClick(event, eventsMap);
+                            }
                         }}
                         onMouseMove={(event) => { handleMouseMove(event, eventsMap); }} 
-                        onWheel={(event) => {handleScroll(event, eventsMap);}}/>
+                        /*onWheel={(event) => {event.preventDefault(); handleScroll(event, eventsMap);}}*/ />
                 </section>
             </main>
         </div>

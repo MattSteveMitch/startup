@@ -1,6 +1,10 @@
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
 
+function vectSum(vect1, vect2) {
+    return [vect1[0] + vect2[0], vect1[1] + vect2[1]];
+}
+
 function drawLine(canvas, color, pos1, pos2, width) {
     canvas.strokeStyle = color;
     canvas.lineWidth = width;
@@ -97,7 +101,11 @@ export function updateGraphics(graphics, gameWindow, eventsMap) {
             //console.log(eventsMap);
             gameWindow.save();
             let mouse = eventsMap.mousePos;
-            drawModified(gameWindow, graphics["m-bot"], mouse, eventsMap.LLAngle, true);
+            //console.log(Math.sin(eventsMap.LLAngle) * 100);
+            if (eventsMap.rightClick) {
+                drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(eventsMap.LLAngle) * 100, Math.sin(eventsMap.LLAngle) * 100]), 3);
+            }
+            drawModified(gameWindow, graphics["m-bot"], mouse, eventsMap.LLAngle + pi * eventsMap.brake, false);
             //drawCentered(gameWindow, graphics["m-bot"], mouse);
         }
         else {
