@@ -38,28 +38,41 @@ function drawLineQuick(canvas, pos1, pos2) {
     canvas.stroke();
 }
 
-function loadImagesProm(names) {
-    var images = new Array(names.length).fill(null);
-    var promises = new Array(names.length).fill(null);
+function loadAssetsProm(imgNames, soundNames) {
+    var images = new Array(imgNames.length).fill(null);
+    var sounds = new Array(soundNames.length).fill(null);
+    var promises = new Array(imgNames.length + soundNames.length).fill(null);
 
-    for (let i = 0; i < names.length; i++) {
+    for (let i = 0; i < imgNames.length; i++) {
         images[i] = new Image();
-        images[i].src = "assets/" + names[i] + ".png";
+        images[i].src = "assets/" + imgNames[i] + ".png";
         promises[i] = new Promise((resolve, reject) => {
-            images[i].onload = () => {resolve(images[i]);};
+            images[i].onload = () => {console.log(images[i]); resolve(images[i]);};
+        });
+    }
+
+    for (let i = 0; i < soundNames.length; i++) {
+        sounds[i] = new Audio("assets/" + soundNames[i] + ".mp3");
+        promises[imgNames.length + i] = new Promise((resolve, reject) => {
+            sounds[i].onloadeddata = () => {console.log(sounds[i]); resolve(sounds[i]);};
         });
     }
 
     return Promise.all(promises);
 }
 
-export function loadImages(graphicsRef, img_names, setLoaded) {
-    var imagesProm = loadImagesProm(img_names);
-    //console.log("before: " + Object.keys(graphicsRef.current).length);
-    imagesProm.then((images) => {
+export function loadAssets(assetsRef, img_names, sound_names, setLoaded) {
+    var assetsProm = loadAssetsProm(img_names, sound_names);
+
+    assetsProm.then((assets) => {
         for (let i = 0; i < img_names.length; i++) {
-            graphicsRef.current[img_names[i]] = images[i];
+            assetsRef.current[img_names[i]] = assets[i];
         }
+        
+        for (let i = 0; i < sound_names.length; i++) {
+            assetsRef.current[sound_names[i]] = assets[img_names.length + i];
+        }
+        
         setLoaded(true);
     });
 }
@@ -82,38 +95,42 @@ export function loadThumbnail() {
     return Promise.all([thumbnail_loaded, play_button_loaded]);
 }
 
-export function updateGraphics(graphics, gameWindow, eventsMap) {
-    //console.log("gg " + graphics.background2);
+export function updateGraphics(prevFrame, assets, gameWindow, eventsMap) {
+    //console.log(eventsMap - prevFrame);
     if (!(eventsMap.started)) {
-        gameWindow.drawImage(graphics.thumbnail, 0, 0, windowSize[0], windowSize[1]);
+        gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
         gameWindow.globalAlpha = 0.6;
         gameWindow.drawImage(
-            graphics.play_button, 
-            (windowSize[0] - graphics.buttonSize) / 2, 
-            (windowSize[1] - graphics.buttonSize) / 2, 
-            graphics.buttonSize, graphics.buttonSize
+            assets.play_button, 
+            (windowSize[0] - assets.buttonSize) / 2, 
+            (windowSize[1] - assets.buttonSize) / 2, 
+            assets.buttonSize, assets.buttonSize
         );
         gameWindow.globalAlpha = 1;
     }
     else {
         if (eventsMap.started && eventsMap.loaded) {
-            gameWindow.drawImage(graphics.background2, 0, 0, windowSize[0], windowSize[1]);;
+            gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);;
             //console.log(eventsMap);
             gameWindow.save();
             let mouse = eventsMap.mousePos;
-            //console.log(Math.sin(eventsMap.LLAngle) * 100);
-            if (eventsMap.rightClick) {
-                drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(eventsMap.LLAngle) * 100, Math.sin(eventsMap.LLAngle) * 100]), 3);
+            let angle = eventsMap.LLAngle;
+            if (eventsMap.brake) {
+                angle += pi;
             }
-            drawModified(gameWindow, graphics["m-bot"], mouse, eventsMap.LLAngle + pi * eventsMap.brake, false);
-            //drawCentered(gameWindow, graphics["m-bot"], mouse);
+            
+            if (eventsMap.rightClick) {
+                drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
+            }
+            drawModified(gameWindow, assets["m-bot"], mouse, angle, false);
+            
         }
         else {
-            gameWindow.drawImage(graphics.thumbnail, 0, 0, windowSize[0], windowSize[1]);
+            gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
         }
     }
 
-    requestAnimationFrame(() => {updateGraphics(graphics, gameWindow, eventsMap);});
+    requestAnimationFrame((frameEnd) => {updateGraphics(frameEnd, assets, gameWindow, eventsMap);});
     return;
 }
 

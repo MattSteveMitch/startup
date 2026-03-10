@@ -1,12 +1,14 @@
 const pi = 3.14159265358979;
 
-export function handleKeyPress(event, eventsMap) {
+export function handleKeyPress(event, eventsMap, assets) {
     let x;
     switch (event.code) {
         case "Slash":
             eventsMap.toggleShooting(true);
+            assets.laser.play();
             break;
         case "Space":
+            event.preventDefault();
             eventsMap.toggleBrake(true);
             break;
         case "Enter":

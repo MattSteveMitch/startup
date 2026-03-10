@@ -1,23 +1,32 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
-import { loadImages, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
+import { loadAssets, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import "./game.css";
 
-const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion", "flame", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
+const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
+    "flame", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
 
-const graphicsMap = Object();
+const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
+    "rush e", "silence", "wilhelm"];
+
+
+const assetsMap = Object();
 const eventsMap = Object();
 
-var started, respawning, click, gameWindow;
+var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
-graphicsMap.buttonSize = windowSize[1] / 4;
+assetsMap.buttonSize = windowSize[1] / 4;
+const LLFire = new Audio("assets/LLFire.mp3");
 
 export function Game() {
     [eventsMap.mousePos, eventsMap.setMouse] = React.useState([0, 0]);
+    [eventsMap.shipChoice, eventsMap.setShip] = React.useState("");
+    [eventsMap.gamePage, eventsMap.setGamePage] = React.useState(0);
+    [eventsMap.logoStartTime, eventsMap.setLogoStart] = React.useState(0);
     [eventsMap.brake, eventsMap.toggleBrake] = React.useState(false);
-    [started, eventsMap.setStart] = React.useState(false);
+    [eventsMap.started, eventsMap.setStart] = React.useState(false);
     [click, eventsMap.setClick] = React.useState(false);
     [eventsMap.rightClick, eventsMap.setRClick] = React.useState(false);
     eventsMap.alive = React.useState(true);
@@ -26,13 +35,12 @@ export function Game() {
     [eventsMap.loaded, eventsMap.setLoaded] = React.useState(false);
     [eventsMap.started, eventsMap.setStarted] = React.useState(false);
     [eventsMap.LLAngle, eventsMap.setLLAngle] = React.useState(0);
-    const graphicsMapRef = React.useRef(graphicsMap);
+    const assetsMapRef = React.useRef(assetsMap);
     const windowRef = React.useRef(null);
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
-            event.preventDefault();
-            handleKeyPress(event, eventsMap); 
+            handleKeyPress(event, eventsMap, assetsMap); 
         };
 
         const keyUpHandler = (event) => {
@@ -47,16 +55,23 @@ export function Game() {
 
         const rightClickHandler = (event) => {
             event.preventDefault();
+            if (eventsMap.rightClick) {
+                assetsMap.LLAttached.play();
+            }
+            else {
+                assetsMap.LLFire.play();
+            }
             eventsMap.setRClick(!eventsMap.rightClick);
         };
 
         gameWindow = windowRef.current.getContext("2d");
         var thumbnail_loaded = loadThumbnail();
         thumbnail_loaded.then((thumbnail_imgs) => {
-            graphicsMap.thumbnail = thumbnail_imgs[0];
-            graphicsMap.play_button = thumbnail_imgs[1];
+            assetsMap.thumbnail = thumbnail_imgs[0];
+            assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
-                updateGraphics(graphicsMap, gameWindow, eventsMap);
+                eventsMap.logoStartTime = lastFrameTime;
+                updateGraphics(lastFrameTime, assetsMap, gameWindow, eventsMap);
             });
         });
         
@@ -145,7 +160,7 @@ export function Game() {
                         onClick={(event) => {
                             if (!eventsMap.started) {
                                 runGame(windowRef, eventsMap.setStarted);
-                                loadImages(graphicsMapRef, img_names, eventsMap.setLoaded);
+                                loadAssets(assetsMapRef, img_names, sound_names, eventsMap.setLoaded);
                             }
                             else {
                                 handleClick(event, eventsMap);
