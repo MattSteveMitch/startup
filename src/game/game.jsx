@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
+import { addScore } from "../misc.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -20,16 +21,6 @@ var respawning, click, gameWindow;
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
-class ScoreRow {
-    constructor(username, score) {
-        this.username = username;
-        this.score = score;
-    }
-}
-
-function compareScoreRows(row1, row2) {
-    return row2.score < row1.score || -(row1.score < row2.score);
-}
 
 localStorage.setItem("best_scores", []);
 localStorage.setItem("personal_best_scores", []);
@@ -111,20 +102,9 @@ export function Game() {
 
     React.useEffect(() => {
         if (environment.newScore != null) {
-            let pers_bests;
-            let pers_bests_str = localStorage.getItem("personal_best_scores");
-            if (!pers_bests_str) {
-                pers_bests = [];
-            }
-            else {
-                pers_bests = JSON.parse(pers_bests_str);
-                console.log(pers_bests);
-            }
-
-            pers_bests.push(new ScoreRow(null, environment.newScore));
-            localStorage.setItem("personal_best_scores", JSON.stringify(pers_bests.sort(compareScoreRows)));
-
-            console.log("New Score: " + pers_bests[0].score);
+            addScore("personal_best_scores", environment.newScore);
+            addScore("best_scores", environment.newScore);
+            console.log("New Score: " + environment.newScore);
         }
     }, [environment.newScore]);
 
