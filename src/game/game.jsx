@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
-import { loadAssets, loadThumbnail, updateGraphics, windowSize } from "./animation.jsx";
+import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
-    "flame", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
+    "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
 
 const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
     "rush e", "silence", "wilhelm"];
@@ -26,7 +26,8 @@ export function Game() {
     [eventsMap.gamePage, eventsMap.setGamePage] = React.useState(0);
     [eventsMap.logoStartTime, eventsMap.setLogoStart] = React.useState(0);
     [eventsMap.brake, eventsMap.toggleBrake] = React.useState(false);
-    [eventsMap.started, eventsMap.setStart] = React.useState(false);
+    [eventsMap.advance, eventsMap.setAdv] = React.useState(false);
+    [eventsMap.goBack, eventsMap.setGoBack] = React.useState(false);
     [click, eventsMap.setClick] = React.useState(false);
     [eventsMap.rightClick, eventsMap.setRClick] = React.useState(false);
     eventsMap.alive = React.useState(true);
@@ -71,7 +72,7 @@ export function Game() {
             assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
                 eventsMap.logoStartTime = lastFrameTime;
-                updateGraphics(lastFrameTime, assetsMap, gameWindow, eventsMap);
+                updateGraphicsP0(assetsMap, gameWindow, eventsMap);
             });
         });
         

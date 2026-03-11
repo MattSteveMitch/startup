@@ -26,15 +26,11 @@ export function handleKeyPress(event, eventsMap, assets) {
             break;
         case "ArrowRight":
             console.log("right pressed");
-            x = parseInt(localStorage.getItem("x"));
-            localStorage.setItem("x", x + 20);
-            console.log(localStorage.getItem("x"));
+            eventsMap.setAdv(true);
             break;
         case "ArrowLeft":
-            console.log("right pressed");
-            x = parseInt(localStorage.getItem("x"));
-            localStorage.setItem("x", x - 20);
-            console.log(localStorage.getItem("x"));
+            console.log("left pressed");
+            eventsMap.setGoBack(true);
             break;
         case "KeyP":
             if (!localStorage.getItem("shipType")) {

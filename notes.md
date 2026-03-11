@@ -597,3 +597,8 @@ Each call to requestAnimationFrame sets the browser to update the graphics once 
 
 
 To pass state up, pass a setter function (obtained using React.useState()) down!
+
+influxdb: search events by date/time 
+dynamodb: general key-val pairs
+
+MongoDB: instead of tables, we have Collections (JSON objects)
