@@ -139,7 +139,7 @@ function updateGraphicsP2(prevFrame, assets, gameWindow, eventsMap, pageBeginTim
     }
     else {
         eventsMap.setAdv(false);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP4(frameEnd, assets, gameWindow, eventsMap);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, eventsMap);});
     }
 
     return;
