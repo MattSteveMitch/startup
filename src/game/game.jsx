@@ -23,9 +23,9 @@ const LLFire = new Audio("assets/LLFire.mp3");
 
 
 localStorage.setItem("best_scores", []);
-localStorage.setItem("personal_best_scores", []);
+localStorage.setItem(localStorage.getItem("username") + "_best_scores", []);
 localStorage.setItem("best_hits", []);
-localStorage.setItem("personal_best_hits", []);
+localStorage.setItem(localStorage.getItem("username") + "_best_hits", []);
 
 export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
@@ -80,7 +80,6 @@ export function Game() {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
-                environment.logoStartTime = lastFrameTime;
                 updateGraphicsP0(assetsMap, gameWindow, environment);
             });
         });
@@ -102,7 +101,7 @@ export function Game() {
 
     React.useEffect(() => {
         if (environment.newScore != null) {
-            addScore("personal_best_scores", environment.newScore);
+            addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
             addScore("best_scores", environment.newScore);
             console.log("New Score: " + environment.newScore);
         }

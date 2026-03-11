@@ -9,13 +9,27 @@ function compareScoreRows(row1, row2) {
     return row2.score < row1.score || -(row1.score < row2.score);
 }
 
+export function getScores(record_name) {
+    let record;
+    let record_str = localStorage.getItem(record_name);
+    
+    if (!record_str) {
+        record = [];
+    }
+    else {
+        record = JSON.parse(record_str);
+        console.log(record);
+    }
+    
+    return record;
+}
+
 export function addScore(record_name, score) {
     let record;
     let record_str = localStorage.getItem(record_name);
     
     if (!record_str) {
         record = [];
-        console.log("empty");
     }
     else {
         record = JSON.parse(record_str);
@@ -26,6 +40,6 @@ export function addScore(record_name, score) {
     record = record.sort(compareScoreRows);
     record.splice(10);
 
-    localStorage.setItem(record_name, 
-        JSON.stringify(record));
+    localStorage.setItem(record_name, JSON.stringify(record));
 }
+
