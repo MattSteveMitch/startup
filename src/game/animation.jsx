@@ -135,6 +135,9 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, eventsMap, pageBeginTim
 function updateGraphicsP2(prevFrame, assets, gameWindow, eventsMap, pageBeginTime) {
     if (!eventsMap.advance) {
         gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
+        gameWindow.fillStyle = "rgb(0, 220, 130)";
+        gameWindow.font = "30px Consolas";
+        gameWindow.fillText("Press the right arrow key to continue", 140, 540, 600);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, eventsMap, pageBeginTime);});
     }
     else {
