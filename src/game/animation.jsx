@@ -95,10 +95,10 @@ export function loadThumbnail() {
     return Promise.all([thumbnail_loaded, play_button_loaded]);
 }
 
-export function updateGraphicsP0(assets, gameWindow, eventsMap) {
+export function updateGraphicsP0(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
-    //console.log(eventsMap - prevFrame);
-    if (!(eventsMap.started)) {
+    //console.log(environment - prevFrame);
+    if (!(environment.started)) {
         gameWindow.globalAlpha = 0.6;
         gameWindow.drawImage(
             assets.play_button, 
@@ -108,61 +108,82 @@ export function updateGraphicsP0(assets, gameWindow, eventsMap) {
         );
         gameWindow.globalAlpha = 1;
     }
-    if (eventsMap.loaded) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, eventsMap, frameEnd);});
+    if (environment.loaded) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, frameEnd);});
         return;
     }
 
-    requestAnimationFrame((frameEnd) => {updateGraphicsP0(assets, gameWindow, eventsMap);});
+    requestAnimationFrame((frameEnd) => {updateGraphicsP0(assets, gameWindow, environment);});
     return;
 }
 
-function updateGraphicsP1(prevFrame, assets, gameWindow, eventsMap, pageBeginTime) {
-    if (prevFrame - pageBeginTime < 2000) {
-        gameWindow.fillStyle = "black";
-        gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
-        gameWindow.drawImage(assets.logo, (windowSize[0] - 700) / 2, (windowSize[1] - 202) / 2, 700, 202);
+function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginTime) {
+    gameWindow.fillStyle = "black";
+    gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
+    gameWindow.drawImage(assets.logo, (windowSize[0] - 700) / 2, (windowSize[1] - 202) / 2, 700, 202);
 
-        requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, eventsMap, pageBeginTime);});
+    if (prevFrame - pageBeginTime < 200) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, eventsMap);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, environment);});
     }
 
     return;
 }
 
-function updateGraphicsP2(prevFrame, assets, gameWindow, eventsMap, pageBeginTime) {
-    if (!eventsMap.advance) {
-        gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
-        gameWindow.fillStyle = "rgb(0, 220, 130)";
-        gameWindow.font = "30px Consolas";
-        gameWindow.fillText("Press the right arrow key to continue", 140, 540, 600);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, eventsMap, pageBeginTime);});
+function updateGraphicsP2(prevFrame, assets, gameWindow, environment, pageBeginTime) {
+    gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
+    gameWindow.fillStyle = "rgb(0, 220, 130)";
+    gameWindow.font = "30px Consolas";
+    gameWindow.fillText("Press the right arrow key to continue", 140, 540, 600);
+
+    if (!environment.advance) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
-        eventsMap.setAdv(false);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, eventsMap);});
+        environment.setAdv(false);
+        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
 
     return;
 }
 
-function updateGraphicsP4(assets, gameWindow, eventsMap) {
+function updateGraphicsP3(assets, gameWindow, environment) {
+    environment.setScore(environment.score - 1);
     gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);
-    let mouse = eventsMap.mousePos;
-    let angle = eventsMap.LLAngle;
-    if (eventsMap.brake) {
+    let mouse = environment.mousePos;
+    let angle = environment.LLAngle;
+    if (environment.brake) {
         angle += pi;
     }
             
-    if (eventsMap.rightClick) {
+    if (environment.rightClick) {
         drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
     }
     drawModified(gameWindow, assets["m-bot"], mouse, angle, false);
+    gameWindow.fillStyle = "rgb(0, 220, 130)";
+    gameWindow.font = "20px Consolas";
+    gameWindow.fillText("Score: " + environment.score, 50, 35);
 
-    requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, eventsMap);});
+    
+    if (!environment.advance) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
+    }
+    else {
+        environment.setAdv(false);
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+    }
     return;
+}
+
+function updateGraphicsP4(assets, gameWindow, environment) {
+    gameWindow.fillStyle = "black";
+    gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
+    gameWindow.fillStyle = "rgb(0, 220, 130)";
+    gameWindow.font = "60px Consolas";
+    gameWindow.fillText("Score: " + environment.score, 240, 300);
+    environment.setNewScore(environment.score);
 }
 
 /*

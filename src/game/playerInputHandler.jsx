@@ -1,15 +1,15 @@
 const pi = 3.14159265358979;
 
-export function handleKeyPress(event, eventsMap, assets) {
+export function handleKeyPress(event, environment, assets) {
     let x;
     switch (event.code) {
         case "Slash":
-            eventsMap.toggleShooting(true);
+            environment.toggleShooting(true);
             assets.laser.play();
             break;
         case "Space":
             event.preventDefault();
-            eventsMap.toggleBrake(true);
+            environment.toggleBrake(true);
             break;
         case "Enter":
             console.log("enter pressed");
@@ -26,11 +26,11 @@ export function handleKeyPress(event, eventsMap, assets) {
             break;
         case "ArrowRight":
             console.log("right pressed");
-            eventsMap.setAdv(true);
+            environment.setAdv(true);
             break;
         case "ArrowLeft":
             console.log("left pressed");
-            eventsMap.setGoBack(true);
+            environment.setGoBack(true);
             break;
         case "KeyP":
             if (!localStorage.getItem("shipType")) {
@@ -47,35 +47,35 @@ export function handleKeyPress(event, eventsMap, assets) {
             console.log(localStorage.getItem("shipType"));
             break;
     }
-   // console.log("brake: " + eventsMap.brake);
-    //console.log("shooting: " + eventsMap.shooting);
+   // console.log("brake: " + environment.brake);
+    //console.log("shooting: " + environment.shooting);
 }
 
-export function handleKeyRelease(event, eventsMap) {
+export function handleKeyRelease(event, environment) {
     switch (event.code) {
         case "Slash":
-            eventsMap.toggleShooting(false);
+            environment.toggleShooting(false);
             break;
         case "Space":
-            eventsMap.toggleBrake(false);
+            environment.toggleBrake(false);
     }
-//    console.log("brake: " + eventsMap.brake);
-  //  console.log("shooting: " + eventsMap.shooting);
+//    console.log("brake: " + environment.brake);
+  //  console.log("shooting: " + environment.shooting);
 }
 
-export function handleMouseMove(newPos, eventsMap) {
-    eventsMap.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
+export function handleMouseMove(newPos, environment) {
+    environment.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
 }
 
-export function handleScroll(event, eventsMap) {
+export function handleScroll(event, environment) {
     if (event.deltaY < 0) {
-        eventsMap.setLLAngle(eventsMap.LLAngle - (pi / 4));
+        environment.setLLAngle(environment.LLAngle - (pi / 4));
     }
     else {
-        eventsMap.setLLAngle(eventsMap.LLAngle + (pi / 4));
+        environment.setLLAngle(environment.LLAngle + (pi / 4));
     }
 }
 
-export function handleClick(event, eventsMap) {
+export function handleClick(event, environment) {
     console.log("clicked");
 }

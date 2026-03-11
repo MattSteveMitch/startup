@@ -2,6 +2,8 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import "./home.css";
 
+localStorage.setItem("username", "Josh");
+
 export function Login() {
     return (
         <div className="body home">

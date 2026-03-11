@@ -13,56 +13,74 @@ const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAtt
 
 
 const assetsMap = Object();
-const eventsMap = Object();
+const environment = Object();
 
 var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
+class ScoreRow {
+    constructor(username, score) {
+        this.username = username;
+        this.score = score;
+    }
+}
+
+function compareScoreRows(row1, row2) {
+    return row2.score < row1.score || -(row1.score < row2.score);
+}
+
+localStorage.setItem("best_scores", []);
+localStorage.setItem("personal_best_scores", []);
+localStorage.setItem("best_hits", []);
+localStorage.setItem("personal_best_hits", []);
+
 export function Game() {
-    [eventsMap.mousePos, eventsMap.setMouse] = React.useState([0, 0]);
-    [eventsMap.shipChoice, eventsMap.setShip] = React.useState("");
-    [eventsMap.gamePage, eventsMap.setGamePage] = React.useState(0);
-    [eventsMap.logoStartTime, eventsMap.setLogoStart] = React.useState(0);
-    [eventsMap.brake, eventsMap.toggleBrake] = React.useState(false);
-    [eventsMap.advance, eventsMap.setAdv] = React.useState(false);
-    [eventsMap.goBack, eventsMap.setGoBack] = React.useState(false);
-    [click, eventsMap.setClick] = React.useState(false);
-    [eventsMap.rightClick, eventsMap.setRClick] = React.useState(false);
-    eventsMap.alive = React.useState(true);
-    [respawning, eventsMap.setRespawning] = React.useState(false);
-    [eventsMap.shooting, eventsMap.toggleShooting] = React.useState(false);
-    [eventsMap.loaded, eventsMap.setLoaded] = React.useState(false);
-    [eventsMap.started, eventsMap.setStarted] = React.useState(false);
-    [eventsMap.LLAngle, eventsMap.setLLAngle] = React.useState(0);
+    [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
+    [environment.shipChoice, environment.setShip] = React.useState("");
+    [environment.gamePage, environment.setGamePage] = React.useState(0);
+    [environment.logoStartTime, environment.setLogoStart] = React.useState(0);
+    [environment.brake, environment.toggleBrake] = React.useState(false);
+    [environment.advance, environment.setAdv] = React.useState(false);
+    [environment.goBack, environment.setGoBack] = React.useState(false);
+    [environment.score, environment.setScore] = React.useState(100000);
+    [environment.newScore, environment.setNewScore] = React.useState(null);
+    [click, environment.setClick] = React.useState(false);
+    [environment.rightClick, environment.setRClick] = React.useState(false);
+    environment.alive = React.useState(true);
+    [respawning, environment.setRespawning] = React.useState(false);
+    [environment.shooting, environment.toggleShooting] = React.useState(false);
+    [environment.loaded, environment.setLoaded] = React.useState(false);
+    [environment.started, environment.setStarted] = React.useState(false);
+    [environment.LLAngle, environment.setLLAngle] = React.useState(0);
     const assetsMapRef = React.useRef(assetsMap);
     const windowRef = React.useRef(null);
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
-            handleKeyPress(event, eventsMap, assetsMap); 
+            handleKeyPress(event, environment, assetsMap); 
         };
 
         const keyUpHandler = (event) => {
             event.preventDefault();
-            handleKeyRelease(event, eventsMap);
+            handleKeyRelease(event, environment);
         };
 
         const scrollHandler = (event) => {
             event.preventDefault();
-            handleScroll(event, eventsMap);
+            handleScroll(event, environment);
         };
 
         const rightClickHandler = (event) => {
             event.preventDefault();
-            if (eventsMap.rightClick) {
+            if (environment.rightClick) {
                 assetsMap.LLAttached.play();
             }
             else {
                 assetsMap.LLFire.play();
             }
-            eventsMap.setRClick(!eventsMap.rightClick);
+            environment.setRClick(!environment.rightClick);
         };
 
         gameWindow = windowRef.current.getContext("2d");
@@ -71,8 +89,8 @@ export function Game() {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
-                eventsMap.logoStartTime = lastFrameTime;
-                updateGraphicsP0(assetsMap, gameWindow, eventsMap);
+                environment.logoStartTime = lastFrameTime;
+                updateGraphicsP0(assetsMap, gameWindow, environment);
             });
         });
         
@@ -90,6 +108,25 @@ export function Game() {
             windowEventTarget.removeEventListener("wheel", scrollHandler, {passive: false});
         });
     }, []);
+
+    React.useEffect(() => {
+        if (environment.newScore != null) {
+            let pers_bests;
+            let pers_bests_str = localStorage.getItem("personal_best_scores");
+            if (!pers_bests_str) {
+                pers_bests = [];
+            }
+            else {
+                pers_bests = JSON.parse(pers_bests_str);
+                console.log(pers_bests);
+            }
+
+            pers_bests.push(new ScoreRow(null, environment.newScore));
+            localStorage.setItem("personal_best_scores", JSON.stringify(pers_bests.sort(compareScoreRows)));
+
+            console.log("New Score: " + pers_bests[0].score);
+        }
+    }, [environment.newScore]);
 
 
     return (
@@ -159,15 +196,15 @@ export function Game() {
                     <canvas ref={windowRef} alt="Game window" className="unclicked"
                         width={windowSize[0]} height={windowSize[1]} id="gameWindow"
                         onClick={(event) => {
-                            if (!eventsMap.started) {
-                                runGame(windowRef, eventsMap.setStarted);
-                                loadAssets(assetsMapRef, img_names, sound_names, eventsMap.setLoaded);
+                            if (!environment.started) {
+                                runGame(windowRef, environment.setStarted);
+                                loadAssets(assetsMapRef, img_names, sound_names, environment.setLoaded);
                             }
                             else {
-                                handleClick(event, eventsMap);
+                                handleClick(event, environment);
                             }
                         }}
-                        onMouseMove={(event) => { handleMouseMove(event, eventsMap); }} 
+                        onMouseMove={(event) => { handleMouseMove(event, environment); }} 
                         /*onWheel={(event) => {event.preventDefault(); handleScroll(event, eventsMap);}}*/ />
                 </section>
             </main>
