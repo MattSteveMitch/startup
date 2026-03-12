@@ -5,9 +5,13 @@
 }
 
 main.home {
+    flex: 1 0 180px;
+    display: block;
+}
+
+div.form {
     margin-top: 10px;
     margin-left: 15px;
-    flex: 1 0 180px;
 }
 
 button:hover {
@@ -23,6 +27,7 @@ input {
 label {
     font-size: 16px;
     margin-right: 9px;
+    font-weight: bold;
 }
 
 button {
@@ -32,6 +37,20 @@ button {
     margin-right: 9px;
     background-color: rgb(200, 200, 200);
     cursor: pointer;
+}
+
+.errorMsg {
+    margin-top: 6px;
+    font-weight: bold;
+}
+
+.errorMsg.bad {
+    color: rgb(140, 32, 32);
+    font-weight: normal;
+}
+
+.errorMsg.good {
+    color: rgb(0, 120, 71);
 }
 
 footer {

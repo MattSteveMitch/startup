@@ -31,7 +31,6 @@ export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
     [environment.shipChoice, environment.setShip] = React.useState("");
     [environment.gamePage, environment.setGamePage] = React.useState(0);
-    [environment.logoStartTime, environment.setLogoStart] = React.useState(0);
     [environment.brake, environment.toggleBrake] = React.useState(false);
     [environment.advance, environment.setAdv] = React.useState(false);
     [environment.goBack, environment.setGoBack] = React.useState(false);
@@ -103,7 +102,6 @@ export function Game() {
         if (environment.newScore != null) {
             addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
             addScore("best_scores", environment.newScore);
-            console.log("New Score: " + environment.newScore);
         }
     }, [environment.newScore]);
 

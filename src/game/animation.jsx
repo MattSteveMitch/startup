@@ -47,14 +47,14 @@ function loadAssetsProm(imgNames, soundNames) {
         images[i] = new Image();
         images[i].src = "assets/" + imgNames[i] + ".png";
         promises[i] = new Promise((resolve, reject) => {
-            images[i].onload = () => {console.log(images[i]); resolve(images[i]);};
+            images[i].onload = () => {resolve(images[i]);};
         });
     }
 
     for (let i = 0; i < soundNames.length; i++) {
         sounds[i] = new Audio("assets/" + soundNames[i] + ".mp3");
         promises[imgNames.length + i] = new Promise((resolve, reject) => {
-            sounds[i].onloadeddata = () => {console.log(sounds[i]); resolve(sounds[i]);};
+            sounds[i].onloadeddata = () => {resolve(sounds[i]);};
         });
     }
 
@@ -97,7 +97,6 @@ export function loadThumbnail() {
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
-    //console.log(environment - prevFrame);
     if (!(environment.started)) {
         gameWindow.globalAlpha = 0.6;
         gameWindow.drawImage(
@@ -122,10 +121,11 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.drawImage(assets.logo, (windowSize[0] - 700) / 2, (windowSize[1] - 202) / 2, 700, 202);
 
-    if (prevFrame - pageBeginTime < 200) {
+    if (prevFrame - pageBeginTime < 2000) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
+        environment.setAdv(false);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, environment);});
     }
 

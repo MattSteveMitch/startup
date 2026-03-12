@@ -3,6 +3,12 @@ import {NavLink} from "react-router-dom";
 import "./home.css"
 
 export function Register() {
+    var [inputEmail, setInputEmail] = React.useState("");
+    var [inputUsernameR, setInputUsernameR] = React.useState("");
+    var [inputPasswordR, setInputPasswordR] = React.useState("");
+    var [inputRepeatPassword, setInputRepeatPasswordR] = React.useState("");
+    var errorMsgRef = React.useRef(null);
+
     return (
         <div className="body home">
             <div className="page-info">
@@ -48,6 +54,7 @@ export function Register() {
 
                         <button type="submit">Create account</button>
 
+                        <div className="errorMsg" ref={errorMsgRef}></div>
                     </form>
                 </div>
             </main>

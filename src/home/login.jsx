@@ -1,10 +1,15 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import {checkValidUsername} from "./attemptLogin.jsx";
 import "./home.css";
 
 localStorage.setItem("username", "Josh");
 
 export function Login() {
+    var [inputPassword, setInputPassword] = React.useState("");
+    var [inputUsername, setInputUsername] = React.useState("");
+    var errorMsgRef = React.useRef(null);
+
     return (
         <div className="body home">
             <div className="page-info">
@@ -20,25 +25,23 @@ export function Login() {
                 </nav>
             </header>
             <main className="home">
-                <div>
-                    <form action="/game">
-                        <section>
-                            <label htmlFor="username">Username:</label>
-                            <input type="username">
-                            </input>
-                        </section>
+                <div className="form">
+                    <section>
+                        <label htmlFor="username">Username:</label>
+                        <input type="username" onBlur={(event) => {checkValidUsername(event.target.value, errorMsgRef);}} onChange={(event) => {setInputUsername(event.target.value);}}>
+                        </input>
+                    </section>
 
-                        <section>
-                            <label htmlFor="password">Password:</label>
-                            <input type="password">
-                            </input>
-                        </section>
+                    <section>
+                        <label htmlFor="password">Password:</label>
+                        <input type="password" onChange={(event) => {setInputPassword(event.target.value);}} >
+                        </input>
+                    </section>
 
-                        <button type="submit">Log in</button>
-                        <a href="/register">
-                            <button type="button">Create account</button>
-                        </a>
-                    </form>
+                    <button /*onClick={() => {submitLoginInfo(inputUsername, inputPassword);}}*/>Log in</button>
+                    <button>Create account</button>
+
+                    <div className="errorMsg" ref={errorMsgRef}></div>
                 </div>
             </main>
 

@@ -18,9 +18,8 @@ export function getScores(record_name) {
     }
     else {
         record = JSON.parse(record_str);
-        console.log(record);
     }
-    
+
     return record;
 }
 
@@ -33,7 +32,6 @@ export function addScore(record_name, score) {
     }
     else {
         record = JSON.parse(record_str);
-        console.log(record);
     }
 
     record.push(new ScoreRow(localStorage.getItem("username"), score));
