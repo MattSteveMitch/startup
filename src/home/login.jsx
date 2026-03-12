@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {checkValidUsername} from "./attemptLogin.jsx";
+import {checkValidUsername} from "./misc.jsx";
 import "./home.css";
 
 localStorage.setItem("username", "Josh");
@@ -38,9 +38,10 @@ export function Login() {
                         </input>
                     </section>
 
-                    <button /*onClick={() => {submitLoginInfo(inputUsername, inputPassword);}}*/>Log in</button>
-                    <button>Create account</button>
-
+                    <button onClick={() => {submitLoginInfo(inputUsername, inputPassword);}}>Log in</button>
+                    <a href="/register">
+                        <button>Create account</button>
+                    </a>
                     <div className="errorMsg" ref={errorMsgRef}></div>
                 </div>
             </main>

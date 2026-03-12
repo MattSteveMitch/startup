@@ -1,12 +1,16 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, attemptCreateAccount, checkNotEmpty } from "./misc.jsx";
 import "./home.css"
 
+var fields = [null, null, null, null];
+const emptyMsgs = ["Must enter email", "Must enter username", "Must enter password", "Must confirm password"];
+
 export function Register() {
-    var [inputEmail, setInputEmail] = React.useState("");
-    var [inputUsernameR, setInputUsernameR] = React.useState("");
-    var [inputPasswordR, setInputPasswordR] = React.useState("");
-    var [inputRepeatPassword, setInputRepeatPasswordR] = React.useState("");
+    [fields[0], setInputEmail] = React.useState("");
+    [fields[1], setInputUsernameR] = React.useState("");
+    [fields[2], setInputPasswordR] = React.useState("");
+    [fields[3], setInputRepeatPassword] = React.useState("");
     var errorMsgRef = React.useRef(null);
 
     return (
@@ -26,36 +30,33 @@ export function Register() {
             </header>
 
             <main className="home">
-                <div>
-                    <form action="/">
-                        <section>
-                            <label for="email">E-mail:</label>
-                            <input type="email">
-                            </input>
-                        </section>
+                <div className="form">
+                    <section>
+                        <label htmlFor="email">E-mail:</label>
+                        <input type="email" onBlur={(event) => { checkUniqueEmail(fields, emptyMsgs, errorMsgRef); }}
+                            onChange={(event) => { setInputEmail(event.target.value); }}></input>
+                    </section>
 
-                        <section>
-                            <label for="username">Username:</label>
-                            <input type="username">
-                            </input>
-                        </section>
+                    <section>
+                        <label htmlFor="username">Username:</label>
+                        <input type="username" onBlur={(event) => { checkUniqueUsername(fields, emptyMsgs, errorMsgRef); }}
+                            onChange={(event) => { setInputUsernameR(event.target.value); }}></input>
+                    </section>
 
-                        <section>
-                            <label for="password">Password:</label>
-                            <input type="password">
-                            </input>
-                        </section>
+                    <section>
+                        <label htmlFor="password">Password:</label>
+                        <input type="password" onBlur={(event) => { checkNotEmpty(event.target.value, errorMsgRef, "Must enter password"); }}
+                        onChange={(event) => { setInputPasswordR(event.target.value); }}></input>
+                    </section>
 
-                        <section>
-                            <label for="password">Confirm Password:</label>
-                            <input type="password">
-                            </input>
-                        </section>
+                    <section>
+                        <label htmlFor="password">Confirm Password:</label>
+                        <input type="password" onBlur={(event) => { checkPasswordsMatch(inputPasswordR, event.target.value, errorMsgRef); }}
+                        onChange={(event) => { setInputRepeatPassword(event.target.value); }}></input>
+                    </section>
 
-                        <button type="submit">Create account</button>
-
-                        <div className="errorMsg" ref={errorMsgRef}></div>
-                    </form>
+                    <button onClick={() => {attemptCreateAccount(fields.email, inputUsernameR, inputPasswordR, inputRepeatPassword, errorMsgRef);}}>Create account</button>
+                    <div className="errorMsg" ref={errorMsgRef}></div>
                 </div>
             </main>
 
