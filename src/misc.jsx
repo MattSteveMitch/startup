@@ -23,7 +23,7 @@ export function getScores(record_name) {
     return record;
 }
 
-export function addScore(record_name, score) {
+export function addScore(record_name, score, sortDescending=false) {
     let record;
     let record_str = localStorage.getItem(record_name);
     
@@ -36,6 +36,11 @@ export function addScore(record_name, score) {
 
     record.push(new ScoreRow(localStorage.getItem("username"), score));
     record = record.sort(compareScoreRows);
+    if (sortDescending) {
+        record.reverse();
+        //console.log(record);
+    }
+    
     record.splice(10);
 
     localStorage.setItem(record_name, JSON.stringify(record));

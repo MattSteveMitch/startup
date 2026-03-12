@@ -166,7 +166,10 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     gameWindow.font = "20px Consolas";
     gameWindow.fillText("Score: " + environment.score, 50, 35);
 
-    
+    gameWindow.fillStyle = "rgb(0, 220, 130)";
+    gameWindow.font = "20px Consolas";
+    gameWindow.fillText("Hit placeholder: " + environment.slashPresses, 600, 35);
+
     if (!environment.advance) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
@@ -184,6 +187,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     gameWindow.font = "60px Consolas";
     gameWindow.fillText("Score: " + environment.score, 240, 300);
     environment.setNewScore(environment.score);
+    environment.setNewHit(environment.slashPresses);
 }
 
 /*

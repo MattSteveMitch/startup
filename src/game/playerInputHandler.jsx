@@ -5,6 +5,7 @@ export function handleKeyPress(event, environment, assets) {
     switch (event.code) {
         case "Slash":
             environment.toggleShooting(true);
+            environment.setSlashPresses(environment.slashPresses + 1);
             assets.laser.play();
             break;
         case "Space":

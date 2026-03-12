@@ -31,6 +31,8 @@ export function Game() {
     [environment.goBack, environment.setGoBack] = React.useState(false);
     [environment.score, environment.setScore] = React.useState(100000);
     [environment.newScore, environment.setNewScore] = React.useState(null);
+    [environment.newHit, environment.setNewHit] = React.useState(null);
+    [environment.slashPresses, environment.setSlashPresses] = React.useState(0);
     [click, environment.setClick] = React.useState(false);
     [environment.rightClick, environment.setRClick] = React.useState(false);
     environment.alive = React.useState(true);
@@ -100,6 +102,13 @@ export function Game() {
         }
     }, [environment.newScore]);
 
+    React.useEffect(() => {
+        if (environment.newHit != null) {
+            addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
+            addScore("best_hits", environment.newHit, true);
+        }
+    }, [environment.newHit]);
+
 
     return (
         <div className="body">
@@ -124,7 +133,7 @@ export function Game() {
                         <section>
                             <h3 className="game-page">Most recent score:</h3>
                             <div className="score-display" name="current">
-                                <p className="score">22</p>
+                                <p className="score">{environment.newScore}</p>
                                 <p className="score-side-text">New personal best!</p>
                             </div>
                             <div className="share">Share:

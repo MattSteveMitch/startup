@@ -84,12 +84,12 @@ export function checkValidUsername(fields, emptyMsgs, errorMsgRef) {
     if (!notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
     }
     else if (localStorage.getItem(fields[0] + "_password")) {
-        errorMsgRef.current.innerHTML = "Username: Valid";
+        errorMsgRef.current.innerHTML = "Username valid";
         errorMsgRef.current.className = "errorMsg good";
         return true;
     }
     else {
-        errorMsgRef.current.innerHTML = "Username: Invalid";
+        errorMsgRef.current.innerHTML = "Username invalid";
         errorMsgRef.current.className = "errorMsg bad";
     }
     return false;
