@@ -1,74 +1,98 @@
-export function checkNotEmpty(fields, emptyMsgs, upTo, errorMsgRef) {
-    for (let i = 0; i < upTo; i++) {
-        if (!fields[i]) {
-            errorMsgRef.current.innerHTML = emptyMsgs[i];
-            errorMsgRef.current.className = "errorMsg bad";
-            return false;
-        }
+function notEmpty(fields, emptyMsgs, upTo, errorMsgRef) {
+    if (!fields[upTo]) {
+        errorMsgRef.current.innerHTML = emptyMsgs[upTo];
+        errorMsgRef.current.className = "errorMsg bad";
+        return false;
     }
-    
+
     return true;
 }
 
-export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
-    if (!checkNotEmpty(fields, emptyMsgs, 2, errorMsgRef)) {
-        return;
-    }
-
-    if (!localStorage.getItem(username + "_password")) {
-        errorMsgRef.current.innerHTML = "Username available";
-        errorMsgRef.current.className = "errorMsg good";
-    }
-    else {
-        errorMsgRef.current.innerHTML = "Username already taken";
-        errorMsgRef.current.className = "errorMsg bad";
-    }
-}
-
 export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
-    if (!checkNotEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
-        return;
+    if (!notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
     }
-
-    if (!localStorage.getItem(fields[0] + "_email_taken")) {
+    else if (!localStorage.getItem(fields[0] + "_email_taken")) {
         errorMsgRef.current.innerHTML = "";
         errorMsgRef.current.className = "errorMsg good";
+        return true;
     }
     else {
         errorMsgRef.current.innerHTML = "Account already associated with this email";
         errorMsgRef.current.className = "errorMsg bad";
     }
+    return false;
 }
 
-export function checkValidUsername(username, errorMsgRef) {
-    if (!checkNotEmpty(username, errorMsgRef, "Must enter username")) {
-        return;
+export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
+    /* The reason why I do all the previous check along with the current check, even if 
+    the previous checks have already been done, is because I want the error messages 
+    from the first fields that you fill out to have priority. I'm a little nitpicky 
+    like that.*/
+    if (!checkUniqueEmail(fields, emptyMsgs, errorMsgRef) ||
+        !notEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
     }
-
-    if (localStorage.getItem(username + "_password")) {
-        errorMsgRef.current.innerHTML = "Username: Valid";
+    else if (!localStorage.getItem(fields[1] + "_password")) {
+        errorMsgRef.current.innerHTML = "Username available";
         errorMsgRef.current.className = "errorMsg good";
+        return true;
     }
     else {
-        errorMsgRef.current.innerHTML = "Username: Invalid";
+        errorMsgRef.current.innerHTML = "Username already taken";
         errorMsgRef.current.className = "errorMsg bad";
+        return false;
     }
 }
 
-export function checkPasswordsMatch(pass1, pass2, errorMsgRef) {
-    if (!checkNotEmpty(pass1, errorMsgRef, "Must enter password") ||
-        !checkNotEmpty(pass2, errorMsgRef, "Must confirm password")) {
-        return;
+export function checkPassword(fields, emptyMsgs, errorMsgRef) {
+    // See previous comment
+    if (!checkUniqueUsername(fields, emptyMsgs, errorMsgRef) || 
+        !notEmpty(fields, emptyMsgs, 2, errorMsgRef)) {
+            return false;
     }
+    clearError(errorMsgRef);
 
-    if (pass1 == pass2) {
+    return true;
+}
+
+export function checkPasswordsMatch(fields, emptyMsgs, errorMsgRef) {
+    // See previous comment
+    if (!checkPassword(fields, emptyMsgs, errorMsgRef) || 
+        !notEmpty(fields, emptyMsgs, 3, errorMsgRef)) {
+    }
+    else if (fields[2] == fields[3]) {
         errorMsgRef.current.innerHTML = "Passwords match";
         errorMsgRef.current.className = "errorMsg good";
+        return true;
     }
     else {
         errorMsgRef.current.innerHTML = "Passwords don't match";
         errorMsgRef.current.className = "errorMsg bad";
     }
+    return false;
+}
+
+export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
+    // See previous comment
+    if (checkPasswordsMatch(fields, emptyMsgs, errorMsgRef)) {
+        localStorage.setItem(fields[1] + "_password", fields[2]);
+        localStorage.setItem(fields[0] + "_email_taken", "t");
+        document.location.href = "/";
+    }
+}
+
+export function checkValidUsername(username, errorMsgRef) {
+    if (!notEmpty(username, errorMsgRef, "Must enter username")) {
+    }
+    else if (localStorage.getItem(username + "_password")) {
+        errorMsgRef.current.innerHTML = "Username: Valid";
+        errorMsgRef.current.className = "errorMsg good";
+        return true;
+    }
+    else {
+        errorMsgRef.current.innerHTML = "Username: Invalid";
+        errorMsgRef.current.className = "errorMsg bad";
+    }
+    return false;
 }
 
 export function submitLoginInfo(username, password, errorMsgRef) {
@@ -84,29 +108,7 @@ export function submitLoginInfo(username, password, errorMsgRef) {
     }
 }
 
-export function attemptCreateAccount(email, username, password1, password2, errorMsgRef) {
-    if (!checkNotEmpty(email, errorMsgRef, "Must enter email") ||
-        !checkNotEmpty(username, errorMsgRef, "Must enter username") ||
-        !checkNotEmpty(password1, errorMsgRef, "Must enter password") ||
-        !checkNotEmpty(password2, errorMsgRef, "Must confirm password")) {
-        return;
-    }
-
-    else if (localStorage.getItem(email + "_email_taken")) {
-        errorMsgRef.current.innerHTML = "Account already associated with this email";
-        errorMsgRef.current.className = "errorMsg bad";
-    }
-    else if (localStorage.getItem(username + "_password")) {
-        errorMsgRef.current.innerHTML = "Username already taken";
-        errorMsgRef.current.className = "errorMsg bad";
-    }
-    else if (password1 != password2) {
-        errorMsgRef.current.innerHTML = "Passwords don't match";
-        errorMsgRef.current.className = "errorMsg bad";
-    }
-    else {
-        localStorage.setItem(username + "_password", password1);
-        localStorage.setItem(email + "_email_taken", "t");
-        document.location.href = "/";
-    }
+export function clearError(errorMsgRef) {
+    errorMsgRef.current.innerHTML = "";
+    errorMsgRef.current.className = "errorMsg good";
 }

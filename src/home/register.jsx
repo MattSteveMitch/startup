@@ -1,12 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, attemptCreateAccount, checkNotEmpty } from "./misc.jsx";
+import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, 
+    checkPassword, attemptCreateAccount, clearError } from "./misc.jsx";
 import "./home.css"
 
 var fields = [null, null, null, null];
 const emptyMsgs = ["Must enter email", "Must enter username", "Must enter password", "Must confirm password"];
 
 export function Register() {
+    var setInputEmail, setInputUsernameR, setInputPasswordR, setInputRepeatPassword;
     [fields[0], setInputEmail] = React.useState("");
     [fields[1], setInputUsernameR] = React.useState("");
     [fields[2], setInputPasswordR] = React.useState("");
@@ -34,28 +36,28 @@ export function Register() {
                     <section>
                         <label htmlFor="email">E-mail:</label>
                         <input type="email" onBlur={(event) => { checkUniqueEmail(fields, emptyMsgs, errorMsgRef); }}
-                            onChange={(event) => { setInputEmail(event.target.value); }}></input>
+                            onChange={(event) => { clearError(errorMsgRef); setInputEmail(event.target.value); }}></input>
                     </section>
 
                     <section>
                         <label htmlFor="username">Username:</label>
                         <input type="username" onBlur={(event) => { checkUniqueUsername(fields, emptyMsgs, errorMsgRef); }}
-                            onChange={(event) => { setInputUsernameR(event.target.value); }}></input>
+                            onChange={(event) => {clearError(errorMsgRef); setInputUsernameR(event.target.value); }}></input>
                     </section>
 
                     <section>
                         <label htmlFor="password">Password:</label>
-                        <input type="password" onBlur={(event) => { checkNotEmpty(event.target.value, errorMsgRef, "Must enter password"); }}
-                        onChange={(event) => { setInputPasswordR(event.target.value); }}></input>
+                        <input type="password" onBlur={(event) => { checkPassword(fields, emptyMsgs, errorMsgRef); }}
+                        onChange={(event) => {clearError(errorMsgRef); setInputPasswordR(event.target.value); }}></input>
                     </section>
 
                     <section>
                         <label htmlFor="password">Confirm Password:</label>
-                        <input type="password" onBlur={(event) => { checkPasswordsMatch(inputPasswordR, event.target.value, errorMsgRef); }}
-                        onChange={(event) => { setInputRepeatPassword(event.target.value); }}></input>
+                        <input type="password" onBlur={(event) => { checkPasswordsMatch(fields, emptyMsgs, errorMsgRef); }}
+                        onChange={(event) => {clearError(errorMsgRef); setInputRepeatPassword(event.target.value); }}></input>
                     </section>
 
-                    <button onClick={() => {attemptCreateAccount(fields.email, inputUsernameR, inputPasswordR, inputRepeatPassword, errorMsgRef);}}>Create account</button>
+                    <button onClick={() => {attemptCreateAccount(fields, emptyMsgs, errorMsgRef);}}>Create account</button>
                     <div className="errorMsg" ref={errorMsgRef}></div>
                 </div>
             </main>
