@@ -1,6 +1,6 @@
-function notEmpty(fields, emptyMsgs, upTo, errorMsgRef) {
-    if (!fields[upTo]) {
-        errorMsgRef.current.innerHTML = emptyMsgs[upTo];
+function notEmpty(fields, emptyMsgs, index, errorMsgRef) {
+    if (!fields[index]) {
+        errorMsgRef.current.innerHTML = emptyMsgs[index];
         errorMsgRef.current.className = "errorMsg bad";
         return false;
     }
@@ -43,7 +43,7 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
     }
 }
 
-export function checkPassword(fields, emptyMsgs, errorMsgRef) {
+export function checkRegPassword(fields, emptyMsgs, errorMsgRef) {
     // See previous comment
     if (!checkUniqueUsername(fields, emptyMsgs, errorMsgRef) || 
         !notEmpty(fields, emptyMsgs, 2, errorMsgRef)) {
@@ -56,7 +56,7 @@ export function checkPassword(fields, emptyMsgs, errorMsgRef) {
 
 export function checkPasswordsMatch(fields, emptyMsgs, errorMsgRef) {
     // See previous comment
-    if (!checkPassword(fields, emptyMsgs, errorMsgRef) || 
+    if (!checkRegPassword(fields, emptyMsgs, errorMsgRef) || 
         !notEmpty(fields, emptyMsgs, 3, errorMsgRef)) {
     }
     else if (fields[2] == fields[3]) {
@@ -80,10 +80,10 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
     }
 }
 
-export function checkValidUsername(username, errorMsgRef) {
-    if (!notEmpty(username, errorMsgRef, "Must enter username")) {
+export function checkValidUsername(fields, emptyMsgs, errorMsgRef) {
+    if (!notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
     }
-    else if (localStorage.getItem(username + "_password")) {
+    else if (localStorage.getItem(fields[0] + "_password")) {
         errorMsgRef.current.innerHTML = "Username: Valid";
         errorMsgRef.current.className = "errorMsg good";
         return true;
@@ -95,16 +95,29 @@ export function checkValidUsername(username, errorMsgRef) {
     return false;
 }
 
-export function submitLoginInfo(username, password, errorMsgRef) {
-    var real_password = localStorage.getItem(username + "_password");
-    if (real_password) {
-        if (password == real_password) {
-            localStorage.setItem("username", username);
-        }
+export function checkLoginPassword(fields, emptyMsgs, errorMsgRef) {
+    if (!checkValidUsername(fields, emptyMsgs, errorMsgRef) ||
+        !notEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
+            return false;
     }
-    else {
-        errorMsgRef.current.innerHTML = "Invalid username";
-        errorMsgRef.current.className = "errorMsg bad";
+    clearError(errorMsgRef);
+
+    return true;
+}
+
+export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
+    var real_password;
+    if (checkLoginPassword(fields, emptyMsgs, errorMsgRef)) {
+        real_password = localStorage.getItem(fields[0] + "_password");
+
+        if (fields[1] == real_password) {
+            localStorage.setItem("username", fields[0]);
+            document.location.href = "/game";
+        }
+        else {
+            errorMsgRef.current.innerHTML = "Invalid password";
+            errorMsgRef.current.className = "errorMsg bad";
+        }
     }
 }
 
