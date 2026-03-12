@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
-import { addScore } from "../misc.jsx";
+import { addScore, Logout_or_Home } from "../misc.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -21,11 +21,6 @@ var respawning, click, gameWindow;
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
-
-localStorage.setItem("best_scores", []);
-localStorage.setItem(localStorage.getItem("username") + "_best_scores", []);
-localStorage.setItem("best_hits", []);
-localStorage.setItem(localStorage.getItem("username") + "_best_hits", []);
 
 export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
@@ -115,7 +110,7 @@ export function Game() {
             <header>
                 <h1>Play Starsight</h1>
                 <nav>
-                    <NavLink className="navlink" to="/">Home</NavLink>
+                    <NavLink className="navlink" to="/"><Logout_or_Home /></NavLink>
                     <NavLink className="current navlink" to="/game">Game</NavLink>
                     <NavLink className="navlink" to="/scores">Scores</NavLink>
                 </nav>

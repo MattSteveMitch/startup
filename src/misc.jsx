@@ -41,3 +41,11 @@ export function addScore(record_name, score) {
     localStorage.setItem(record_name, JSON.stringify(record));
 }
 
+export function Logout_or_Home() {
+    if (localStorage.getItem("username") == "Guest") {
+        return "Home";
+    }
+    else {
+        return "Log out";
+    }
+}

@@ -7,6 +7,7 @@ var fields_login = [null, null];
 const emptyLoginMsgs = ["Must enter username", "Must enter password"];
 
 export function Login() {
+    localStorage.setItem("username", "Guest");
     var setInputPassword, setInputUsername;
     [fields_login[0], setInputUsername] = React.useState("");
     [fields_login[1], setInputPassword] = React.useState("");
