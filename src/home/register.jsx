@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, 
-    checkRegPassword, attemptCreateAccount, clearError } from "./misc.jsx";
+    checkRegPassword, attemptCreateAccount, clearError } from "./home_aux.jsx";
 import "./home.css"
 
 var fields_register = [null, null, null, null];

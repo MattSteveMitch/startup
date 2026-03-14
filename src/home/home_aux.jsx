@@ -17,7 +17,7 @@ export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
         return true;
     }
     else {
-        errorMsgRef.current.innerHTML = "Account already associated with this email";
+        errorMsgRef.current.innerHTML = "This email already has an account";
         errorMsgRef.current.className = "errorMsg bad";
     }
     return false;
@@ -59,7 +59,7 @@ export function checkPasswordsMatch(fields, emptyMsgs, errorMsgRef) {
     if (!checkRegPassword(fields, emptyMsgs, errorMsgRef) || 
         !notEmpty(fields, emptyMsgs, 3, errorMsgRef)) {
     }
-    else if (fields[2] == fields[3]) {
+    else if (fields[2] === fields[3]) {
         errorMsgRef.current.innerHTML = "Passwords match";
         errorMsgRef.current.className = "errorMsg good";
         return true;
@@ -110,7 +110,7 @@ export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
     if (checkLoginPassword(fields, emptyMsgs, errorMsgRef)) {
         real_password = localStorage.getItem(fields[0] + "_password");
 
-        if (fields[1] == real_password) {
+        if (fields[1] === real_password) {
             localStorage.setItem("username", fields[0]);
             document.location.href = "/game";
         }

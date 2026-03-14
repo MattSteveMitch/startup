@@ -66,11 +66,11 @@ export function loadAssets(assetsRef, img_names, sound_names, setLoaded) {
 
     assetsProm.then((assets) => {
         for (let i = 0; i < img_names.length; i++) {
-            assetsRef.current[img_names[i]] = assets[i];
+            assetsRef[img_names[i]] = assets[i];
         }
         
         for (let i = 0; i < sound_names.length; i++) {
-            assetsRef.current[sound_names[i]] = assets[img_names.length + i];
+            assetsRef[sound_names[i]] = assets[img_names.length + i];
         }
         
         setLoaded(true);
@@ -107,6 +107,9 @@ export function updateGraphicsP0(assets, gameWindow, environment) {
         );
         gameWindow.globalAlpha = 1;
     }
+    if (!environment.keepAnimating.current) {
+        return;
+    }
     if (environment.loaded) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, frameEnd);});
         return;
@@ -121,25 +124,31 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.drawImage(assets.logo, (windowSize[0] - 700) / 2, (windowSize[1] - 202) / 2, 700, 202);
 
+    if (!environment.keepAnimating.current) {
+        return;
+    }
     if (prevFrame - pageBeginTime < 2000) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
         environment.setAdv(false);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
 
     return;
 }
 
-function updateGraphicsP2(prevFrame, assets, gameWindow, environment, pageBeginTime) {
+function updateGraphicsP2(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
     gameWindow.font = "30px Consolas";
     gameWindow.fillText("Press the right arrow key to continue", 140, 540, 600);
 
+    if (!environment.keepAnimating.current) {
+        return;
+    }
     if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP2(frameEnd, assets, gameWindow, environment, pageBeginTime);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
     else {
         environment.setAdv(false);
@@ -157,7 +166,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     if (environment.brake) {
         angle += pi;
     }
-            
+
     if (environment.rightClick) {
         drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
     }
@@ -170,6 +179,9 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     gameWindow.font = "20px Consolas";
     gameWindow.fillText("Hit placeholder: " + environment.slashPresses, 600, 35);
 
+    if (!environment.keepAnimating.current) {
+        return;
+    }
     if (!environment.advance) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
@@ -188,6 +200,18 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     gameWindow.fillText("Score: " + environment.score, 240, 300);
     environment.setNewScore(environment.score);
     environment.setNewHit(environment.slashPresses);
+
+    if (!environment.keepAnimating.current) {
+        return;
+    }
+    if (!environment.advance) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+    }
+    else {
+        environment.setAdv(false);
+        environment.setScore(100000);
+        requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
+    }
 }
 
 /*

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {checkValidUsername, checkLoginPassword, submitLoginInfo, clearError} from "./misc.jsx";
+import {checkValidUsername, checkLoginPassword, submitLoginInfo, clearError} from "./home_aux.jsx";
 import "./home.css";
 
 var fields_login = [null, null];

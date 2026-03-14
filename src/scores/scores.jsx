@@ -8,7 +8,7 @@ export function Scores() {
     let best_scores_table = [];
     for (let i = 0; i < best_scores.length; i++) {
         best_scores_table.push(
-            <tr>
+            <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{best_scores[i].username}</td>
                 <td>{best_scores[i].score}</td>
@@ -20,7 +20,7 @@ export function Scores() {
     let pers_best_scores_table = [];
     for (let i = 0; i < pers_best_scores.length; i++) {
         pers_best_scores_table.push(
-            <tr>
+            <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{pers_best_scores[i].score}</td>
             </tr>
@@ -31,7 +31,7 @@ export function Scores() {
     let best_hits_table = [];
     for (let i = 0; i < best_hits.length; i++) {
         best_hits_table.push(
-            <tr>
+            <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{best_hits[i].username}</td>
                 <td>{best_hits[i].score}</td>
@@ -43,7 +43,7 @@ export function Scores() {
     let pers_best_hits_table = [];
     for (let i = 0; i < pers_best_hits.length; i++) {
         pers_best_hits_table.push(
-            <tr>
+            <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{pers_best_hits[i].score}</td>
             </tr>

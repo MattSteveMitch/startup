@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
-import { addScore, Logout_or_Home } from "../misc.jsx";
+import { addScore, Logout_or_Home, nullish } from "../misc.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -12,7 +12,6 @@ const img_names = ["arrow", "background1", "background2", "background3", "bubble
 const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
     "rush e", "silence", "wilhelm"];
 
-
 const assetsMap = Object();
 const environment = Object();
 
@@ -20,7 +19,6 @@ var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
-
 
 export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
@@ -41,8 +39,12 @@ export function Game() {
     [environment.loaded, environment.setLoaded] = React.useState(false);
     [environment.started, environment.setStarted] = React.useState(false);
     [environment.LLAngle, environment.setLLAngle] = React.useState(0);
-    const assetsMapRef = React.useRef(assetsMap);
     const windowRef = React.useRef(null);
+    const latestScoreSideRef = React.useRef(null);
+    const personalBestScoreRef = React.useRef(null);
+    const overallBestScoreRef = React.useRef(null);
+    const bestScoreSetterRef = React.useRef(null);
+    environment.keepAnimating = React.useRef(true);
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
@@ -75,34 +77,70 @@ export function Game() {
         thumbnail_loaded.then((thumbnail_imgs) => {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
+          //  console.log("starting animation");
             requestAnimationFrame((lastFrameTime) => {
                 updateGraphicsP0(assetsMap, gameWindow, environment);
             });
         });
-        
+
         const windowEventTarget = document.getElementById("gameWindow");
         windowEventTarget.addEventListener("wheel", scrollHandler, {passive: false});
         windowEventTarget.addEventListener("contextmenu", rightClickHandler, {passive: false});
         //gameWindow.addEventListener("wheel", scrollHandler, {passive: false});
         document.addEventListener("keydown", keyDownHandler, {passive: false});
         document.addEventListener("keyup", keyUpHandler, {passive: false});
+      //  document.addEventListener("onunload", stopAnimation);
 
 
         return (() => { 
             document.removeEventListener("keydown", keyDownHandler);
-            document.addEventListener("keyup", keyUpHandler);
+            document.removeEventListener("keyup", keyUpHandler);
+
+            environment.keepAnimating.current = false; /* You may ask why I don't just call `cancelAnimationFrame`,
+            and I'll tell you why. Because you have to give it the index of the next frame that it's supposed 
+            to cancel, and the animation loop is in the "animation.jsx" file, so I have to pass it a function
+            to update the variable in this file keeping track of which frame is next up. But because of 
+            asynchronousness and such, by the time it gets around to actually updating the frame-tracking 
+            variable, that frame has already happened, so it's trying to cancel a frame that's passed already,
+            so the animation continues. There's probably a better way, but I can't find it. That's my TED talk. */
             windowEventTarget.removeEventListener("wheel", scrollHandler, {passive: false});
         });
     }, []);
 
     React.useEffect(() => {
-        if (environment.newScore != null) {
-            addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
-            addScore("best_scores", environment.newScore);
+        //console.log("rerendering");
+        let old_pers_best = addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
+        if (nullish(environment.newScore)) {
+            if (nullish(old_pers_best)) {
+                personalBestScoreRef.current.innerHTML = "";
+            }
+            else {
+                personalBestScoreRef.current.innerHTML = old_pers_best.score;
+            }
+        }
+        else if (nullish(old_pers_best) || environment.newScore < old_pers_best.score) {
+            personalBestScoreRef.current.className = "score number new";
+            personalBestScoreRef.current.innerHTML = environment.newScore;
+        }
+
+        let old_best = addScore("best_scores", environment.newScore);
+        if (nullish(environment.newScore)) {
+            if (nullish(old_best)) {
+                overallBestScoreRef.current.innerHTML = "";
+            }
+            else {
+                overallBestScoreRef.current.innerHTML = old_best.score;
+            }
+        }
+        else if (nullish(old_best) || environment.newScore < old_best.score) {
+            overallBestScoreRef.current.className = "score number new";
+            bestScoreSetterRef.current.className = "score-side-text new";
+            overallBestScoreRef.current.innerHTML = environment.newScore;
         }
     }, [environment.newScore]);
 
     React.useEffect(() => {
+        console.log("rerendering");
         if (environment.newHit != null) {
             addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
             addScore("best_hits", environment.newHit, true);
@@ -132,9 +170,9 @@ export function Game() {
                     <div>
                         <section>
                             <h3 className="game-page">Most recent score:</h3>
-                            <div className="score-display" name="current">
-                                <p className="score">{environment.newScore}</p>
-                                <p className="score-side-text">New personal best!</p>
+                            <div className="number-area" name="current-score">
+                                <p className="score number">{environment.newScore}</p>
+                                <p ref={latestScoreSideRef} className="score-side-text">Text!</p>
                             </div>
                             <div className="share">Share:
                                 <a href="https://facebook.com/">
@@ -145,15 +183,17 @@ export function Game() {
                                 </a>
                             </div>
                         </section>
-                        <section className="best-score">
+                        <section className="">
                             <h3 className="game-page">Personal best score:</h3>
-                            <p className="score" name="PR">22</p>
+                            <div className="number-area">
+                                <p ref={personalBestScoreRef} className="score number" name="PR"></p>
+                            </div>
                         </section>
                         <section className="best-score">
                             <h3 className="game-page">Overall best score:</h3>
-                            <div className="score-display">
-                                <p className="score">12</p>
-                                <p className="score-side-text">Set by Grond2</p>
+                            <div className="number-area">
+                                <p ref={overallBestScoreRef} className="score number">12</p>
+                                <p ref={bestScoreSetterRef} className="score-side-text">Set by Grond2</p>
                             </div>
                         </section>
                     </div>
@@ -161,12 +201,14 @@ export function Game() {
                     <div className="best-hits">
                         <section>
                             <h3 className="game-page">Personal best hit:</h3>
-                            <p className="hit">118</p>
+                            <div className="number-area">
+                                <p className="hit number">118</p>
+                            </div>
                         </section>
                         <section>
                             <h3 className="game-page">Overall best hit:</h3>
-                            <div className="score-display">
-                                <p className="hit">158</p>
+                            <div className="number-area">
+                                <p className="hit number">158</p>
                                 <p className="hit-side-text">Set by Nolendil</p>
                             </div>
                         </section>
@@ -179,7 +221,7 @@ export function Game() {
                         onClick={(event) => {
                             if (!environment.started) {
                                 runGame(windowRef, environment.setStarted);
-                                loadAssets(assetsMapRef, img_names, sound_names, environment.setLoaded);
+                                loadAssets(assetsMap, img_names, sound_names, environment.setLoaded);
                             }
                             else {
                                 handleClick(event, environment);

@@ -34,16 +34,21 @@ export function addScore(record_name, score, sortDescending=false) {
         record = JSON.parse(record_str);
     }
 
-    record.push(new ScoreRow(localStorage.getItem("username"), score));
-    record = record.sort(compareScoreRows);
-    if (sortDescending) {
-        record.reverse();
-        //console.log(record);
-    }
-    
-    record.splice(10);
+    var old_best = record[0];
 
-    localStorage.setItem(record_name, JSON.stringify(record));
+    if (score !== null) {
+        const newRow = new ScoreRow(localStorage.getItem("username"), score);
+        record.push(newRow);
+        record = record.sort(compareScoreRows);
+        if (sortDescending) {
+            record.reverse();
+        }
+        record.splice(10);
+        localStorage.setItem(record_name, JSON.stringify(record));
+    }
+
+
+    return old_best;
 }
 
 export function Logout_or_Home() {
@@ -53,4 +58,8 @@ export function Logout_or_Home() {
     else {
         return "Log out";
     }
+}
+
+export function nullish(val) {
+    return (val === null || val === undefined);
 }

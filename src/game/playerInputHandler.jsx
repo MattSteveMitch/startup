@@ -48,8 +48,6 @@ export function handleKeyPress(event, environment, assets) {
             console.log(localStorage.getItem("shipType"));
             break;
     }
-   // console.log("brake: " + environment.brake);
-    //console.log("shooting: " + environment.shooting);
 }
 
 export function handleKeyRelease(event, environment) {
@@ -60,8 +58,6 @@ export function handleKeyRelease(event, environment) {
         case "Space":
             environment.toggleBrake(false);
     }
-//    console.log("brake: " + environment.brake);
-  //  console.log("shooting: " + environment.shooting);
 }
 
 export function handleMouseMove(newPos, environment) {
