@@ -1,3 +1,5 @@
+import {resetVariables} from "./updateScores.jsx";
+
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
 
@@ -211,17 +213,6 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         resetVariables(environment);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
-}
-
-function resetVariables(environment) {
-    environment.setAdv(false);
-    environment.setScore(100000);
-    environment.currentScoreRef.current.className = "number-area";
-    environment.personalBestScoreRef.current.className = "score number";
-    environment.overallBestScoreRef.current.className = "score number";
-    environment.bestScoreSetterRef.current.className = "score-side-text";
-    environment.currentScoreRef.current.className = "number-area";
-    environment.shareButtonRef.current.className = "share";
 }
 
 /*

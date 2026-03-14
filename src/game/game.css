@@ -23,6 +23,7 @@ p.new[name="overall-best"] {
     color: rgb(0, 220, 130);
     font-weight: bold;
     -webkit-text-stroke: rgb(0, 165, 97) 1px;
+    text-shadow: 0 0 10px rgb(0, 220, 130);
     //FIXME: Add_an_animation
 }
 
@@ -103,6 +104,18 @@ div.best-hits {
     font-size: 13px;
     padding-right: 17px;
     padding-top: 10px;
+}
+
+.hit.personal.new {
+    color: rgb(0, 100, 180);
+}
+
+.hit-side-text.new-setter {
+    color: rgb(0, 220, 130);
+}
+
+.hit.overall.new {
+    color: rgb(0, 220, 130);
 }
 
 section.window {

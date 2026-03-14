@@ -3,7 +3,8 @@ import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
-import { addScore, Logout_or_Home, nullish } from "../misc.jsx";
+import {Logout_or_Home } from "../misc.jsx";
+import { updateScores, updateHits } from "./updateScores.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -47,6 +48,9 @@ export function Game() {
     environment.currentScoreRef = React.useRef(null);
     environment.shareButtonRef = React.useRef(null);
     environment.keepAnimating = React.useRef(true);
+    environment.personalBestHitRef = React.useRef(null);
+    environment.overallBestHitRef = React.useRef(null);
+    environment.bestHitSetterRef = React.useRef(null);
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
@@ -79,7 +83,6 @@ export function Game() {
         thumbnail_loaded.then((thumbnail_imgs) => {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
-          //  console.log("starting animation");
             requestAnimationFrame((lastFrameTime) => {
                 updateGraphicsP0(assetsMap, gameWindow, environment);
             });
@@ -109,47 +112,9 @@ export function Game() {
         });
     }, []);
 
-    React.useEffect(() => {
-        //console.log("rerendering");
-        let old_pers_best = addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
-        if (nullish(environment.newScore)) {
-            if (nullish(old_pers_best)) {
-                environment.personalBestScoreRef.current.innerHTML = "";
-            }
-            else {
-                environment.personalBestScoreRef.current.innerHTML = old_pers_best.score;
-            }
-        }
-        else if (nullish(old_pers_best) || environment.newScore < old_pers_best.score) {
-            environment.currentScoreRef.current.className = "number-area best";
-            environment.personalBestScoreRef.current.className = "score number new";
-            environment.personalBestScoreRef.current.innerHTML = environment.newScore;
-            environment.shareButtonRef.current.className = "share new-best";
-        }
+    React.useEffect(() => {updateScores(environment);}, [environment.newScore]);
 
-        let old_best = addScore("best_scores", environment.newScore);
-        if (nullish(environment.newScore)) {
-            if (nullish(old_best)) {
-                environment.overallBestScoreRef.current.innerHTML = "";
-            }
-            else {
-                setBest(old_best.score, old_best.username);
-            }
-        }
-        else if (nullish(old_best) || environment.newScore < old_best.score) {
-            environment.overallBestScoreRef.current.className = "score number new";
-            environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
-            setBest(environment.newScore, localStorage.getItem("username"));
-        }
-    }, [environment.newScore]);
-
-    React.useEffect(() => {
-        console.log("rerendering");
-        if (environment.newHit != null) {
-            addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
-            addScore("best_hits", environment.newHit, true);
-        }
-    }, [environment.newHit]);
+    React.useEffect(() => {updateHits(environment);}, [environment.newHit]);
 
 
     return (
@@ -206,14 +171,14 @@ export function Game() {
                         <section>
                             <h3 className="game-page">Personal best hit:</h3>
                             <div className="number-area">
-                                <p className="hit number">118</p>
+                                <p ref={environment.personalBestHitRef} className="hit number personal"></p>
                             </div>
                         </section>
                         <section>
                             <h3 className="game-page">Overall best hit:</h3>
                             <div className="number-area">
-                                <p className="hit number">158</p>
-                                <p className="hit-side-text">Set by Nolendil</p>
+                                <p ref={environment.overallBestHitRef} className="hit number overall"></p>
+                                <p ref={environment.bestHitSetterRef} className="hit-side-text"></p>
                             </div>
                         </section>
                     </div>
@@ -237,9 +202,4 @@ export function Game() {
             </main>
         </div>
     );
-}
-
-function setBest(score, setter) {
-    environment.overallBestScoreRef.current.innerHTML = score;
-    environment.bestScoreSetterRef.current.innerHTML = "Set by " + setter;
 }
