@@ -34,18 +34,10 @@ export function handleKeyPress(event, environment, assets) {
             environment.setGoBack(true);
             break;
         case "KeyP":
-            if (!localStorage.getItem("shipType")) {
-                localStorage.setItem("shipType", "Poco");
-            }
             console.log("p pressed");
-            console.log(localStorage.getItem("shipType"));
             break;
         case "KeyM":
-            if (!localStorage.getItem("shipType")) {
-                localStorage.setItem("shipType", "M-Bot");
-            }
             console.log("m pressed");
-            console.log(localStorage.getItem("shipType"));
             break;
     }
 }

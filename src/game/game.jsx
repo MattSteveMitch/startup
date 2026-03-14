@@ -39,11 +39,13 @@ export function Game() {
     [environment.loaded, environment.setLoaded] = React.useState(false);
     [environment.started, environment.setStarted] = React.useState(false);
     [environment.LLAngle, environment.setLLAngle] = React.useState(0);
-    const windowRef = React.useRef(null);
-    const latestScoreSideRef = React.useRef(null);
-    const personalBestScoreRef = React.useRef(null);
-    const overallBestScoreRef = React.useRef(null);
-    const bestScoreSetterRef = React.useRef(null);
+    var windowRef = React.useRef(null);
+    environment.latestScoreSideRef = React.useRef(null);
+    environment.personalBestScoreRef = React.useRef(null);
+    environment.overallBestScoreRef = React.useRef(null);
+    environment.bestScoreSetterRef = React.useRef(null);
+    environment.currentScoreRef = React.useRef(null);
+    environment.shareButtonRef = React.useRef(null);
     environment.keepAnimating = React.useRef(true);
 
     React.useEffect(() => {
@@ -112,30 +114,32 @@ export function Game() {
         let old_pers_best = addScore(localStorage.getItem("username") + "_best_scores", environment.newScore);
         if (nullish(environment.newScore)) {
             if (nullish(old_pers_best)) {
-                personalBestScoreRef.current.innerHTML = "";
+                environment.personalBestScoreRef.current.innerHTML = "";
             }
             else {
-                personalBestScoreRef.current.innerHTML = old_pers_best.score;
+                environment.personalBestScoreRef.current.innerHTML = old_pers_best.score;
             }
         }
         else if (nullish(old_pers_best) || environment.newScore < old_pers_best.score) {
-            personalBestScoreRef.current.className = "score number new";
-            personalBestScoreRef.current.innerHTML = environment.newScore;
+            environment.currentScoreRef.current.className = "number-area best";
+            environment.personalBestScoreRef.current.className = "score number new";
+            environment.personalBestScoreRef.current.innerHTML = environment.newScore;
+            environment.shareButtonRef.current.className = "share new-best";
         }
 
         let old_best = addScore("best_scores", environment.newScore);
         if (nullish(environment.newScore)) {
             if (nullish(old_best)) {
-                overallBestScoreRef.current.innerHTML = "";
+                environment.overallBestScoreRef.current.innerHTML = "";
             }
             else {
-                overallBestScoreRef.current.innerHTML = old_best.score;
+                setBest(old_best.score, old_best.username);
             }
         }
         else if (nullish(old_best) || environment.newScore < old_best.score) {
-            overallBestScoreRef.current.className = "score number new";
-            bestScoreSetterRef.current.className = "score-side-text new";
-            overallBestScoreRef.current.innerHTML = environment.newScore;
+            environment.overallBestScoreRef.current.className = "score number new";
+            environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
+            setBest(environment.newScore, localStorage.getItem("username"));
         }
     }, [environment.newScore]);
 
@@ -170,11 +174,11 @@ export function Game() {
                     <div>
                         <section>
                             <h3 className="game-page">Most recent score:</h3>
-                            <div className="number-area" name="current-score">
+                            <div ref={environment.currentScoreRef} className="number-area" name="current-score">
                                 <p className="score number">{environment.newScore}</p>
-                                <p ref={latestScoreSideRef} className="score-side-text">Text!</p>
+                                <p ref={environment.latestScoreSideRef} className="score-side-text">New personal best!</p>
                             </div>
-                            <div className="share">Share:
+                            <div ref={environment.shareButtonRef} className="share">Share:
                                 <a href="https://facebook.com/">
                                     <img src="fb_logo.png" alt="Facebook logo" width="23" />
                                 </a>
@@ -183,17 +187,17 @@ export function Game() {
                                 </a>
                             </div>
                         </section>
-                        <section className="">
+                        <section className="best-score">
                             <h3 className="game-page">Personal best score:</h3>
                             <div className="number-area">
-                                <p ref={personalBestScoreRef} className="score number" name="PR"></p>
+                                <p ref={environment.personalBestScoreRef} className="score number" name="pers-best"></p>
                             </div>
                         </section>
                         <section className="best-score">
                             <h3 className="game-page">Overall best score:</h3>
                             <div className="number-area">
-                                <p ref={overallBestScoreRef} className="score number">12</p>
-                                <p ref={bestScoreSetterRef} className="score-side-text">Set by Grond2</p>
+                                <p ref={environment.overallBestScoreRef} className="score number" name="overall-best"></p>
+                                <p ref={environment.bestScoreSetterRef} className="score-side-text"></p>
                             </div>
                         </section>
                     </div>
@@ -233,4 +237,9 @@ export function Game() {
             </main>
         </div>
     );
+}
+
+function setBest(score, setter) {
+    environment.overallBestScoreRef.current.innerHTML = score;
+    environment.bestScoreSetterRef.current.innerHTML = "Set by " + setter;
 }

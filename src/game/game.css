@@ -19,10 +19,24 @@ h3.game-page {
     color: rgb(30, 30, 30);
 }
 
-div[name="current-score"] {
+p.new[name="overall-best"] {
     color: rgb(0, 220, 130);
     font-weight: bold;
     -webkit-text-stroke: rgb(0, 165, 97) 1px;
+    //FIXME: Add_an_animation
+}
+
+[name="current-score"] {
+    > .score-side-text {
+        display: none;
+    }
+}
+
+.best[name="current-score"] {
+    color: rgb(0, 220, 130);
+    > .score-side-text {
+        display: block;
+    }
 }
 
 p.score-side-text {
@@ -31,7 +45,11 @@ p.score-side-text {
     -webkit-text-stroke: 0px;
 }
 
-p.number.new[name="PR"] {
+p.score-side-text.new-setter {
+    color: rgb(0, 220, 130);
+}
+
+p.number.new[name="pers-best"] {
     color: rgb(0, 100, 180);
 }
 
@@ -42,8 +60,13 @@ p.number.new[name="PR"] {
 }
 
 .share {
+    display: none;
     font-size: 16px;
     color: rgb(30, 30, 30);
+}
+
+.share.new-best {
+    display: block;;
 }
 
 .share > a {

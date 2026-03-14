@@ -10,7 +10,9 @@ import "./app.css"
 
 
 export default function App() {
-    localStorage.setItem("shipType", "");
+    if (!localStorage.getItem("username")) {
+        localStorage.setItem("username", "Guest");
+    }
     return (
         <div>
             <BrowserRouter>

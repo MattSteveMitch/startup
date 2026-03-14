@@ -208,10 +208,20 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     else {
-        environment.setAdv(false);
-        environment.setScore(100000);
+        resetVariables(environment);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
+}
+
+function resetVariables(environment) {
+    environment.setAdv(false);
+    environment.setScore(100000);
+    environment.currentScoreRef.current.className = "number-area";
+    environment.personalBestScoreRef.current.className = "score number";
+    environment.overallBestScoreRef.current.className = "score number";
+    environment.bestScoreSetterRef.current.className = "score-side-text";
+    environment.currentScoreRef.current.className = "number-area";
+    environment.shareButtonRef.current.className = "share";
 }
 
 /*
