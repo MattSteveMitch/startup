@@ -6,6 +6,17 @@ main {
 
 @scope (main) {
 
+@keyframes glow-fade {
+    14% {text-shadow: 0 0 60px rgb(0, 255, 151), 0 0 60px rgb(0, 255, 151);}
+    100% {text-shadow: none;}
+}
+
+@keyframes fade {
+    0% {opacity: 100%;}
+    33% {opacity: 100%;}
+    100% {opacity: 0%;}
+}
+
 h2.subhead {
     font-family: Courier;
     color: black;
@@ -23,8 +34,8 @@ p.new[name="overall-best"] {
     color: rgb(0, 220, 130);
     font-weight: bold;
     -webkit-text-stroke: rgb(0, 165, 97) 1px;
-    text-shadow: 0 0 10px rgb(0, 220, 130);
-    //FIXME: Add_an_animation
+    animation-name: glow-fade;
+    animation-duration: 3.5s;
 }
 
 [name="current-score"] {
@@ -34,8 +45,12 @@ p.new[name="overall-best"] {
 }
 
 .best[name="current-score"] {
-    color: rgb(0, 220, 130);
+    color: rgb(0, 154, 91);
     > .score-side-text {
+        color: rgb(0, 220, 130);
+        opacity: 0%;
+        animation-name: fade;
+        animation-duration: 3s;
         display: block;
     }
 }
@@ -44,6 +59,7 @@ p.score-side-text {
     font-size: 16px;
     padding-top: 18px;
     -webkit-text-stroke: 0px;
+    font-weight: bold;
 }
 
 p.score-side-text.new-setter {
