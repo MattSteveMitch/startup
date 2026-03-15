@@ -87,8 +87,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **All functionality implemented or mocked out** - I did not complete this part of the deliverable.
-- [ ] **Hooks** - I did not complete this part of the deliverable.
+- [x] **All functionality implemented or mocked out** - Login and account creation is simulated within the browser. Game itself will depend on a websocket connection to the server to prevent cheating; client will send player input events to the server, which will process them and send back data indicating how to draw the next animation frame. (This website is just a web implementation of a Python game that I wrote years ago, so the processing/running of the game that the server will do is basically already written out in a Python script.) Anyway, I've got the browser to register all the input events that I'll need to play the game, and it responds to most of them (including mouse movement, clicks, scroll wheel movement, pressing slash or spacebar) but at this point the game is very boring. The "hit" aspect is represented by how many times you press the slash key in a game. The scores page accurately reflects whatever "scores" and "hits" were achieved by various players.
+- [x] **Hooks** - I used useEffect, useState, and useRef in game.jsx.
 
 ## 🚀 Service deliverable
 
