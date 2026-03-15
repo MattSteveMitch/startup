@@ -3,9 +3,16 @@
     src: url(../starsight.ttf);
 }
 
+:root {
+    --backg: rgb(170, 170, 170);
+    --light-gray: rgb(200, 200, 200);
+    --near-white: rgb(230, 230, 230);
+    --score-blue: rgb(0, 80, 144);
+}
+
 * {
     font-family: Courier;
-    background-color: rgb(160, 160, 160);
+    background-color: var(--backg);
     margin: 0px;
 }
 
@@ -23,26 +30,26 @@ nav > .navlink {
     font-size: 22px;
     color: black;
     font-weight: bold;
-    border: 3px solid rgb(200, 200, 200);
+    border: 3px solid var(--light-gray);
     margin-right: 10px;
 }
 
 nav > .current {
-    background-color: rgb(160, 160, 160);
-    border-color: rgb(160, 160, 160);
+    background-color: var(--backg);
+    border-color: var(--backg);
     border-top: 0px;
 }
 
 .navlink:hover {
-    background-color: rgb(224, 224, 224);
-    border-color: rgb(160, 160, 160);
+    background-color: var(--near-white);
+    border-color: var(--backg);
     border-top: 0px;
 }
 
 h1 {
     text-align: center;
     font-size: 28px;
-    background-color: rgb(200, 200, 200);
+    background-color: var(--light-gray);
 }
 
 h2 {
@@ -50,5 +57,5 @@ h2 {
     font-weight: normal;
     font-family: starsight;
     color: black;
-    -webkit-text-stroke: rgb(160, 160, 160) 1px;
+    -webkit-text-stroke: var(--backg) 1px;
 }

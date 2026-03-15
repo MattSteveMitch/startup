@@ -1,3 +1,8 @@
+:root {
+    --dark-gray: rgb(140, 140, 140);
+    --darkish-gray: rgb(155, 155, 155);
+}
+
 main {
     display: flex;
     flex-direction: row;
@@ -22,8 +27,22 @@ table {
 td {
     font-size: 17px;
     padding-top: 5px;
-    border-left: 1px solid black;
     padding-right: 11px;
+    border-left: 1px solid black;
+}
+
+td.player {
+    font-family: Courier;
+    font-weight: bold;
+    background-color: var(--light-gray);
+}
+
+td.number {
+    font-family: starsight;
+    font-weight: normal;
+    vertical-align: bottom;
+    color: var(--score-blue);
+    background-color: var(--near-white);
 }
 
 th {
@@ -35,15 +54,18 @@ th {
     padding-left: 70px;
 }
 
-th.rank {
-    width: 77px;
+.rank-header {
+    padding-right: 24px;
+    background-color: var(--dark-gray);
 }
 
-th.player {
+.player-header {
     width: 110px;
+    background-color: var(--darkish-gray);
 }
 
 tr.spare > td {
+    font-family: Courier;
     font-size: 12px;
     padding-top: 0px;
     border-bottom: 1px solid black;

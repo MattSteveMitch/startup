@@ -9,6 +9,10 @@ function compareScoreRows(row1, row2) {
     return row2.score < row1.score || -(row1.score < row2.score);
 }
 
+function compareScoreRowsRev(row1, row2) {
+    return row2.score > row1.score || -(row1.score > row2.score);
+}
+
 export function getScores(record_name) {
     let record;
     let record_str = localStorage.getItem(record_name);
@@ -26,6 +30,13 @@ export function getScores(record_name) {
 export function addScore(record_name, score, sortDescending=false) {
     let record;
     let record_str = localStorage.getItem(record_name);
+    let compareFun;
+    if (sortDescending) {
+        compareFun = compareScoreRowsRev;
+    }
+    else {
+        compareFun = compareScoreRows;
+    }
     
     if (!record_str) {
         record = [];
@@ -39,10 +50,7 @@ export function addScore(record_name, score, sortDescending=false) {
     if (score !== null) {
         const newRow = new ScoreRow(localStorage.getItem("username"), score);
         record.push(newRow);
-        record = record.sort(compareScoreRows);
-        if (sortDescending) {
-            record.reverse();
-        }
+        record = record.sort(compareFun);
         record.splice(10);
         localStorage.setItem(record_name, JSON.stringify(record));
     }

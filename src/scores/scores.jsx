@@ -9,9 +9,9 @@ export function Scores() {
     for (let i = 0; i < best_scores.length; i++) {
         best_scores_table.push(
             <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{best_scores[i].username}</td>
-                <td>{best_scores[i].score}</td>
+                <td className="rank">{i + 1}</td>
+                <td className="player">{best_scores[i].username}</td>
+                <td className="number">{best_scores[i].score}</td>
             </tr>
         );
     }
@@ -21,8 +21,8 @@ export function Scores() {
     for (let i = 0; i < pers_best_scores.length; i++) {
         pers_best_scores_table.push(
             <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{pers_best_scores[i].score}</td>
+                <td className="rank">{i + 1}</td>
+                <td className="number">{pers_best_scores[i].score}</td>
             </tr>
         );
     }
@@ -32,9 +32,9 @@ export function Scores() {
     for (let i = 0; i < best_hits.length; i++) {
         best_hits_table.push(
             <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{best_hits[i].username}</td>
-                <td>{best_hits[i].score}</td>
+                <td className="rank">{i + 1}</td>
+                <td className="player">{best_hits[i].username}</td>
+                <td className="number">{best_hits[i].score}</td>
             </tr>
         );
     }
@@ -44,8 +44,8 @@ export function Scores() {
     for (let i = 0; i < pers_best_hits.length; i++) {
         pers_best_hits_table.push(
             <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{pers_best_hits[i].score}</td>
+                <td className="rank">{i + 1}</td>
+                <td className="number">{pers_best_hits[i].score}</td>
             </tr>
         );
     }
@@ -71,15 +71,17 @@ export function Scores() {
                     <h2 className="score-page">Least deaths to complete the game</h2>
                     <h3 className="score-page">Overall best</h3>
                     <table>
-                        <th className="rank">Rank</th>
-                        <th className="player">Player</th>
-                        <th>Score</th>
+                        <tr>
+                            <th className="rank-header">Rank</th>
+                            <th className="player-header">Player</th>
+                            <th>Score</th>
+                        </tr>
+                        <tr className="spare">
+                            <td className="rank-header"></td>
+                            <td className="player-header"></td>
+                            <td>(number of deaths)</td>
+                        </tr>
                         <tbody>
-                            <tr className="spare">
-                                <td></td>
-                                <td></td>
-                                <td>(number of deaths)</td>
-                            </tr>
                             {best_scores_table}
                         </tbody>
                     </table>
@@ -87,13 +89,15 @@ export function Scores() {
                     <div className="personal">
                         <h3 className="score-page">Personal best</h3>
                         <table>
-                            <th></th>
-                            <th>Score</th>
+                            <tr>
+                                <th className="rank-header"></th>
+                                <th>Score</th>
+                            </tr>
+                            <tr className="spare">
+                                <td className="rank-header"></td>
+                                <td>(number of deaths)</td>
+                            </tr>
                             <tbody>
-                                <tr className="spare">
-                                    <td></td>
-                                    <td>(number of deaths)</td>
-                                </tr>
                                 {pers_best_scores_table}
                             </tbody>
                         </table>
@@ -104,15 +108,17 @@ export function Scores() {
                     <h2 className="score-page">Most damaging hits to Krell ship</h2>
                     <h3 className="score-page">Overall best</h3>
                     <table>
-                        <th className="rank">Rank</th>
-                        <th className="player">Player</th>
-                        <th>Damage dealt</th>
+                        <tr>
+                            <th className="rank-header">Rank</th>
+                            <th className="player-header">Player</th>
+                            <th>Damage dealt</th>
+                        </tr>
+                        <tr className="spare">
+                            <td className="rank-header"></td>
+                            <td className="player-header"></td>
+                            <td></td>
+                        </tr>
                         <tbody>
-                            <tr className="spare">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
                             {best_hits_table}
                         </tbody>
                     </table>
@@ -120,13 +126,15 @@ export function Scores() {
                     <div className="personal">
                         <h3 className="score-page">Personal best</h3>
                         <table>
-                            <th></th>
-                            <th>Damage dealt</th>
+                            <tr>
+                                <th className="rank-header"></th>
+                                <th>Damage dealt</th>
+                            </tr>
+                            <tr className="spare">
+                                <td className="rank-header"></td>
+                                <td></td>
+                            </tr>
                             <tbody>
-                                <tr className="spare">
-                                    <td></td>
-                                    <td></td>
-                                </tr>
                                 {pers_best_hits_table}
                             </tbody>
                         </table>
