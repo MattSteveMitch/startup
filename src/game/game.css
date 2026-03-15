@@ -120,6 +120,7 @@ div.best-hits {
     font-size: 13px;
     padding-right: 17px;
     padding-top: 10px;
+    font-weight: bold;
 }
 
 .hit.personal.new {

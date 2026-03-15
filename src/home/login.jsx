@@ -44,7 +44,7 @@ export function Login() {
                     </section>
 
                     <button onClick={() => {submitLoginInfo(fields_login, emptyLoginMsgs, LoginErrorMsgRef);}}>Log in</button>
-                    <button onClick={() => {document.location.href = "/register";}}>Create account</button>
+                    <button onClick={() => {document.location.href = "/register";}}>Sign up</button>
                     
                     <div className="errorMsg" ref={LoginErrorMsgRef}></div>
                 </div>
