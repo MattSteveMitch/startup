@@ -10,15 +10,31 @@ app.use("/api", router);
 
 const authTokens = Object();
 
-const emails = new Set(["matt", "steve", "mitch"]);
+const emails = new Set();
+const usernames = new Set(["joe"]);
 let n = 0;
 console.log("starting up server");
 
 router.get("/validEmail/:email", async (request, result) => {
     let userEmail = request.params.email;
-//    console.log(userEmail);
+    console.log(userEmail);
   //  console.log(emails);
     if (emails.has(userEmail)) {
+        result.status(409);
+        result.send();
+    }
+    else {
+      //  console.log("got request " + n);
+        result.status(200);
+        result.send();
+    }
+});
+
+router.get("/validUsername/:username", async (request, result) => {
+    let username = request.params.username;
+    console.log(username);
+  //  console.log(emails);
+    if (usernames.has(username)) {
         result.status(409);
         result.send();
     }

@@ -602,3 +602,66 @@ influxdb: search events by date/time
 dynamodb: general key-val pairs
 
 MongoDB: instead of tables, we have Collections (JSON objects)
+
+
+Jest: backend testing
+test(descriptionStr, () => {expect(obtainedVal).toBe(expectedVal);});
+Playwright: frontend debugging
+
+
+Websocket: initiate websocket connection via http request; upgrade connection
+Can be used to create pseudo-client-to-client connection (messages are forwarded through the server)
+
+
+TypeScript:
+compiles/transpiles into JS
+let count: number = 1;
+
+Can access TS compiler using Vite
+TS makes functions a little clearer in terms of what they do
+Also enforces prevention of "cannot read properties of null"
+
+Interface:
+type that hides certain attributes of object converted to that type, requires that that object have certain attributes
+
+type AuthState = "authenticated" | "unauthenticated";
+enum EnumInstance {
+  state1 = "foo";
+  state2 = "bar";
+}
+
+`EnumInstance.state1` returns "foo"
+`<destinationType>` to cast to new type
+
+
+
+Performance:
+Pingdom.com collects performance data for your website, varying by user global location
+dotcom-tools.com also collects data from around globe
+
+
+Design principles:
+Simplicity
+Design as a story
+Color: have just a few colors for various purposes
+Layout: Follow standard
+Site map: Allow quick path to get to any given place on the site
+Sizes: set mins and maxes on text blocks, use quantized sizes
+Use conventional icons
+Space: Whitespace has power
+Images: Should always add something!
+Affordance, signaling, feedback: for example, icons respond to mouse over and provide caption description
+HCI: 
+-Hick's Law: The time necessary to make a decision increases logarithmically with the number of choices presented
+-Fitts's Law: The time required to move to a target is a function of the distance and width of the target
+-Miller's Law: Working memory can contain ~7 items at once
+-Gestalt: 
+  --proximity: close things are related
+  --similarity: similar things are related
+  --continuity: suggest what comes next
+  --closure: brain fills in gaps when enough information is given
+-Responsive design
+-Accessibility:
+  
+-Walls: (paywall, registration wall, legal wall, trust wall, complexity wall) don't put up any unnecessary ones!
+-Internationalization: language, currency, times and dates,
