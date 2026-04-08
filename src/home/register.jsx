@@ -6,6 +6,7 @@ import "./home.css"
 
 var fields_register = [null, null, null, null];
 const emptyRegisterMsgs = ["Must enter email", "Must enter username", "Must enter password", "Must confirm password"];
+var EmailsCache = Object();
 
 export function Register() {
     var setInputEmail, setInputUsernameR, setInputPasswordR, setInputRepeatPassword;
@@ -35,13 +36,13 @@ export function Register() {
                 <div className="form">
                     <section>
                         <label htmlFor="email">E-mail:</label>
-                        <input type="email" onBlur={(event) => { checkUniqueEmail(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef); }}
+                        <input type="email" onBlur={(event) => { console.log(checkUniqueEmail(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef)); }}
                             onChange={(event) => { clearError(RegisterErrorMsgRef); setInputEmail(event.target.value); }}></input>
                     </section>
 
                     <section>
                         <label htmlFor="username">Username:</label>
-                        <input type="username" onBlur={(event) => { checkUniqueUsername(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef); }}
+                        <input type="username" onBlur={(event) => { console.log("something!"); checkUniqueUsername(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef); }}
                             onChange={(event) => {clearError(RegisterErrorMsgRef); setInputUsernameR(event.target.value); }}></input>
                     </section>
 

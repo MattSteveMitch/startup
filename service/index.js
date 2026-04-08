@@ -1,3 +1,37 @@
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const app = express();
+
+//app.use(cookieParser());
+//app.use(express.static('public'));
+
+const router = express.Router();
+app.use("/api", router);
+
+const authTokens = Object();
+
+const emails = new Set(["matt", "steve", "mitch"]);
+let n = 0;
+console.log("starting up server");
+
+router.get("/validEmail/:email", async (request, result) => {
+    let userEmail = request.params.email;
+//    console.log(userEmail);
+  //  console.log(emails);
+    if (emails.has(userEmail)) {
+        result.status(409);
+        result.send();
+    }
+    else {
+      //  console.log("got request " + n);
+        result.status(200);
+        result.send();
+    }
+});
+
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
+app.listen(port, () => {console.log("listening");});
+/*
 function notEmpty(fields, emptyMsgs, index, errorMsgRef) {
     if (!fields[index]) {
         errorMsgRef.current.innerHTML = emptyMsgs[index];
@@ -8,59 +42,26 @@ function notEmpty(fields, emptyMsgs, index, errorMsgRef) {
     return true;
 }
 
-export async function checkUniqueEmail(fields, emptyMsgs, errorMsgRef, emailsCache) {
-    function setMessage(goodEmail) {
-        if (goodEmail) {
-            errorMsgRef.current.innerHTML = "";
-            errorMsgRef.current.className = "errorMsg good";
-        }
-        else {
-            errorMsgRef.current.innerHTML = "This email already has an account";
-            errorMsgRef.current.className = "errorMsg bad";
-        }
+export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
+    if (!notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
     }
-
-    if (notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
-        
+    else if (!localStorage.getItem(fields[0] + "_email_taken")) {
+        errorMsgRef.current.innerHTML = "";
+        errorMsgRef.current.className = "errorMsg good";
+        return true;
     }
-
-    if (notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
-        console.log("sending");
-        fetch("/api/validEmail/" + fields[0], {
-            method: "get",
-            headers: {"Content-type": "application/json; charset=UTF-8",}
-        }).then(
-            (response) => {
-                switch (response.status) {
-                    case 200:
-                        setMessage(true);
-                        return true;
-                    case 409:
-                        setMessage(false);
-                        return false;
-                    default:
-                        console.log(response);
-                        return false;
-                }
-            }
-        );
+    else {
+        errorMsgRef.current.innerHTML = "This email already has an account";
+        errorMsgRef.current.className = "errorMsg bad";
     }
+    return false;
 }
 
 export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
-    /* The reason why I do all the previous check along with the current check, even if 
-    the previous checks have already been done, is because I want the error messages 
-    from the first fields that you fill out to have priority. I'm a little nitpicky 
-    like that.*/
-    checkUniqueEmail(fields, emptyMsgs, errorMsgRef).then(
-        (result) => {
-            if (!result) {
-                notEmpty(fields, emptyMsgs, 1, errorMsgRef).then(
-
-                );
-            }
-        }
-    );
+//    The reason why I do all the previous check along with the current check, even if 
+  //  the previous checks have already been done, is because I want the error messages 
+    //from the first fields that you fill out to have priority. I'm a little nitpicky 
+    //like that.
     if (!checkUniqueEmail(fields, emptyMsgs, errorMsgRef) ||
         !notEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
     }
@@ -139,6 +140,7 @@ export function checkLoginPassword(fields, emptyMsgs, errorMsgRef) {
 }
 
 export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
+    var real_password;
     if (checkLoginPassword(fields, emptyMsgs, errorMsgRef)) {
         real_password = localStorage.getItem(fields[0] + "_password");
 
@@ -157,3 +159,4 @@ export function clearError(errorMsgRef) {
     errorMsgRef.current.innerHTML = "";
     errorMsgRef.current.className = "errorMsg good";
 }
+*/
