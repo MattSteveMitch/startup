@@ -5,7 +5,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static('public'));
 
 const router = express.Router();
 app.use("/api", router);
@@ -18,7 +17,9 @@ const accounts = new Object();
 
 console.log("starting up server");
 
-router.get("/validEmail/:email", async (request, result) => {
+app.use(express.static("public"));
+
+router.get("/availableEmail/:email", async (request, result) => {
     let userEmail = request.params.email;
     console.log(userEmail);
     if (emails.has(userEmail)) {
@@ -31,7 +32,7 @@ router.get("/validEmail/:email", async (request, result) => {
     }
 });
 
-router.get("/validUsername/:username", async (request, result) => {
+router.get("/availableUsername/:username", async (request, result) => {
     let username = request.params.username;
     if (usernames.has(username)) {
         result.status(409);

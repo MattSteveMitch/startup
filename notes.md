@@ -665,3 +665,6 @@ HCI:
   
 -Walls: (paywall, registration wall, legal wall, trust wall, complexity wall) don't put up any unnecessary ones!
 -Internationalization: language, currency, times and dates,
+
+
+Progressive Web App: Making things cross-platform compatible
