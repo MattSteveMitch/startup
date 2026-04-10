@@ -1,6 +1,13 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
+
+const authTokens = new Object();
+
+const emails = new Set();
+const usernames = new Set();
+const accounts = new Object();
+
 const app = express();
 
 app.use(express.json());
@@ -8,50 +15,51 @@ app.use(cookieParser());
 
 const router = express.Router();
 app.use("/api", router);
-
-const authTokens = Object();
-
-const emails = new Set();
-const usernames = new Set();
-const accounts = new Object();
-
-console.log("starting up server");
-
 app.use(express.static("public"));
 
-router.get("/availableEmail/:email", async (request, result) => {
+router.get("/availableEmail/:email", async (request, response) => {
     let userEmail = request.params.email;
     console.log(userEmail);
     if (emails.has(userEmail)) {
-        result.status(409);
-        result.send();
+        response.status(409);
+        response.send();
     }
     else {
-        result.status(200);
-        result.send();
+        response.status(200);
+        response.send();
     }
 });
 
-router.get("/availableUsername/:username", async (request, result) => {
+function handleGoodUsernameAPI(request, response, creatingAccount) {
     let username = request.params.username;
-    if (usernames.has(username)) {
-        result.status(409);
-        result.send();
+    let bad = (usernames.has(username) === creatingAccount);
+
+    if (bad) {
+        response.status(404 + creatingAccount * 5);
+        response.send();
     }
     else {
-        result.status(200);
-        result.send();
+        response.status(200);
+        response.send();
     }
+}
+
+router.get("/goodUsername/:username/login", (request, response) => {
+    handleGoodUsernameAPI(request, response, false);
 });
 
-router.post("/account", async (request, result) => {
+router.get("/goodUsername/:username/register", (request, response) => {
+    handleGoodUsernameAPI(request, response, true);
+});
+
+router.post("/account", async (request, response) => {
     if (emails.has(request.body.email)) {
-        result.status(409);
-        result.send({msg: "Email already registered"});
+        response.status(409);
+        response.send({msg: "Email already registered"});
     }
     else if (usernames.has(request.body.username)) {
-        result.status(409);
-        result.send({msg: "Username already taken"});
+        response.status(409);
+        response.send({msg: "Username already taken"});
     }
     else {
         emails.add(request.body.email);
@@ -61,12 +69,17 @@ router.post("/account", async (request, result) => {
             (hashedPass) => {
                 console.log("checkpoint 2");
                 accounts[request.body.username] = [hashedPass, request.body.email];
-                result.status(201);
-                result.send();
+                response.status(201);
+                response.send();
             }
         );
     }
 });
 
+app.use((_, response) => {
+    response.sendFile("public/index.html");
+});
+
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
+console.log("starting up server");
 app.listen(port, () => {console.log("listening");});
