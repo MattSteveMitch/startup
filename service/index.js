@@ -1,11 +1,10 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
-
-const authTokens = new Object();
+const uuid = require("uuid");
 
 const emails = new Set();
-const usernames = new Set();
+const usernames = new Object();
 const accounts = new Object();
 
 const app = express();
@@ -32,7 +31,7 @@ router.get("/availableEmail/:email", async (request, response) => {
 
 function handleGoodUsernameAPI(request, response, creatingAccount) {
     let username = request.params.username;
-    let bad = (usernames.has(username) === creatingAccount);
+    let bad = ((accounts[username] !== undefined) === creatingAccount);
 
     if (bad) {
         response.status(404 + creatingAccount * 5);
@@ -57,27 +56,48 @@ router.post("/account", async (request, response) => {
         response.status(409);
         response.send({msg: "Email already registered"});
     }
-    else if (usernames.has(request.body.username)) {
+    else if (accounts[request.body.username] !== undefined) {
         response.status(409);
         response.send({msg: "Username already taken"});
     }
     else {
         emails.add(request.body.email);
-        usernames.add(request.body.username);
-        console.log("checkpoint");
-        bcrypt.hash(request.body.password, 12).then(
-            (hashedPass) => {
-                console.log("checkpoint 2");
-                accounts[request.body.username] = [hashedPass, request.body.email];
-                response.status(201);
-                response.send();
-            }
-        );
+        bcrypt.hash(request.body.password, 12).then((hashedPass) => {
+            accounts[request.body.username] = [hashedPass, request.body.email, null];
+            response.status(201);
+            response.send();
+        });
     }
 });
 
-app.use((_, response) => {
-    response.sendFile("public/index.html");
+router.post("/session", async (request, response) => {
+    let account = accounts[request.body.username];
+    if (account === undefined) {
+        response.status(404);
+        response.send();
+    }
+    bcrypt.compare(request.body.password, account[0]).then((correct) => {
+        if (correct) {
+            response.status(201);
+            let authToken = uuid.v4();
+            response.cookie("authToken", authToken, {
+                maxAge: 1000 * 60 * 60 * 48,
+                httpOnly: true,
+                sameSite: "strict",
+                secure: true
+            });
+            usernames[authToken] = request.body.username;
+            response.send();
+        }
+        else {
+            response.status(401);
+            response.send();
+        }
+    });
+});
+
+app.use((request, response) => {
+    response.sendFile("/public/index.html");
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
