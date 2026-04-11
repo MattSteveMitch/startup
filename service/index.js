@@ -97,7 +97,7 @@ router.post("/session", async (request, response) => {
 });
 
 app.use((request, response) => {
-    response.sendFile("/public/index.html");
+    response.sendFile(__dirname + "/public/index.html");
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
