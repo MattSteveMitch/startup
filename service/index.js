@@ -4,8 +4,17 @@ const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 
 const emails = new Set();
-const usernames = new Object();
+const sessions = new Object();
 const accounts = new Object();
+const best_scores = [];
+const pers_best_scores = new Object();
+
+class ScoreRow {
+    constructor(username, score) {
+        this.username = username;
+        this.score = score;
+    }
+}
 
 const app = express();
 
@@ -70,11 +79,26 @@ router.post("/account", async (request, response) => {
     }
 });
 
+function bouncer(request, response, next) {
+    let username = sessions[request.cookies["authToken"]];
+    if (username === undefined) {
+        response.status(401);
+        response.send();
+    }
+    else {
+        request.username = username;
+        next();
+    }
+}
+
 router.post("/session", async (request, response) => {
     let account = accounts[request.body.username];
     if (account === undefined) {
         response.status(404);
         response.send();
+    }
+    if (account[2]) { // If the user already has an authToken; i.e. is already logged in
+        delete sessions[account[2]]; // So that we don't have multiple sessions going at the same time
     }
     bcrypt.compare(request.body.password, account[0]).then((correct) => {
         if (correct) {
@@ -86,7 +110,8 @@ router.post("/session", async (request, response) => {
                 sameSite: "strict",
                 secure: true
             });
-            usernames[authToken] = request.body.username;
+
+            sessions[authToken] = request.body.username;
             response.send();
         }
         else {
@@ -95,6 +120,120 @@ router.post("/session", async (request, response) => {
         }
     });
 });
+
+router.delete("/session", bouncer, (request, response) => {
+    let token = request.cookies["authToken"];
+    delete sessions[token];
+    accounts[request.username][2] = null; // Delete authToken from account to show that user is logged out
+    response.status(200);
+    response.send();
+});
+
+function compareScoreRows(row1, row2) {
+    return row2.score < row1.score || -(row1.score < row2.score);
+}
+
+function compareScoreRowsRev(row1, row2) {
+    return row2.score > row1.score || -(row1.score > row2.score);
+}
+
+function updatePersonal(username, score, is_hit) {
+    let record = pers_best_scores[username];
+    let compareFun;
+    if (is_hit) {
+        compareFun = compareScoreRowsRev;
+    }
+    else {
+        compareFun = compareScoreRows;
+    }
+
+    if (!record) {
+        record = [];
+    }
+
+    var old_best = record[0];
+
+    const newRow = new ScoreRow(null, score);
+    record.push(newRow);
+    record = record.sort(compareFun);
+    record.splice(10);
+    pers_best_scores[username] = record;
+
+    if (old_best) {
+        return old_best.score;
+    }
+    else {
+        return undefined;
+    }
+}
+    /*
+    let record;
+    let record_str = localStorage.getItem(record_name);
+    let compareFun;
+    if (sortDescending) {
+        compareFun = compareScoreRowsRev;
+    }
+    else {
+        compareFun = compareScoreRows;
+    }
+    
+    if (!record_str) {
+        record = [];
+    }
+    else {
+        record = JSON.parse(record_str);
+    }
+
+    var old_best = record[0];
+
+    if (score !== null) {
+        const newRow = new ScoreRow(localStorage.getItem("username"), score);
+        record.push(newRow);
+        record = record.sort(compareFun);
+        record.splice(10);
+        localStorage.setItem(record_name, JSON.stringify(record));
+    }
+
+
+    return old_best;
+    */
+
+router.post("/score", bouncer, (request, response) => {
+    let old_best = updatePersonal(request.username, request.body.score);
+    response.status(201);
+    response.send({old_best: old_best});
+});
+    /*
+    let record;
+    let record_str = localStorage.getItem(record_name);
+    let compareFun;
+    if (sortDescending) {
+        compareFun = compareScoreRowsRev;
+    }
+    else {
+        compareFun = compareScoreRows;
+    }
+    
+    if (!record_str) {
+        record = [];
+    }
+    else {
+        record = JSON.parse(record_str);
+    }
+
+    var old_best = record[0];
+
+    if (score !== null) {
+        const newRow = new ScoreRow(localStorage.getItem("username"), score);
+        record.push(newRow);
+        record = record.sort(compareFun);
+        record.splice(10);
+        localStorage.setItem(record_name, JSON.stringify(record));
+    }
+
+
+    return old_best;
+    */
 
 app.use((request, response) => {
     response.sendFile(__dirname + "/public/index.html");

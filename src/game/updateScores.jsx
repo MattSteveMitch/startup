@@ -12,6 +12,26 @@ function setBestHit(environment, hit, setter) {
 
 export function updateScores(environment) {
     let myUsername = localStorage.getItem("username");
+
+    if (!nullish(environment.newScore)) {
+        fetch("/api/score", {
+            method: "post",
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+            body: JSON.stringify({score: environment.newScore})
+        }).then((response) => {
+            if (response.status === 201) {
+                response.json().then((body) => {
+                    var old_best = body.old_best;
+                    console.log("old best: " + old_best);
+                    setBestScore(environment, environment.newScore, myUsername);
+                });
+            }
+            else if (response.status === 401) {
+                console.log("Not logged in");
+            }
+        });
+    }
+    /*let myUsername = localStorage.getItem("username");
     let old_pers_best = addScore(myUsername + "_best_scores", environment.newScore);
     if (!nullish(environment.newScore) && (nullish(old_pers_best) || environment.newScore < old_pers_best.score)) {
         environment.currentScoreRef.current.className = "number-area best";
@@ -41,7 +61,7 @@ export function updateScores(environment) {
         else {
             setBestScore(environment, old_best.score, old_best.username);
         }
-    }
+    }*/
 }
 
 

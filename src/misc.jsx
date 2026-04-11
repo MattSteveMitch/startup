@@ -28,6 +28,7 @@ export function getScores(record_name) {
 }
 
 export function addScore(record_name, score, sortDescending=false) {
+    /*
     let record;
     let record_str = localStorage.getItem(record_name);
     let compareFun;
@@ -57,10 +58,11 @@ export function addScore(record_name, score, sortDescending=false) {
 
 
     return old_best;
+    */
 }
 
 export function Logout_or_Home() {
-    if (localStorage.getItem("username") == "Guest") {
+    if (!localStorage.getItem("username")) {
         return "Home";
     }
     else {

@@ -1,17 +1,22 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError } from "./home_aux.jsx";
+import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut } from "./home_aux.jsx";
 import "./home.css";
 
 var fields_login = [null, null];
 const emptyLoginMsgs = ["Must enter username", "Must enter password"];
 
 export function Login() {
-    localStorage.setItem("username", "Guest");
+    var LoginErrorMsgRef = React.useRef(null);
+
+    let storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+        logOut(LoginErrorMsgRef);
+    }
+
     var setInputPassword, setInputUsername;
     [fields_login[0], setInputUsername] = React.useState("");
     [fields_login[1], setInputPassword] = React.useState("");
-    var LoginErrorMsgRef = React.useRef(null);
 
     return (
         <div className="body home">

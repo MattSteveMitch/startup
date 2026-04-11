@@ -30,7 +30,7 @@ export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
             if (cachedResult === undefined) {
                 fetch("/api/availableEmail/" + fields[0], {
                     method: "get",
-                    headers: { "Content-type": "application/json; charset=UTF-8", }
+                    headers: { "Content-type": "application/json; charset=UTF-8" }
                 }).then(
                     (response) => {
                         switch (response.status) {
@@ -85,7 +85,7 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
                     if (cachedResult === undefined) {
                         fetch("/api/goodUsername/" + fields[1] + "/register", {
                             method: "get",
-                            headers: { "Content-type": "application/json; charset=UTF-8", }
+                            headers: { "Content-type": "application/json; charset=UTF-8" }
                         }).then((response) => {
                             switch (response.status) {
                                 case 200:
@@ -180,7 +180,7 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
             fetch("/api/account", {
                 method: "post",
                 body: JSON.stringify({ email: fields[0], username: fields[1], password: fields[2] }),
-                headers: { "Content-type": "application/json; charset=UTF-8", }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             }).then((response) => {
                 console.log(response.body);
                 if (response.status === 201) {
@@ -205,7 +205,7 @@ export function checkValidUsername(fields, emptyMsgs, errorMsgRef) {
         if (notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
             fetch("/api/goodUsername/" + fields[0] + "/login", {
                 method: "get",
-                headers: { "Content-type": "application/json; charset=UTF-8", }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             }).then((response) => {
                 if (response.status === 200) {
                     setErrMsg(errorMsgRef, "Username valid", true);
@@ -251,9 +251,10 @@ export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
             fetch("/api/session", {
                 method: "post",
                 body: JSON.stringify({username: fields[0], password: fields[1]}),
-                headers: { "Content-type": "application/json; charset=UTF-8", }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             }).then((response) => {
                 if (response.status === 201) {
+                    localStorage.setItem("username", fields[0]);
                     document.location.href = "/game";
                 }
                 else if (response.status === 404) {
@@ -267,6 +268,25 @@ export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
                 }
             });
         }
+    });
+}
+
+export function logOut(errorMsgRef) {
+    fetch("/api/session", {
+        method: "delete",
+        headers: { "Content-type": "application/json; charset=UTF-8" }
+    }).then((response) => {
+        if (response.status === 200) {
+            localStorage.setItem("username", "");
+        }
+        else if (response.status === 401) {
+            setErrMsg(errorMsgRef, "Already logged out", false);
+            localStorage.setItem("username", "");
+        }
+        else {
+            setErrMsg(errorMsgRef, "Unexpected server response", false);
+        }
+        console.log(response.status);
     });
 }
 
