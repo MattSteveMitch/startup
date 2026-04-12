@@ -12,6 +12,7 @@ function setBestHit(environment, hit, setter) {
 
 export function updateScores(environment) {
     let myUsername = localStorage.getItem("username");
+    let bestness;
 
     if (!nullish(environment.newScore)) {
         fetch("/api/score", {
@@ -21,9 +22,19 @@ export function updateScores(environment) {
         }).then((response) => {
             if (response.status === 201) {
                 response.json().then((body) => {
-                    var old_best = body.old_best;
-                    console.log("old best: " + old_best);
-                    setBestScore(environment, environment.newScore, myUsername);
+                    bestness = body.bestness;
+                    console.log("bestness: " + bestness);
+                    if (bestness) {
+                        environment.currentScoreRef.current.className = "number-area best";
+                        environment.personalBestScoreRef.current.className = "score number new";
+                        environment.personalBestScoreRef.current.innerHTML = environment.newScore;
+                        environment.shareButtonRef.current.className = "share new-best";
+                    }
+                    if (bestness === 2) {
+                        environment.overallBestScoreRef.current.className = "score number new";
+                        environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
+                        setBestScore(environment, environment.newScore, myUsername);
+                    }
                 });
             }
             else if (response.status === 401) {
@@ -31,14 +42,7 @@ export function updateScores(environment) {
             }
         });
     }
-    /*let myUsername = localStorage.getItem("username");
-    let old_pers_best = addScore(myUsername + "_best_scores", environment.newScore);
-    if (!nullish(environment.newScore) && (nullish(old_pers_best) || environment.newScore < old_pers_best.score)) {
-        environment.currentScoreRef.current.className = "number-area best";
-        environment.personalBestScoreRef.current.className = "score number new";
-        environment.personalBestScoreRef.current.innerHTML = environment.newScore;
-        environment.shareButtonRef.current.className = "share new-best";
-    }
+    /*
     else {
         if (nullish(old_pers_best)) {
             environment.personalBestScoreRef.current.innerHTML = "";
@@ -46,7 +50,8 @@ export function updateScores(environment) {
         else {
             environment.personalBestScoreRef.current.innerHTML = old_pers_best.score;
         }
-    }
+    }*/
+    /*
 
     let old_best = addScore("best_scores", environment.newScore);
     if (!nullish(environment.newScore) && (nullish(old_best) || environment.newScore < old_best.score)) {

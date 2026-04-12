@@ -137,8 +137,7 @@ function compareScoreRowsRev(row1, row2) {
     return row2.score > row1.score || -(row1.score > row2.score);
 }
 
-function updatePersonal(username, score, is_hit) {
-    let record = pers_best_scores[username];
+function updateScores(record, username, score, is_hit) {
     let compareFun;
     if (is_hit) {
         compareFun = compareScoreRowsRev;
@@ -147,17 +146,12 @@ function updatePersonal(username, score, is_hit) {
         compareFun = compareScoreRows;
     }
 
-    if (!record) {
-        record = [];
-    }
-
     var old_best = record[0];
 
-    const newRow = new ScoreRow(null, score);
+    const newRow = new ScoreRow(username, score);
     record.push(newRow);
-    record = record.sort(compareFun);
+    record.sort(compareFun);
     record.splice(10);
-    pers_best_scores[username] = record;
 
     if (old_best) {
         return old_best.score;
@@ -166,75 +160,29 @@ function updatePersonal(username, score, is_hit) {
         return undefined;
     }
 }
-    /*
-    let record;
-    let record_str = localStorage.getItem(record_name);
-    let compareFun;
-    if (sortDescending) {
-        compareFun = compareScoreRowsRev;
-    }
-    else {
-        compareFun = compareScoreRows;
-    }
-    
-    if (!record_str) {
-        record = [];
-    }
-    else {
-        record = JSON.parse(record_str);
-    }
-
-    var old_best = record[0];
-
-    if (score !== null) {
-        const newRow = new ScoreRow(localStorage.getItem("username"), score);
-        record.push(newRow);
-        record = record.sort(compareFun);
-        record.splice(10);
-        localStorage.setItem(record_name, JSON.stringify(record));
-    }
-
-
-    return old_best;
-    */
 
 router.post("/score", bouncer, (request, response) => {
-    let old_best = updatePersonal(request.username, request.body.score);
+    if (pers_best_scores[request.username] === undefined) {
+        pers_best_scores[request.username] = [];
+    }
+    let score = request.body.score;
+    let old_pers_best = updateScores(pers_best_scores[request.username], null, score, false);
+    let old_best = updateScores(best_scores, request.username, score, false);
+    let bestness = 0; // Meaning this score is not a record
+    if (old_best === undefined || score < old_best) {
+        bestness = 2; // Meaning this score is a new record overall
+    }
+    else if (old_pers_best === undefined || score < old_pers_best) {
+        bestness = 1; // Meaning this score is a new personal record
+    }
     response.status(201);
-    response.send({old_best: old_best});
+    response.send({bestness: bestness});
 });
-    /*
-    let record;
-    let record_str = localStorage.getItem(record_name);
-    let compareFun;
-    if (sortDescending) {
-        compareFun = compareScoreRowsRev;
-    }
-    else {
-        compareFun = compareScoreRows;
-    }
-    
-    if (!record_str) {
-        record = [];
-    }
-    else {
-        record = JSON.parse(record_str);
-    }
+/*
+router.get("/bests", bouncer, (request, response) => {
 
-    var old_best = record[0];
-
-    if (score !== null) {
-        const newRow = new ScoreRow(localStorage.getItem("username"), score);
-        record.push(newRow);
-        record = record.sort(compareFun);
-        record.splice(10);
-        localStorage.setItem(record_name, JSON.stringify(record));
-    }
-
-
-    return old_best;
-    */
-
+});
+*/
 app.use((request, response) => {
     response.sendFile(__dirname + "/public/index.html");
 });
