@@ -10,26 +10,30 @@ export function Scores() {
     var [best_hits, set_best_hits] = React.useState([]);
     var [pers_best_hits, set_pers_best_hits] = React.useState([]);
 
+    const scoreErrorMsgRef = React.useRef(null);
 
     React.useEffect(() => {
         fetch("/api/scores",
-            { method: "get", headers: { "Content-type": "application/json; charset=UTF-8" } })
-            .then((response) => {
-                if (response.status === 200) {
-                    response.json().then((body) => {
-                        set_best_scores(body.overall_bests);
-                        set_pers_best_scores(body.pers_bests);
-                        set_best_hits(body.overall_best_hits);
-                        set_pers_best_hits(body.pers_best_hits);
-                    });
-                }
-                else if (response.status === 401) {
-                    console.log("error");
-                }
-            })
-        //.catch();
+            { method: "get", headers: { "Content-type": "application/json; charset=UTF-8" } }
+        ).then((response) => {
+            if (response.status === 200) {
+                response.json().then((body) => {
+                    set_best_scores(body.overall_bests ?? []);
+                    set_pers_best_scores(body.pers_bests ?? []);
+                    set_best_hits(body.overall_best_hits ?? []);
+                    set_pers_best_hits(body.pers_best_hits ?? []);
+                });
+            }
+            else if (response.status === 401) {
+                scoreErrorMsgRef.current.innerHTML = "Error: Please log back in";
+            }
+            else {
+                scoreErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
+            }
+        }).catch((error) => {
+            scoreErrorMsgRef.current.innerHTML = "Server unavailable";
+        });
     }, []);
-    // FIXME: Add error handling
 
     let best_scores_table = [];
     for (let i = 0; i < best_scores.length; i++) {
@@ -89,80 +93,83 @@ export function Scores() {
                 </nav>
             </header>
 
-            <main>
-                <section className="score">
-                    <h2 className="score-page">Least deaths to complete the game</h2>
-                    <h3 className="score-page">Overall best</h3>
-                    <table>
-                        <tr>
-                            <th className="rank-header">Rank</th>
-                            <th className="player-header">Player</th>
-                            <th>Score</th>
-                        </tr>
-                        <tr className="spare">
-                            <td className="rank-header"></td>
-                            <td className="player-header"></td>
-                            <td>(number of deaths)</td>
-                        </tr>
-                        <tbody>
-                            {best_scores_table}
-                        </tbody>
-                    </table>
-
-                    <div className="personal">
-                        <h3 className="score-page">Personal best</h3>
+            <main className="scores">
+                <div className="all-scores">
+                    <section className="score">
+                        <h2 className="score-page">Least deaths to complete the game</h2>
+                        <h3 className="score-page">Overall best</h3>
                         <table>
                             <tr>
-                                <th className="rank-header"></th>
+                                <th className="rank-header">Rank</th>
+                                <th className="player-header">Player</th>
                                 <th>Score</th>
                             </tr>
                             <tr className="spare">
                                 <td className="rank-header"></td>
+                                <td className="player-header"></td>
                                 <td>(number of deaths)</td>
                             </tr>
                             <tbody>
-                                {pers_best_scores_table}
+                                {best_scores_table}
                             </tbody>
                         </table>
-                    </div>
-                </section>
 
-                <section className="hits">
-                    <h2 className="score-page">Most damaging hits to Krell ship</h2>
-                    <h3 className="score-page">Overall best</h3>
-                    <table>
-                        <tr>
-                            <th className="rank-header">Rank</th>
-                            <th className="player-header">Player</th>
-                            <th>Damage dealt</th>
-                        </tr>
-                        <tr className="spare">
-                            <td className="rank-header"></td>
-                            <td className="player-header"></td>
-                            <td></td>
-                        </tr>
-                        <tbody>
-                            {best_hits_table}
-                        </tbody>
-                    </table>
+                        <div className="personal">
+                            <h3 className="score-page">Personal best</h3>
+                            <table>
+                                <tr>
+                                    <th className="rank-header"></th>
+                                    <th>Score</th>
+                                </tr>
+                                <tr className="spare">
+                                    <td className="rank-header"></td>
+                                    <td>(number of deaths)</td>
+                                </tr>
+                                <tbody>
+                                    {pers_best_scores_table}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
 
-                    <div className="personal">
-                        <h3 className="score-page">Personal best</h3>
+                    <section className="hits">
+                        <h2 className="score-page">Most damaging hits to Krell ship</h2>
+                        <h3 className="score-page">Overall best</h3>
                         <table>
                             <tr>
-                                <th className="rank-header"></th>
+                                <th className="rank-header">Rank</th>
+                                <th className="player-header">Player</th>
                                 <th>Damage dealt</th>
                             </tr>
                             <tr className="spare">
                                 <td className="rank-header"></td>
+                                <td className="player-header"></td>
                                 <td></td>
                             </tr>
                             <tbody>
-                                {pers_best_hits_table}
+                                {best_hits_table}
                             </tbody>
                         </table>
-                    </div>
-                </section>
+
+                        <div className="personal">
+                            <h3 className="score-page">Personal best</h3>
+                            <table>
+                                <tr>
+                                    <th className="rank-header"></th>
+                                    <th>Damage dealt</th>
+                                </tr>
+                                <tr className="spare">
+                                    <td className="rank-header"></td>
+                                    <td></td>
+                                </tr>
+                                <tbody>
+                                    {pers_best_hits_table}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+                <div className="errorMsg score-page bad" ref={scoreErrorMsgRef}></div>
 
             </main>
         </div>

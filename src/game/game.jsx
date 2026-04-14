@@ -167,7 +167,7 @@ export function Game() {
                 </nav>
             </header>
 
-            <main>
+            <main className="game">
                 <section className="sidebar">
                     <h2 className="head">Scores summary</h2>
                     <h2 className="subhead">(lower scores are better)</h2>
@@ -217,7 +217,7 @@ export function Game() {
                             </div>
                         </section>
                     </div>
-                    <div className="errorMsg game bad" ref={environment.gameErrorMsgRef}></div>
+                    <div className="errorMsg bad" ref={environment.gameErrorMsgRef}></div>
                 </section>
 
                 <section className="window">

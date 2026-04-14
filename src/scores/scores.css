@@ -3,13 +3,17 @@
     --darkish-gray: rgb(155, 155, 155);
 }
 
-main {
+main.scores {
+    display: block;
+}
+
+.all-scores {
     display: flex;
     flex-direction: row;
 }
 
 h2.score-page {
-    padding-top: 33px;
+    padding-top: 16px;
     padding-bottom: 16px;
 }
 

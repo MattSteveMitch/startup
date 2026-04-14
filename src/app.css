@@ -61,8 +61,10 @@ h2 {
 }
 
 .errorMsg {
+    display: block;
     margin-top: 6px;
     font-weight: bold;
+    padding-bottom: 10px;
 }
 
 .errorMsg.bad {
