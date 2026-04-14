@@ -11,17 +11,15 @@ import "./app.css"
 
 export default function App() {
     return (
-        <div>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Login />}></Route>
-                    <Route path="/game" element={<Game />}></Route>
-                    <Route path="/scores" element={<Scores />}></Route>
-                    <Route path="/register" element={<Register />}></Route>
-                    <Route path="/secret" element={<Secret />}></Route>
-                    <Route path="*" element={<NotFound />}></Route>
-                </Routes>
-            </BrowserRouter>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />}></Route>
+                <Route path="/game" element={<Game />}></Route>
+                <Route path="/scores" element={<Scores />}></Route>
+                <Route path="/register" element={<Register />}></Route>
+                <Route path="/secret" element={<Secret />}></Route>
+                <Route path="*" element={<NotFound />}></Route>
+            </Routes>
+        </BrowserRouter>
     );
 }

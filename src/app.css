@@ -59,3 +59,17 @@ h2 {
     color: black;
     -webkit-text-stroke: var(--backg) 1px;
 }
+
+.errorMsg {
+    margin-top: 6px;
+    font-weight: bold;
+}
+
+.errorMsg.bad {
+    color: rgb(140, 32, 32);
+    font-weight: normal;
+}
+
+.errorMsg.good {
+    color: rgb(0, 120, 71);
+}

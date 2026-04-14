@@ -9,14 +9,16 @@ const emptyLoginMsgs = ["Must enter username", "Must enter password"];
 export function Login() {
     var LoginErrorMsgRef = React.useRef(null);
 
-    let storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-        logOut(LoginErrorMsgRef);
-    }
-
     var setInputPassword, setInputUsername;
     [fields_login[0], setInputUsername] = React.useState("");
     [fields_login[1], setInputPassword] = React.useState("");
+
+    React.useEffect(() => {
+        let storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            logOut(LoginErrorMsgRef);
+        }
+    }, []);
 
     return (
         <div className="body home">

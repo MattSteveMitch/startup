@@ -39,20 +39,6 @@ button {
     cursor: pointer;
 }
 
-.errorMsg {
-    margin-top: 6px;
-    font-weight: bold;
-}
-
-.errorMsg.bad {
-    color: rgb(140, 32, 32);
-    font-weight: normal;
-}
-
-.errorMsg.good {
-    color: rgb(0, 120, 71);
-}
-
 footer {
     width: 116px;
     text-align: center;

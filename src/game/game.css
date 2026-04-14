@@ -79,7 +79,7 @@ main {
 
     p.score-side-text {
         font-size: 16px;
-        padding-top: 18px;
+        padding-top: 19px;
         -webkit-text-stroke: 0px;
         font-weight: bold;
     }
@@ -106,10 +106,9 @@ main {
 
     .share.new-best {
         display: block;
-        ;
     }
 
-    .share>a {
+    .share > a {
         margin-left: 5px;
         vertical-align: middle;
         margin-left: 8px;
@@ -129,8 +128,22 @@ main {
         font-size: 46px;
     }
 
+    section.sidebar {
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    div.scores {
+        padding-bottom: 45px;
+    }
+
     div.best-hits {
-        padding-top: 45px;
+        flex: 1 0 30px;
+    }
+
+    .errorMsg.game {
+        padding-bottom: 10px;
     }
 
     .hit {
@@ -171,10 +184,6 @@ main {
 
     canvas.unclicked:hover {
         opacity: 0.8;
-    }
-
-    section.sidebar {
-        padding-top: 20px;
     }
 
     @media (max-width: 1150px) {

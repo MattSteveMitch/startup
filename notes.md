@@ -153,7 +153,7 @@ flex: 0 0 20%;
 } 
 meaning let item2 flex twice as much as item1 if window size changes
 (.item is a placeholder in this case for a sub-element; .container is placeholder for super-element)
-50px means give both elements a maximum size of 50 pixels in the flex direction
+50px means give both elements a minimum size of 50 pixels in the flex direction
 
 
 @media ((orientation: portrait)) { // If orientation is portrait, then do the following

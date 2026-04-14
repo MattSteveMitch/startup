@@ -1,11 +1,11 @@
 import { addScore, nullish } from "../misc.jsx";
 
-function setBestScore(environment, score, setter) {
+export function setBestScore(environment, score, setter) {
     environment.overallBestScoreRef.current.innerHTML = score;
     environment.bestScoreSetterRef.current.innerHTML = "Set by " + setter;
 }
 
-function setBestHit(environment, hit, setter) {
+export function setBestHit(environment, hit, setter) {
     environment.overallBestHitRef.current.innerHTML = hit;
     environment.bestHitSetterRef.current.innerHTML = "Set by " + setter;
 }
@@ -38,7 +38,10 @@ export function updateScores(environment) {
                 });
             }
             else if (response.status === 401) {
-                console.log("Not logged in");
+                environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
+            }
+            else if (response.status === 502) {
+                environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
             }
         });
     }
@@ -71,6 +74,37 @@ export function updateScores(environment) {
 
 
 export function updateHits(environment) {
+    let myUsername = localStorage.getItem("username");
+    let bestness;
+
+    if (!nullish(environment.newHit)) {
+        fetch("/api/hit", {
+            method: "post",
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+            body: JSON.stringify({score: environment.newHit})
+        }).then((response) => {
+            if (response.status === 201) {
+                response.json().then((body) => {
+                    bestness = body.bestness;
+                    if (bestness) {
+                        environment.personalBestHitRef.current.className = "hit number personal new";
+                        environment.personalBestHitRef.current.innerHTML = environment.newHit;
+                    }
+                    if (bestness === 2) {
+                        environment.overallBestHitRef.current.className = "hit number overall new";
+                        environment.bestHitSetterRef.current.className = "hit-side-text new-setter";
+                        setBestHit(environment, environment.newHit, myUsername);
+                    }
+                });
+            }
+            else if (response.status === 401) {
+                environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
+            }
+            else if (response.status === 502) {
+                environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
+            }
+        });
+    }/*
     let old_pers_best = addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
     if (!nullish(environment.newHit) && (nullish(old_pers_best) || environment.newHit > old_pers_best.score)) {
         environment.personalBestHitRef.current.className = "hit number personal new";
@@ -98,12 +132,12 @@ export function updateHits(environment) {
         else {
             setBestHit(environment, old_best.score, old_best.username);
         }
-    }
+    }*/
 }
 
 export function resetVariables(environment) {
     environment.setAdv(false);
-    environment.setScore(100000);
+    environment.setScore(1000);
     environment.setSlashPresses(0);
     environment.currentScoreRef.current.className = "number-area";
     environment.personalBestScoreRef.current.className = "score number";

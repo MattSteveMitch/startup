@@ -4,7 +4,7 @@ import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handle
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import {Logout_or_Home } from "../misc.jsx";
-import { updateScores, updateHits } from "./updateScores.jsx";
+import { updateScores, updateHits, setBestScore, setBestHit } from "./updateScores.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -21,6 +21,29 @@ var respawning, click, gameWindow;
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
+function updateBests(response) {
+    if (response.status === 200) {
+        response.json().then((body) => {
+            let best = body.overall_best;
+            if (best) {
+                setBestScore(environment, best.score, best.username);
+            }
+            if (body.pers_best !== undefined) {
+                environment.personalBestScoreRef.current.innerHTML = body.pers_best;
+            }
+
+            let best_hit = body.overall_best_hit;
+            if (best_hit) {
+                setBestHit(environment, best_hit.score, best_hit.username);
+            }
+            if (body.pers_best_hit !== undefined) {
+                console.log("personal best hit: " + body.pers_best_hit);
+                environment.personalBestHitRef.current.innerHTML = body.pers_best_hit;
+            }
+        });
+    }
+}
+
 export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
     [environment.shipChoice, environment.setShip] = React.useState("");
@@ -28,7 +51,7 @@ export function Game() {
     [environment.brake, environment.toggleBrake] = React.useState(false);
     [environment.advance, environment.setAdv] = React.useState(false);
     [environment.goBack, environment.setGoBack] = React.useState(false);
-    [environment.score, environment.setScore] = React.useState(100000);
+    [environment.score, environment.setScore] = React.useState(1000);
     [environment.newScore, environment.setNewScore] = React.useState(null);
     [environment.newHit, environment.setNewHit] = React.useState(null);
     [environment.slashPresses, environment.setSlashPresses] = React.useState(0);
@@ -51,6 +74,8 @@ export function Game() {
     environment.personalBestHitRef = React.useRef(null);
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
+    environment.gameErrorMsgRef = React.useRef(null);
+//    environment.gameErrorMsgRef
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
@@ -79,8 +104,7 @@ export function Game() {
         };
 
         gameWindow = windowRef.current.getContext("2d");
-        var thumbnail_loaded = loadThumbnail();
-        thumbnail_loaded.then((thumbnail_imgs) => {
+        loadThumbnail().then((thumbnail_imgs) => {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
@@ -88,14 +112,16 @@ export function Game() {
             });
         });
 
+        fetch("/api/bests", {
+            method: "get",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        }).then(updateBests);
+
         const windowEventTarget = document.getElementById("gameWindow");
         windowEventTarget.addEventListener("wheel", scrollHandler, {passive: false});
         windowEventTarget.addEventListener("contextmenu", rightClickHandler, {passive: false});
-        //gameWindow.addEventListener("wheel", scrollHandler, {passive: false});
         document.addEventListener("keydown", keyDownHandler, {passive: false});
         document.addEventListener("keyup", keyUpHandler, {passive: false});
-      //  document.addEventListener("onunload", stopAnimation);
-
 
         return (() => { 
             document.removeEventListener("keydown", keyDownHandler);
@@ -136,7 +162,7 @@ export function Game() {
                 <section className="sidebar">
                     <h2 className="head">Scores summary</h2>
                     <h2 className="subhead">(lower scores are better)</h2>
-                    <div>
+                    <div className="scores">
                         <section>
                             <h3 className="game-page">Most recent score:</h3>
                             <div ref={environment.currentScoreRef} className="number-area" name="current-score">
@@ -182,6 +208,7 @@ export function Game() {
                             </div>
                         </section>
                     </div>
+                    <div className="errorMsg game bad" ref={environment.gameErrorMsgRef}></div>
                 </section>
 
                 <section className="window">

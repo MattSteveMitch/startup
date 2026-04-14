@@ -8,6 +8,8 @@ const sessions = new Object();
 const accounts = new Object();
 const best_scores = [];
 const pers_best_scores = new Object();
+const best_hits = [];
+const pers_best_hits = new Object();
 
 class ScoreRow {
     constructor(username, score) {
@@ -91,6 +93,17 @@ function bouncer(request, response, next) {
     }
 }
 
+function nullScoreSlayer(request, response, next) {
+    let hit = request.body.score;
+    if (hit === undefined || hit === null) {
+        response.status(400);
+        response.send();
+    }
+    else {
+        next();
+    }
+}
+
 router.post("/session", async (request, response) => {
     let account = accounts[request.body.username];
     if (account === undefined) {
@@ -161,10 +174,11 @@ function updateScores(record, username, score, is_hit) {
     }
 }
 
-router.post("/score", bouncer, (request, response) => {
+router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
     if (pers_best_scores[request.username] === undefined) {
         pers_best_scores[request.username] = [];
     }
+
     let score = request.body.score;
     let old_pers_best = updateScores(pers_best_scores[request.username], null, score, false);
     let old_best = updateScores(best_scores, request.username, score, false);
@@ -178,11 +192,50 @@ router.post("/score", bouncer, (request, response) => {
     response.status(201);
     response.send({bestness: bestness});
 });
-/*
-router.get("/bests", bouncer, (request, response) => {
 
+router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
+    if (pers_best_hits[request.username] === undefined) {
+        pers_best_hits[request.username] = [];
+    }
+
+    let hit = request.body.score;
+    let old_pers_best = updateScores(pers_best_hits[request.username], null, hit, true);
+    let old_best = updateScores(best_hits, request.username, hit, true);
+    let bestness = 0; // Meaning this score is not a record
+    if (old_best === undefined || hit > old_best) {
+        bestness = 2; // Meaning this score is a new record overall
+    }
+    else if (old_pers_best === undefined || hit > old_pers_best) {
+        bestness = 1; // Meaning this score is a new personal record
+    }
+    response.status(201);
+    response.send({bestness: bestness});
 });
-*/
+
+router.get("/bests", bouncer, (request, response) => {
+    let pers_best_score_record = pers_best_scores[request.username];
+    let pers_best_score;
+    if (pers_best_score_record) {
+        pers_best_score = pers_best_score_record[0].score;
+    }
+    let overall_best_score = best_scores[0];
+    
+    let pers_best_hit_record = pers_best_hits[request.username];
+    let pers_best_hit;
+    if (pers_best_hit_record) {
+        pers_best_hit = pers_best_hit_record[0].score;
+    }
+    let overall_best_hit = best_hits[0];
+
+    response.status(200);
+    response.send({
+        pers_best: pers_best_score, 
+        overall_best: overall_best_score,
+        pers_best_hit: pers_best_hit,
+        overall_best_hit: overall_best_hit
+    });
+});
+
 app.use((request, response) => {
     response.sendFile(__dirname + "/public/index.html");
 });
