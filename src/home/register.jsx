@@ -1,8 +1,8 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, 
     checkRegPassword, attemptCreateAccount, clearError } from "./home_aux.jsx";
 import "./home.css"
+import { Navbar } from "../misc.jsx";
 
 var fields_register = [null, null, null, null];
 const emptyRegisterMsgs = ["Must enter email", "Must enter username", "Must enter password", "Must confirm password"];
@@ -24,11 +24,7 @@ export function Register() {
 
             <header>
                 <h1>Sign up for Starsight account</h1>
-                <nav>
-                    <NavLink className="navlink" to="/">Home</NavLink>
-                    <NavLink className="navlink" to="/game">Game</NavLink>
-                    <NavLink className="navlink" to="/scores">Scores</NavLink>
-                </nav>
+                <Navbar />
             </header>
 
             <main className="home">

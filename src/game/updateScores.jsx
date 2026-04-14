@@ -1,4 +1,4 @@
-import { addScore, nullish } from "../misc.jsx";
+import { nullish } from "../misc.jsx";
 
 export function setBestScore(environment, score, setter) {
     environment.overallBestScoreRef.current.innerHTML = score;
@@ -47,33 +47,7 @@ export function updateScores(environment) {
             environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
         });
     }
-    /*
-    else {
-        if (nullish(old_pers_best)) {
-            environment.personalBestScoreRef.current.innerHTML = "";
-        }
-        else {
-            environment.personalBestScoreRef.current.innerHTML = old_pers_best.score;
-        }
-    }*/
-    /*
-
-    let old_best = addScore("best_scores", environment.newScore);
-    if (!nullish(environment.newScore) && (nullish(old_best) || environment.newScore < old_best.score)) {
-        environment.overallBestScoreRef.current.className = "score number new";
-        environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
-        setBestScore(environment, environment.newScore, myUsername);
-    }
-    else {
-        if (nullish(old_best)) {
-            environment.overallBestScoreRef.current.innerHTML = "";
-        }
-        else {
-            setBestScore(environment, old_best.score, old_best.username);
-        }
-    }*/
 }
-
 
 export function updateHits(environment) {
     let myUsername = localStorage.getItem("username");
@@ -108,35 +82,36 @@ export function updateHits(environment) {
         }).catch((error) => {
             environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
         });
-    }/*
-    let old_pers_best = addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
-    if (!nullish(environment.newHit) && (nullish(old_pers_best) || environment.newHit > old_pers_best.score)) {
-        environment.personalBestHitRef.current.className = "hit number personal new";
-        environment.personalBestHitRef.current.innerHTML = environment.newHit;
     }
-    else {
-        if (nullish(old_pers_best)) {
-            environment.personalBestHitRef.current.innerHTML = "";
-        }
-        else {
-            environment.personalBestHitRef.current.innerHTML = old_pers_best.score;
-        }
-    }
+}
 
-    let old_best = addScore("best_hits", environment.newHit, true);
-    if (!nullish(environment.newHit) && (nullish(old_best) || environment.newHit > old_best.score)) {
-        environment.overallBestHitRef.current.className = "hit number overall new";
-        environment.bestHitSetterRef.current.className = "hit-side-text new-setter";
-        setBestHit(environment, environment.newHit, localStorage.getItem("username"));
+export function updateBests(response, environment) {
+    if (response.status === 200) {
+        response.json().then((body) => {
+            let best = body.overall_best;
+            if (best) {
+                setBestScore(environment, best.score, best.username);
+            }
+            if (body.pers_best !== undefined) {
+                environment.personalBestScoreRef.current.innerHTML = body.pers_best;
+            }
+
+            let best_hit = body.overall_best_hit;
+            if (best_hit) {
+                setBestHit(environment, best_hit.score, best_hit.username);
+            }
+            if (body.pers_best_hit !== undefined) {
+                console.log("personal best hit: " + body.pers_best_hit);
+                environment.personalBestHitRef.current.innerHTML = body.pers_best_hit;
+            }
+        });
+    }
+    else if (response.status === 401) {
+        environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
     }
     else {
-        if (nullish(old_best)) {
-            environment.overallBestHitRef.current.innerHTML = "";
-        }
-        else {
-            setBestHit(environment, old_best.score, old_best.username);
-        }
-    }*/
+        environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
+    }
 }
 
 export function resetVariables(environment) {
@@ -154,3 +129,4 @@ export function resetVariables(environment) {
     environment.overallBestHitRef.current.className = "hit number overall";
     environment.bestHitSetterRef.current.className = "hit-side-text";
 }
+

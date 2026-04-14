@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import {Navbar} from "./misc.jsx"
 
 export function NotFound() {
     return (
@@ -10,11 +10,7 @@ export function NotFound() {
             </div>
             <header>
                 <h1>Page not found</h1>
-                <nav>
-                    <NavLink className="navlink" to="/">Home</NavLink>
-                    <NavLink className="navlink" to="/game">Game</NavLink>
-                    <NavLink className="navlink" to="/scores">Scores</NavLink>
-                </nav>
+                <Navbar />
             </header>
 
             <h2 style={{paddingTop: "50px", fontSize: "50px", paddingLeft: "10px"}}>

@@ -22,19 +22,24 @@ main {
 
 nav {
     display: flex;
+    height: 28px;
+    background-color: var(--backg);
 }
 
-nav > .navlink {
+.navlink {
     background-color: white;
     text-decoration: none;
     font-size: 22px;
     color: black;
     font-weight: bold;
     border: 3px solid var(--light-gray);
+}
+
+.main > .navlink {
     margin-right: 10px;
 }
 
-nav > .current {
+.navlink.active {
     background-color: var(--backg);
     border-color: var(--backg);
     border-top: 0px;
@@ -44,6 +49,11 @@ nav > .current {
     background-color: var(--near-white);
     border-color: var(--backg);
     border-top: 0px;
+}
+
+nav > .main {
+    display: flex;
+    flex: 1 0 0px;
 }
 
 h1 {

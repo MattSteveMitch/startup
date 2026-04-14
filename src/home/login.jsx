@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut } from "./home_aux.jsx";
 import "./home.css";
 
@@ -28,11 +27,6 @@ export function Login() {
             </div>
             <header>
                 <h1>Log into Starsight</h1>
-                <nav>
-                    <NavLink className="current navlink" to="/">Home</NavLink>
-                    <NavLink className="navlink" to="/game">Game</NavLink>
-                    <NavLink className="navlink" to="/scores">Scores</NavLink>
-                </nav>
             </header>
             <main className="home">
                 <div className="form">

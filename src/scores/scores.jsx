@@ -1,6 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { getScores, Logout_or_Home } from "../misc.jsx";
+import { getScores, Navbar } from "../misc.jsx";
 import "./scores.css";
 
 export function Scores() {
@@ -86,11 +85,7 @@ export function Scores() {
 
             <header>
                 <h1>Best Scores</h1>
-                <nav>
-                    <NavLink className="navlink" to="/"><Logout_or_Home /></NavLink>
-                    <NavLink className="navlink" to="/game">Game</NavLink>
-                    <NavLink className="current navlink" to="/scores">Scores</NavLink>
-                </nav>
+                <Navbar />
             </header>
 
             <main className="scores">

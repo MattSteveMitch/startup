@@ -1,10 +1,9 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
-import {Logout_or_Home } from "../misc.jsx";
-import { updateScores, updateHits, setBestScore, setBestHit } from "./updateScores.jsx";
+import { Navbar } from "../misc.jsx";
+import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from "./updateScores.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
@@ -20,35 +19,6 @@ var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
-
-function updateBests(response) {
-    if (response.status === 200) {
-        response.json().then((body) => {
-            let best = body.overall_best;
-            if (best) {
-                setBestScore(environment, best.score, best.username);
-            }
-            if (body.pers_best !== undefined) {
-                environment.personalBestScoreRef.current.innerHTML = body.pers_best;
-            }
-
-            let best_hit = body.overall_best_hit;
-            if (best_hit) {
-                setBestHit(environment, best_hit.score, best_hit.username);
-            }
-            if (body.pers_best_hit !== undefined) {
-                console.log("personal best hit: " + body.pers_best_hit);
-                environment.personalBestHitRef.current.innerHTML = body.pers_best_hit;
-            }
-        });
-    }
-    else if (response.status === 401) {
-        environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
-    }
-    else {
-        environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
-    }
-}
 
 export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
@@ -121,7 +91,7 @@ export function Game() {
         fetch("/api/bests", {
             method: "get",
             headers: { "Content-type": "application/json; charset=UTF-8" }
-        }).then(updateBests)
+        }).then((response) => {updateBests(response, environment);})
         .catch((error) => {
             environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
         });
@@ -148,7 +118,6 @@ export function Game() {
     }, []);
 
     React.useEffect(() => {updateScores(environment);}, [environment.newScore]);
-
     React.useEffect(() => {updateHits(environment);}, [environment.newHit]);
 
 
@@ -160,11 +129,7 @@ export function Game() {
             </div>
             <header>
                 <h1>Play Starsight</h1>
-                <nav>
-                    <NavLink className="navlink" to="/"><Logout_or_Home /></NavLink>
-                    <NavLink className="current navlink" to="/game">Game</NavLink>
-                    <NavLink className="navlink" to="/scores">Scores</NavLink>
-                </nav>
+                <Navbar />
             </header>
 
             <main className="game">
