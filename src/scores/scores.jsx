@@ -4,7 +4,33 @@ import { getScores, Logout_or_Home } from "../misc.jsx";
 import "./scores.css";
 
 export function Scores() {
-    let best_scores = getScores("best_scores");
+    //var best_scores, pers_best_scores, best_hits, pers_best_hits;
+    var [best_scores, set_best_scores] = React.useState([]);
+    var [pers_best_scores, set_pers_best_scores] = React.useState([]);
+    var [best_hits, set_best_hits] = React.useState([]);
+    var [pers_best_hits, set_pers_best_hits] = React.useState([]);
+
+
+    React.useEffect(() => {
+        fetch("/api/scores",
+            { method: "get", headers: { "Content-type": "application/json; charset=UTF-8" } })
+            .then((response) => {
+                if (response.status === 200) {
+                    response.json().then((body) => {
+                        set_best_scores(body.overall_bests);
+                        set_pers_best_scores(body.pers_bests);
+                        set_best_hits(body.overall_best_hits);
+                        set_pers_best_hits(body.pers_best_hits);
+                    });
+                }
+                else if (response.status === 401) {
+                    console.log("error");
+                }
+            })
+        //.catch();
+    }, []);
+    // FIXME: Add error handling
+
     let best_scores_table = [];
     for (let i = 0; i < best_scores.length; i++) {
         best_scores_table.push(
@@ -16,7 +42,6 @@ export function Scores() {
         );
     }
 
-    let pers_best_scores = getScores(localStorage.getItem("username") + "_best_scores");
     let pers_best_scores_table = [];
     for (let i = 0; i < pers_best_scores.length; i++) {
         pers_best_scores_table.push(
@@ -27,7 +52,6 @@ export function Scores() {
         );
     }
 
-    let best_hits = getScores("best_hits");
     let best_hits_table = [];
     for (let i = 0; i < best_hits.length; i++) {
         best_hits_table.push(
@@ -39,7 +63,6 @@ export function Scores() {
         );
     }
 
-    let pers_best_hits = getScores(localStorage.getItem("username") + "_best_hits");
     let pers_best_hits_table = [];
     for (let i = 0; i < pers_best_hits.length; i++) {
         pers_best_hits_table.push(

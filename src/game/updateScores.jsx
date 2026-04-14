@@ -41,7 +41,7 @@ export function updateScores(environment) {
                 environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
             }
             else {
-                environment.gameErrorMsgRef.current.innerHTML =  response.status + ": " + response.statusText;
+                environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
             }
         }).catch((error) => {
             environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";

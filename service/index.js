@@ -236,6 +236,19 @@ router.get("/bests", bouncer, (request, response) => {
     });
 });
 
+router.get("/scores", bouncer, (request, response) => {
+    let pers_best_score_record = pers_best_scores[request.username];
+    let pers_best_hit_record = pers_best_hits[request.username];
+
+    response.status(200);
+    response.send({
+        pers_bests: pers_best_score_record, 
+        overall_bests: best_scores,
+        pers_best_hits: pers_best_hit_record,
+        overall_best_hits: best_hits
+    });
+});
+
 app.use((request, response) => {
     response.sendFile(__dirname + "/public/index.html");
 });
