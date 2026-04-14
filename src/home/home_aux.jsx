@@ -44,14 +44,15 @@ export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
                                 emailsCache[fields[0]] = false;
                                 resolve(false);
                                 break;
-                            case 502:
-                                setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
                             default:
+                                setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
                                 console.log(response);
                                 resolve(false);
                         }
                     }
-                );
+                ).catch((error) => {
+                    setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
+                });
             }
             else if (cachedResult === true) {
                 setErrMsg(errorMsgRef, "", true);
@@ -100,12 +101,13 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
                                     usernamesCache[fields[1]] = false;
                                     resolve(false);
                                     break;
-                                case 502:
-                                    setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
                                 default:
-                                    setErrMsg(errorMsgRef, "Unexpected server response", false);
+                                    setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
                                     console.log(response);
+                                    resolve(false);
                             }
+                        }).catch((error) => {
+                            setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
                         });
                     }
                     else if (cachedResult === true) {
@@ -196,12 +198,12 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
                         setErrMsg(errorMsgRef, result.msg, false);
                     });
                 }
-                else if (response.status === 502) {
-                    setErrMsg(errorMsgRef, "Server unavailable. Please try again.", false);
-                }
                 else {
-                    setErrMsg(errorMsgRef, "Unexpected server response", false);
+                    setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
+                    console.log(response);
                 }
+            }).catch((error) => {
+                setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
             });
         }
     });
@@ -222,12 +224,13 @@ export function checkValidUsername(fields, emptyMsgs, errorMsgRef) {
                     setErrMsg(errorMsgRef, "Username invalid", false);
                     resolve(false);
                 }
-                else if (response.status === 502) {
-                    setErrMsg(errorMsgRef, "Server unavailable. Please try again.", false);
-                }
                 else {
-                    setErrMsg(errorMsgRef, "Unexpected server response", false);
+                    setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
+                    console.log(response);
+                    resolve(false);
                 }
+            }).catch((error) => {
+                setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
             });
         }
         else {
@@ -273,12 +276,12 @@ export function submitLoginInfo(fields, emptyMsgs, errorMsgRef) {
                 else if (response.status === 401) {
                     setErrMsg(errorMsgRef, "Invalid password", false);
                 }
-                else if (response.status === 502) {
-                    setErrMsg(errorMsgRef, "Server unavailable. Please try again.", false);
-                }
                 else {
-                    setErrMsg(errorMsgRef, "Unexpected server response", false);
+                    setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
+                    console.log(response);
                 }
+            }).catch((error) => {
+                setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
             });
         }
     });
@@ -296,13 +299,13 @@ export function logOut(errorMsgRef) {
             setErrMsg(errorMsgRef, "Already logged out", false);
             localStorage.setItem("username", "");
         }
-        else if (response.status === 502) {
-            setErrMsg(errorMsgRef, "Server unavailable. Please try again.", false);
-        }
         else {
-            setErrMsg(errorMsgRef, "Unexpected server response", false);
+            setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
+            console.log(response);
         }
         console.log(response.status);
+    }).catch((error) => {
+        setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
     });
 }
 

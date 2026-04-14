@@ -42,6 +42,12 @@ function updateBests(response) {
             }
         });
     }
+    else if (response.status === 401) {
+        environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
+    }
+    else {
+        environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
+    }
 }
 
 export function Game() {
@@ -115,7 +121,10 @@ export function Game() {
         fetch("/api/bests", {
             method: "get",
             headers: { "Content-type": "application/json; charset=UTF-8" }
-        }).then(updateBests);
+        }).then(updateBests)
+        .catch((error) => {
+            environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
+        });
 
         const windowEventTarget = document.getElementById("gameWindow");
         windowEventTarget.addEventListener("wheel", scrollHandler, {passive: false});

@@ -40,9 +40,11 @@ export function updateScores(environment) {
             else if (response.status === 401) {
                 environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
             }
-            else if (response.status === 502) {
-                environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
+            else {
+                environment.gameErrorMsgRef.current.innerHTML =  response.status + ": " + response.statusText;
             }
+        }).catch((error) => {
+            environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
         });
     }
     /*
@@ -100,9 +102,11 @@ export function updateHits(environment) {
             else if (response.status === 401) {
                 environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
             }
-            else if (response.status === 502) {
-                environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
+            else {
+                environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
             }
+        }).catch((error) => {
+            environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
         });
     }/*
     let old_pers_best = addScore(localStorage.getItem("username") + "_best_hits", environment.newHit, true);
