@@ -296,7 +296,6 @@ export function logOut(errorMsgRef) {
             localStorage.setItem("username", "");
         }
         else if (response.status === 401) {
-            setErrMsg(errorMsgRef, "Already logged out", false);
             localStorage.setItem("username", "");
         }
         else {

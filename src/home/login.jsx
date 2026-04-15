@@ -5,10 +5,55 @@ import "./home.css";
 var fields_login = [null, null];
 const emptyLoginMsgs = ["Must enter username", "Must enter password"];
 
-export function Login() {
-    var LoginErrorMsgRef = React.useRef(null);
 
+function setImgSize(image, maxDimension, aspectRatio) {
+    if (aspectRatio > 1) {
+        image.width = maxDimension;
+        image.height = maxDimension / aspectRatio;
+    }
+    else {
+        image.height = maxDimension;
+        image.width = maxDimension * aspectRatio;
+    }
+}
+
+export function Login() {
+    var imgBoxRef = React.useRef(null);
+    var aspectRatio, xkcd;
+
+
+    React.useEffect(() => {
+        function getMaxDimension() {
+            return Math.min((window.innerHeight - 80) * aspectRatio, 450);
+        }
+
+        function resizeHandler(event) {
+            let maxDimension = getMaxDimension();
+            setImgSize(xkcd, maxDimension, aspectRatio);
+        }
+
+        xkcd = new Image();
+        xkcd.src = "https://imgs.xkcd.com/comics/lightning.png" /*"https://imgs.xkcd.com/comics/woodpecker.png" "https://imgs.xkcd.com/comics/countdown_standard.png"*/;
+        xkcd.onload = () => {
+            aspectRatio = xkcd.width / xkcd.height;
+            resizeHandler(null);
+            if (imgBoxRef.current) {
+                imgBoxRef.current.appendChild(xkcd);
+            }
+        }
+
+        window.addEventListener("resize", resizeHandler);
+
+        return () => {
+            window.removeEventListener("resize", resizeHandler);
+        }
+    }, []);
+
+
+
+    var LoginErrorMsgRef = React.useRef(null);
     var setInputPassword, setInputUsername;
+
     [fields_login[0], setInputUsername] = React.useState("");
     [fields_login[1], setInputPassword] = React.useState("");
 
@@ -49,6 +94,7 @@ export function Login() {
 
                     <div className="errorMsg" ref={LoginErrorMsgRef}></div>
                 </div>
+                <div className="imgBox" ref={imgBoxRef}></div>
             </main>
 
             <footer>

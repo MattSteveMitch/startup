@@ -144,11 +144,8 @@ export function Game() {
                                 <p ref={environment.latestScoreSideRef} className="score-side-text">New personal best!</p>
                             </div>
                             <div ref={environment.shareButtonRef} className="share">Share:
-                                <a href="https://facebook.com/">
+                                <a href="https://facebook.com/groups/845183421175823">
                                     <img src="fb_logo.png" alt="Facebook logo" width="23" />
-                                </a>
-                                <a href="https://x.com/">
-                                    <img src="x_logo.png" alt="X Twitter logo" width="20" />
                                 </a>
                             </div>
                         </section>
