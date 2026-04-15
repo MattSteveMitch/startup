@@ -668,3 +668,9 @@ HCI:
 
 
 Progressive Web App: Making things cross-platform compatible
+
+`userCollection.updateOne({ email: user.email }, { $set: user });` // Find a document whose email is this, then update that record to match `user`
+
+`userCollection.updateOne({ email: user.email }, { $unset: { token: 1 } });` // Find document whose email is this, then delete the `token` record
+
+`collection.findOne({email: user.email}, {username: 1, password: 1});` // Find document whose email is this, return that record with only the username and password included

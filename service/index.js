@@ -3,7 +3,8 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 
-const emails = new Set();
+const db = require("./database.js");
+
 const sessions = new Object();
 const accounts = new Object();
 const best_scores = [];
@@ -29,29 +30,32 @@ app.use(express.static("public"));
 
 router.get("/availableEmail/:email", async (request, response) => {
     let userEmail = request.params.email;
-    console.log(userEmail);
-    if (emails.has(userEmail)) {
-        response.status(409);
-        response.send();
-    }
-    else {
-        response.status(200);
-        response.send();
-    }
+ //   console.log(db.emailExists(userEmail).then);
+    db.getEmail(userEmail).then((result) => {
+        if (result) {
+            response.status(409);
+            response.send();
+        }
+        else {
+            response.status(200);
+            response.send();
+        }
+    });
 });
 
 function handleGoodUsernameAPI(request, response, creatingAccount) {
     let username = request.params.username;
-    let bad = ((accounts[username] !== undefined) === creatingAccount);
-
-    if (bad) {
-        response.status(404 + creatingAccount * 5);
-        response.send();
-    }
-    else {
-        response.status(200);
-        response.send();
-    }
+    db.usernameExists(username).then((result) => {
+        let bad = (result !== null) === creatingAccount;
+        if (bad) {
+            response.status(404 + creatingAccount * 5);
+            response.send();
+        }
+        else {
+            response.status(200);
+            response.send();
+        }
+    });
 }
 
 router.get("/goodUsername/:username/login", (request, response) => {
@@ -63,34 +67,41 @@ router.get("/goodUsername/:username/register", (request, response) => {
 });
 
 router.post("/account", async (request, response) => {
-    if (emails.has(request.body.email)) {
-        response.status(409);
-        response.send({msg: "Email already registered"});
-    }
-    else if (accounts[request.body.username] !== undefined) {
-        response.status(409);
-        response.send({msg: "Username already taken"});
-    }
-    else {
-        emails.add(request.body.email);
-        bcrypt.hash(request.body.password, 12).then((hashedPass) => {
-            accounts[request.body.username] = [hashedPass, request.body.email, null];
-            response.status(201);
-            response.send();
-        });
-    }
+    db.getEmail(request.body.email).then((result) => {
+        if (result) {
+            response.status(409);
+            response.send({ msg: "Email already registered" });
+        }
+        else {
+            return db.usernameExists(request.body.username);
+        }
+    }).then((result) => {
+        if (result) {
+            response.status(409);
+            response.send({ msg: "Username already taken" });
+        }
+        else {
+            return bcrypt.hash(request.body.password, 12);
+        }
+    }).then((hashedPass) => {
+        return db.createAccount(request.body.username, hashedPass, request.body.email);
+    }).then((result) => {
+        response.status(201);
+        response.send();
+    });
 });
 
 function bouncer(request, response, next) {
-    let username = sessions[request.cookies["authToken"]];
-    if (username === undefined) {
-        response.status(401);
-        response.send();
-    }
-    else {
-        request.username = username;
-        next();
-    }
+    db.getIdentity(request.cookies["authToken"]).then((result) => {
+        if (!result) {
+            response.status(401);
+            response.send();
+        }
+        else {
+            request.username = result.username;
+            next();
+        }
+    });
 }
 
 function nullScoreSlayer(request, response, next) {
@@ -104,34 +115,49 @@ function nullScoreSlayer(request, response, next) {
     }
 }
 
-router.post("/session", async (request, response) => {
-    let account = accounts[request.body.username];
-    if (account === undefined) {
-        response.status(404);
-        response.send();
-    }
-    if (account[2]) { // If the user already has an authToken; i.e. is already logged in
-        delete sessions[account[2]]; // So that we don't have multiple sessions going at the same time
-    }
-    bcrypt.compare(request.body.password, account[0]).then((correct) => {
-        if (correct) {
-            response.status(201);
-            let authToken = uuid.v4();
-            response.cookie("authToken", authToken, {
-                maxAge: 1000 * 60 * 60 * 48,
-                httpOnly: true,
-                sameSite: "strict",
-                secure: true
-            });
-
-            sessions[authToken] = request.body.username;
+function checkLogin(request, response, next) {
+    db.getAccount(request.body.username).then((account) => {
+        if (!account) {
+            response.status(404);
             response.send();
+        }
+        var comparisonPromise = bcrypt.compare(request.body.password, account.password);
+        if (account.token) { // If somehow the user is already logged in, log them out first
+            return Promise.all([db.deleteSession(account.token), comparisonPromise]);
+        }
+        else {
+            return comparisonPromise;
+        }
+    }).then((result) => {
+        if (result[1] ?? result) {
+            next();
         }
         else {
             response.status(401);
             response.send();
         }
     });
+}
+
+router.post("/session", checkLogin, async (request, response) => {
+    let authToken = uuid.v4();
+    response.cookie("authToken", authToken, {
+        maxAge: 1000 * 60 * 60 * 48,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true
+    });
+
+    db.newSession(request.body.username, authToken).then((result) => {
+        console.log(JSON.stringify(result));
+        response.status(201);
+        response.send();
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+        response.status(500);
+        response.send();
+    });
+
 });
 
 router.delete("/session", bouncer, (request, response) => {
@@ -145,13 +171,15 @@ router.delete("/session", bouncer, (request, response) => {
 router.get("/xkcd/:number", (request, response) => {
     fetch(
         "https://xkcd.com/" + request.params.number + "/info.0.json",
-        {method: "get",
-            headers: { "Content-type": "application/json; charset=UTF-8" }}
+        {
+            method: "get",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        }
     ).then((xkcd_response) => {
         if (xkcd_response.status === 200) {
             xkcd_response.json().then((body) => {
                 response.status(200);
-                response.send({url: body.img});
+                response.send({ url: body.img });
             });
         }
         else {
@@ -209,7 +237,7 @@ router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
         bestness = 1; // Meaning this score is a new personal record
     }
     response.status(201);
-    response.send({bestness: bestness});
+    response.send({ bestness: bestness });
 });
 
 router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
@@ -228,7 +256,7 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
         bestness = 1; // Meaning this score is a new personal record
     }
     response.status(201);
-    response.send({bestness: bestness});
+    response.send({ bestness: bestness });
 });
 
 router.get("/bests", bouncer, (request, response) => {
@@ -238,7 +266,7 @@ router.get("/bests", bouncer, (request, response) => {
         pers_best_score = pers_best_score_record[0].score;
     }
     let overall_best_score = best_scores[0];
-    
+
     let pers_best_hit_record = pers_best_hits[request.username];
     let pers_best_hit;
     if (pers_best_hit_record) {
@@ -248,7 +276,7 @@ router.get("/bests", bouncer, (request, response) => {
 
     response.status(200);
     response.send({
-        pers_best: pers_best_score, 
+        pers_best: pers_best_score,
         overall_best: overall_best_score,
         pers_best_hit: pers_best_hit,
         overall_best_hit: overall_best_hit
@@ -261,7 +289,7 @@ router.get("/scores", bouncer, (request, response) => {
 
     response.status(200);
     response.send({
-        pers_bests: pers_best_score_record, 
+        pers_bests: pers_best_score_record,
         overall_bests: best_scores,
         pers_best_hits: pers_best_hit_record,
         overall_best_hits: best_hits
@@ -274,4 +302,4 @@ app.use((request, response) => {
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 console.log("starting up server");
-app.listen(port, () => {console.log("listening");});
+app.listen(port, () => { console.log("listening"); });
