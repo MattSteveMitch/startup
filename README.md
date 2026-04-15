@@ -14,7 +14,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-For anyone who's read and enjoyed the [Skyward series](https://www.brandonsanderson.com/pages/skyward-series), or just likes simple 2D space action games à la [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)), this is for you! Take down evil Commander Winzik's ship by using your light-lance to grapple rocks thrown by the [Delver](https://coppermind.net/wiki/Delver) and sling them at the battleship.
+For anyone who's read and enjoyed the [Skyward series](https://www.brandonsanderson.com/pages/skyward-series), or just likes simple 2D space action games à la [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)), this is for you! Take down evil Commander Winzik's ship by using your light-lance to grapple rocks thrown by the [Delver](https://coppermind.net/wiki/Delver) and sling them at the battleship. The plan is to make a website will all the basic functionality necessary to one day implement the full game online (originally written by me as an offline game in Python).
 
 ### Design
 
@@ -37,12 +37,12 @@ For anyone who's read and enjoyed the [Skyward series](https://www.brandonsander
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Set up webpage with main game screen, title, and scores to the left of the game screen
-- **CSS** - Stylize text, display little animation whenever the most recent score, personal best, or overall best score updates, arrange title up top and scores on left side of screen
-- **React** - Handle transitions between homepage, game UI, and account creation screen. Also handle registering of interactions with game
-- **Service** - To start game, log in, log out, create account, and share score on Facebook or Twitter
+- **HTML** - Set up webpage with main game screen, title, and scores to the left of the game screen, as well as scores page with table of top 10 personal and overall bests, and login page
+- **CSS** - Stylize text, display little animation on game page whenever the most recent score, personal best, or overall best score updates, make scores page look cool and not boring, format XKCD comic on login page
+- **React** - Handle transitions between homepage, game UI, and account creation screen. Also handle registering of interactions with game, and animation
+- **Service** - To log in, log out, create account, update scores, fetch updated scores, and fetch a random XKCD comic on the login page
 - **DB/Login** - Store authentication tokens, accounts, most recent scores, and high scores
-- **WebSocket** - Handle interaction between player and game UI, as well as updates when someone sets a new overall high score
+- **WebSocket** - Probably not going to finish this part, honestly.
 
 ## 🚀 AWS deliverable
 
@@ -56,7 +56,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] **HTML pages** - Scores page, game page, login page, and account creation page.
 - [x] **Proper HTML element usage** - Body, div, headers, sections, footer, etc.
-- [x] **Links** - To Facebook, Twitter, this repo, navigation between pages
+- [x] **Links** - To Facebook, this repo, navigation between pages
 - [x] **Text** - Scores on scores page and game page
 - [x] **3rd party API placeholder** - Buttons to share score on Facebook, Twitter
 - [x] **Images** - Logos for FB, Twitter, that link to their respective home pages, Github logo linking to this repo, placeholder for game window
@@ -94,12 +94,20 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
-- [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
-- [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Supports registration, login, logout, and restricted endpoint** - I did not complete this part of the deliverable.
+- [x] **Node.js/Express HTTP service** - Server uses Express to store and update login information and scores.
+- [x] **Static middleware for frontend** - Used a middleware to verify identity of user when necessary, and another middleware to detect and reject any null values in score update requests.
+- [x] **Calls to third party endpoints** - Server requests an XKCD comic and serves up the URL for the login page. For some reason I'm not allowed to request the URL from the frontend directly, so the server has to request the URL and forward it to the frontend, which renders the comic.
+- [x] **Backend service endpoints** - 
+1. Get top 10 scores in each category (personal and overall best score, personal and overall best hit, for score page)
+2. Get single highest score in each category (for game page)
+3. Create account
+4. Log in
+5. Log out
+6. Check whether a given username or email is already registered (before creating account or logging in)
+7. XKCD
+8. Update scores or spaceship hits
+- [x] **Frontend calls service endpoints** - Frontend calls each one of the endpoints
+- [x] **Supports registration, login, logout, and restricted endpoint** - All of these are implemented; scores page and game page require you to have an account
 
 
 ## 🚀 DB deliverable
