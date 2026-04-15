@@ -11,7 +11,7 @@ function notEmpty(fields, emptyMsgs, index, errorMsgRef) {
     return true;
 }
 
-function setErrMsg(errorMsgRef, msg, isGood) {
+export function setErrMsg(errorMsgRef, msg, isGood) {
     errorMsgRef.current.innerHTML = msg;
     if (isGood) {
         errorMsgRef.current.className = "errorMsg good";

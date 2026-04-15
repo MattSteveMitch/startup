@@ -142,6 +142,25 @@ router.delete("/session", bouncer, (request, response) => {
     response.send();
 });
 
+router.get("/xkcd/:number", (request, response) => {
+    fetch(
+        "https://xkcd.com/" + request.params.number + "/info.0.json",
+        {method: "get",
+            headers: { "Content-type": "application/json; charset=UTF-8" }}
+    ).then((xkcd_response) => {
+        if (xkcd_response.status === 200) {
+            xkcd_response.json().then((body) => {
+                response.status(200);
+                response.send({url: body.img});
+            });
+        }
+        else {
+            response.status(xkcd_response.status);
+            response.send();
+        }
+    });
+});
+
 function compareScoreRows(row1, row2) {
     return row2.score < row1.score || -(row1.score < row2.score);
 }

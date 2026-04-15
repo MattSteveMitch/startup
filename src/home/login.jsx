@@ -1,5 +1,5 @@
 import React from "react";
-import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut } from "./home_aux.jsx";
+import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut, setErrMsg } from "./home_aux.jsx";
 import "./home.css";
 
 var fields_login = [null, null];
@@ -18,13 +18,34 @@ function setImgSize(image, maxDimension, aspectRatio) {
 }
 
 export function Login() {
+    var LoginErrorMsgRef = React.useRef(null);
     var imgBoxRef = React.useRef(null);
-    var aspectRatio, xkcd;
-
+    var aspectRatio;
+    var xkcd = new Image();
 
     React.useEffect(() => {
+        let comicNum = Math.floor((Math.random() * 3232 + 1));
+        if (comicNum === 179) {comicNum++;} // That one has an F-bomb in it. I thought better of you, Randall.
+        fetch(
+            "/api/xkcd/" + comicNum,
+            {method: "get", 
+            headers: { "Content-type": "application/json; charset=UTF-8" }}
+        ).then((response) => {
+            if (response.status === 200) {
+                response.json().then((body) => {
+                    xkcd.src = body.url;
+                });
+            }
+            else {
+                setErrMsg(LoginErrorMsgRef, "Error retrieving comic: " + response.status + ": " + response.statusText, false);
+            }
+        }).catch((error) => {
+            console.log(error);
+            setErrMsg(LoginErrorMsgRef, "Server unavailable. Please try again later.", false);
+        });
+
         function getMaxDimension() {
-            return Math.min((window.innerHeight - 80) * aspectRatio, 450);
+            return Math.min((window.innerHeight - 80) * Math.max(aspectRatio, 1), 450);
         }
 
         function resizeHandler(event) {
@@ -32,8 +53,7 @@ export function Login() {
             setImgSize(xkcd, maxDimension, aspectRatio);
         }
 
-        xkcd = new Image();
-        xkcd.src = "https://imgs.xkcd.com/comics/lightning.png" /*"https://imgs.xkcd.com/comics/woodpecker.png" "https://imgs.xkcd.com/comics/countdown_standard.png"*/;
+
         xkcd.onload = () => {
             aspectRatio = xkcd.width / xkcd.height;
             resizeHandler(null);
@@ -50,8 +70,6 @@ export function Login() {
     }, []);
 
 
-
-    var LoginErrorMsgRef = React.useRef(null);
     var setInputPassword, setInputUsername;
 
     [fields_login[0], setInputUsername] = React.useState("");
