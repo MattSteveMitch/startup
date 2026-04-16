@@ -108,8 +108,8 @@ function bouncer(request, response, next) {
 }
 
 function nullScoreSlayer(request, response, next) {
-    let hit = request.body.score;
-    if (hit === undefined || hit === null) {
+    let score = request.body.score;
+    if (score === undefined || score === null) {
         response.status(400);
         response.send();
     }
@@ -236,11 +236,8 @@ function updateScores(record, username, score, is_hit) {
 }
 
 router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
-    if (pers_best_scores[request.username] === undefined) {
-        pers_best_scores[request.username] = [];
-    }
-
     let score = request.body.score;
+//    Promise.all([db.updateOverallBests(request.username, score, false), db.update]).then()
     let old_pers_best = updateScores(pers_best_scores[request.username], null, score, false);
     let old_best = updateScores(best_scores, request.username, score, false);
     let bestness = 0; // Meaning this score is not a record
