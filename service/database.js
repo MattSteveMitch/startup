@@ -51,17 +51,43 @@ function getIdentity(authToken) {
     return sessions.findOne({ _id: authToken }, { username: 1 });
 }
 
-function finalUpdateTable(collection, username, score, sortOrder) {
-    return new Promise((resolve, reject) => {
-        collection.find({}).toArray().then((record) => {
-            var old_best = record[0];
-            console.log(JSON.stringify(old_best));
 
-            record.splice(10);
-            const newRow = { _id: record.length, username: username, score: score };
+
+function compareScoreRows(row1, row2) {
+    return row2.score < row1.score || -(row1.score < row2.score);
+}
+
+function compareScoreRowsRev(row1, row2) {
+    return row2.score > row1.score || -(row1.score > row2.score);
+}
+
+
+
+function finalUpdateTable(collection, username, score, compareFun) {
+    return new Promise((resolve, reject) => {
+        collection.find({}).toArray().then((table) => {
+            var old_best = table[0];
+
+            const newRow = {username: username, score: score };
             console.log(JSON.stringify(newRow));
-            record.push(newRow);
-            resolve(collection.updateMany({}, record, { $sort: { score: sortOrder, _id: 1 } }));
+            table.push(newRow);
+            table.sort(compareFun);
+            table.splice(10);
+
+            collection.drop().then((result) => {
+                if (result) {
+                    collection.insertMany(table).then((result) => {
+                        resolve(old_best);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+                }
+                else {
+                    reject("Failed to drop collection");
+                }
+            }).catch((error) => {
+                reject(error);
+            });
         }).catch((error) => {
             reject(error);
         });
@@ -69,32 +95,32 @@ function finalUpdateTable(collection, username, score, sortOrder) {
 }
 
 function updateOverallBests(username, score, is_hit) {
-    let collection, sortOrder;
+    let collection, compareFun;
     if (is_hit) {
         collection = score_tables[1];
-        sortOrder = 1;
+        compareFun = compareScoreRowsRev;
     }
     else {
         collection = score_tables[0];
-        sortOrder = -1;
+        compareFun = compareScoreRows;
     }
 
-    return finalUpdateTable(collection, username, score, sortOrder); // Returning a promise within a promise
+    return finalUpdateTable(collection, username, score, compareFun);
 }
 
 function updatePersonalBests(username, score, is_hit) {
-    let sortOrder, collection_str;
+    let compareFun, collection_str;
     if (is_hit) {
         collection_str = "_best_hits";
-        sortOrder = 1;
+        compareFun = compareScoreRowsRev;
     }
     else {
         collection_str = "_best_scores";
-        sortOrder = -1;
+        compareFun = compareScoreRows;
     }
     let collection = db.collection(username + collection_str);
 
-    return finalUpdateTable(collection, username, score, sortOrder); // Returning a promise within a promise
+    return finalUpdateTable(collection, username, score, compareFun);
 }
 
 /*function updateScores(record, username, score, is_hit) {
@@ -121,6 +147,8 @@ function updatePersonalBests(username, score, is_hit) {
     }
 }
 */
+
+
 module.exports = {
     createAccount, getEmail: getEmail, usernameExists, getAccount, newSession, deleteSession,
     getIdentity, updateOverallBests, updatePersonalBests

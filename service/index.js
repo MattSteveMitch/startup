@@ -146,9 +146,9 @@ function checkLogin(request, response, next) {
             response.send();
         }
     }).then((result) => {
-        if (result !== undefined) { 
-        /* If `result` is undefined, it means either we've failed one of
-        the previous conditions, or we've already called `next()` */
+        if (result !== undefined) {
+            /* If `result` is undefined, it means either we've failed one of
+            the previous conditions, or we've already called `next()` */
             next();
         }
     });
@@ -211,7 +211,7 @@ function compareScoreRowsRev(row1, row2) {
     return row2.score > row1.score || -(row1.score > row2.score);
 }
 
-function updateScores(record, username, score, is_hit) {
+function updateScores(table, username, score, is_hit) {
     let compareFun;
     if (is_hit) {
         compareFun = compareScoreRowsRev;
@@ -220,12 +220,12 @@ function updateScores(record, username, score, is_hit) {
         compareFun = compareScoreRows;
     }
 
-    var old_best = record[0];
+    var old_best = table[0];
 
     const newRow = new ScoreRow(username, score);
-    record.push(newRow);
-    record.sort(compareFun);
-    record.splice(10);
+    table.push(newRow);
+    table.sort(compareFun);
+    table.splice(10);
 
     if (old_best) {
         return old_best.score;
@@ -237,18 +237,24 @@ function updateScores(record, username, score, is_hit) {
 
 router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
     let score = request.body.score;
-//    Promise.all([db.updateOverallBests(request.username, score, false), db.update]).then()
-    let old_pers_best = updateScores(pers_best_scores[request.username], null, score, false);
-    let old_best = updateScores(best_scores, request.username, score, false);
-    let bestness = 0; // Meaning this score is not a record
-    if (old_best === undefined || score < old_best) {
-        bestness = 2; // Meaning this score is a new record overall
-    }
-    else if (old_pers_best === undefined || score < old_pers_best) {
-        bestness = 1; // Meaning this score is a new personal record
-    }
-    response.status(201);
-    response.send({ bestness: bestness });
+    Promise.all([
+        db.updateOverallBests(request.username, score, false),
+        db.updatePersonalBests(request.username, score, false)
+    ]).then((old_bests) => {
+        let old_overall_best = old_bests[0];
+        let old_pers_best = old_bests[1];
+        let bestness = 0; // Meaning this score is not a record
+        if (old_overall_best === undefined || score < old_overall_best.score) {
+            bestness = 2; // Meaning this score is a new record overall
+        }
+        else if (old_pers_best === undefined || score < old_pers_best.score) {
+            bestness = 1; // Meaning this score is a new personal record
+        }
+        response.status(201);
+        response.send({ bestness: bestness });
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+    });
 });
 
 router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
@@ -271,17 +277,17 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
 });
 
 router.get("/bests", bouncer, (request, response) => {
-    let pers_best_score_record = pers_best_scores[request.username];
+    let pers_best_score_table = pers_best_scores[request.username];
     let pers_best_score;
-    if (pers_best_score_record) {
-        pers_best_score = pers_best_score_record[0].score;
+    if (pers_best_score_table) {
+        pers_best_score = pers_best_score_table[0].score;
     }
     let overall_best_score = best_scores[0];
 
-    let pers_best_hit_record = pers_best_hits[request.username];
+    let pers_best_hit_table = pers_best_hits[request.username];
     let pers_best_hit;
-    if (pers_best_hit_record) {
-        pers_best_hit = pers_best_hit_record[0].score;
+    if (pers_best_hit_table) {
+        pers_best_hit = pers_best_hit_table[0].score;
     }
     let overall_best_hit = best_hits[0];
 
@@ -295,14 +301,14 @@ router.get("/bests", bouncer, (request, response) => {
 });
 
 router.get("/scores", bouncer, (request, response) => {
-    let pers_best_score_record = pers_best_scores[request.username];
-    let pers_best_hit_record = pers_best_hits[request.username];
+    let pers_best_score_table = pers_best_scores[request.username];
+    let pers_best_hit_table = pers_best_hits[request.username];
 
     response.status(200);
     response.send({
-        pers_bests: pers_best_score_record,
+        pers_bests: pers_best_score_table,
         overall_bests: best_scores,
-        pers_best_hits: pers_best_hit_record,
+        pers_best_hits: pers_best_hit_table,
         overall_best_hits: best_hits
     });
 });
