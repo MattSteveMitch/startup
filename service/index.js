@@ -245,11 +245,28 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
 
 router.get("/bests", bouncer, (request, response) => {
     db.getScores(request.username, true).then((bests) => {
+        let pers_best_row = bests[0][0];
+        let pers_best_hit_row = bests[2][0];
+        let pers_best, pers_best_hit;
+        if (pers_best_row) {
+            pers_best = pers_best_row.score;
+        }
+        else {
+            pers_best = undefined;
+        }
+
+        if (pers_best_hit_row) {
+            pers_best_hit = pers_best_hit_row.score;
+        }
+        else {
+            pers_best_hit = undefined;
+        }
+
         response.status(200);
         response.send({
-            pers_best: bests[0][0].score,
+            pers_best: pers_best,
             overall_best: bests[1][0],
-            pers_best_hit: bests[2][0].score,
+            pers_best_hit: pers_best_hit,
             overall_best_hit: bests[3][0]
         });
     });
