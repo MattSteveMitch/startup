@@ -42,8 +42,11 @@ function newSession(username, authToken) {
     ]);
 }
 
-function deleteSession(authToken) {
-    return sessions.deleteOne({_id: authToken});
+function deleteSession(authToken, username) {
+    return Promise.all([
+        sessions.deleteOne({_id: authToken}), 
+        accounts.updateOne({_id: username}, {$unset: {token: 1}})
+    ]);
 }
 
 function getIdentity(authToken) {

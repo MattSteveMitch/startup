@@ -5,8 +5,6 @@ const uuid = require("uuid");
 
 const db = require("./database.js");
 
-const sessions = new Object();
-const accounts = new Object();
 const best_scores = [];
 const pers_best_scores = new Object();
 const best_hits = [];
@@ -30,7 +28,6 @@ app.use(express.static("public"));
 
 router.get("/availableEmail/:email", async (request, response) => {
     let userEmail = request.params.email;
- //   console.log(db.emailExists(userEmail).then);
     db.getEmail(userEmail).then((result) => {
         if (result) {
             response.status(409);
@@ -76,7 +73,9 @@ router.post("/account", async (request, response) => {
             return db.usernameExists(request.body.username);
         }
     }).then((result) => {
-        if (result) {
+        if (result === undefined) {
+        }
+        else if (result) {
             response.status(409);
             response.send({ msg: "Username already taken" });
         }
@@ -84,10 +83,14 @@ router.post("/account", async (request, response) => {
             return bcrypt.hash(request.body.password, 12);
         }
     }).then((hashedPass) => {
-        return db.createAccount(request.body.username, hashedPass, request.body.email);
+        if (hashedPass !== undefined) {
+            return db.createAccount(request.body.username, hashedPass, request.body.email);
+        }
     }).then((result) => {
-        response.status(201);
-        response.send();
+        if (result !== undefined) {
+            response.status(201);
+            response.send();
+        }
     });
 });
 
@@ -116,25 +119,37 @@ function nullScoreSlayer(request, response, next) {
 }
 
 function checkLogin(request, response, next) {
-    db.getAccount(request.body.username).then((account) => {
+    var username = request.body.username;
+    var existingToken;
+    db.getAccount(username).then((account) => {
         if (!account) {
             response.status(404);
             response.send();
         }
-        var comparisonPromise = bcrypt.compare(request.body.password, account.password);
-        if (account.token) { // If somehow the user is already logged in, log them out first
-            return Promise.all([db.deleteSession(account.token), comparisonPromise]);
-        }
         else {
-            return comparisonPromise;
+            existingToken = account.token;
+            return bcrypt.compare(request.body.password, account.password);
         }
-    }).then((result) => {
-        if (result[1] ?? result) {
-            next();
+    }).then((correct) => {
+        if (correct === undefined) {
+        }
+        else if (correct) {
+            if (existingToken) {
+                return db.deleteSession(existingToken, username);
+            }
+            else {
+                next();
+            }
         }
         else {
             response.status(401);
             response.send();
+        }
+    }).then((result) => {
+        if (result !== undefined) { 
+        /* If `result` is undefined, it means either we've failed one of
+        the previous conditions, or we've already called `next()` */
+            next();
         }
     });
 }
@@ -149,7 +164,6 @@ router.post("/session", checkLogin, async (request, response) => {
     });
 
     db.newSession(request.body.username, authToken).then((result) => {
-        console.log(JSON.stringify(result));
         response.status(201);
         response.send();
     }).catch((error) => {
@@ -162,10 +176,10 @@ router.post("/session", checkLogin, async (request, response) => {
 
 router.delete("/session", bouncer, (request, response) => {
     let token = request.cookies["authToken"];
-    delete sessions[token];
-    accounts[request.username][2] = null; // Delete authToken from account to show that user is logged out
-    response.status(200);
-    response.send();
+    db.deleteSession(token, request.username).then((result) => {
+        response.status(200);
+        response.send();
+    });
 });
 
 router.get("/xkcd/:number", (request, response) => {
