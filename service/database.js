@@ -66,11 +66,13 @@ function compareScoreRowsRev(row1, row2) {
 function finalUpdateTable(collection, username, score, compareFun) {
     return new Promise((resolve, reject) => {
         collection.find({}).toArray().then((table) => {
+            table.sort(compareFun); // Apparently the storage order on MongoDB is not something to count on
+            var old_best = table[0];
+
             const newRow = {ordinal: table.length, username: username, score: score };
             console.log(JSON.stringify(newRow));
             table.push(newRow);
             table.sort(compareFun);
-            var old_best = table[0];
             table.splice(10);
 
             collection.drop().then((result) => {
@@ -122,24 +124,29 @@ function updatePersonalBests(username, score, is_hit) {
     return finalUpdateTable(collection, username, score, compareFun);
 }
 
-
-
-function getBests(username) {
+function getScores(username, bestsOnly) {
     let pers_best_scores = db.collection(username + "_best_scores");
     let best_scores = db.collection("best_scores");
     let pers_best_hits = db.collection(username + "_best_hits");
     let best_hits = db.collection("best_hits");
 
-    let options_scores = {$sort: {score: 1, ordinal: 1}, limit: 1};
-    let options_hits = {$sort: {score: -1, ordinal: 1}, limit: 1};
+    let options_hits, options_scores;
+    if (bestsOnly) {
+        options_scores = {$sort: {score: 1, ordinal: 1}, limit: 1};
+        options_hits = {$sort: {score: -1, ordinal: 1}, limit: 1};
+    }
+    else {
+        options_scores = {$sort: {score: 1, ordinal: 1}};
+        options_hits = {$sort: {score: -1, ordinal: 1}};
+    }
     return Promise.all([
-        pers_best_scores.find({}, options_scores), best_scores.find({}, options_scores),
-        pers_best_hits.find({}, options_hits), best_hits.find({}, options_hits)
+        pers_best_scores.find({}, options_scores).toArray(), best_scores.find({}, options_scores).toArray(),
+        pers_best_hits.find({}, options_hits).toArray(), best_hits.find({}, options_hits).toArray()
     ]);
 }
 
 
 module.exports = {
     createAccount, getEmail: getEmail, usernameExists, getAccount, newSession, deleteSession,
-    getIdentity, updateOverallBests, updatePersonalBests, getBests
+    getIdentity, updateOverallBests, updatePersonalBests, getScores
 };

@@ -5,18 +5,6 @@ const uuid = require("uuid");
 
 const db = require("./database.js");
 
-const best_scores = [];
-const pers_best_scores = new Object();
-const best_hits = [];
-const pers_best_hits = new Object();
-
-class ScoreRow {
-    constructor(username, score) {
-        this.username = username;
-        this.score = score;
-    }
-}
-
 const app = express();
 
 app.use(express.json());
@@ -256,29 +244,26 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
 });
 
 router.get("/bests", bouncer, (request, response) => {
-    db.getBests(request.username).then((bests) => {
-        
-    });
-
-    response.status(200);
-    response.send({
-        pers_best: pers_best_score,
-        overall_best: overall_best_score,
-        pers_best_hit: pers_best_hit,
-        overall_best_hit: overall_best_hit
+    db.getScores(request.username, true).then((bests) => {
+        response.status(200);
+        response.send({
+            pers_best: bests[0][0].score,
+            overall_best: bests[1][0],
+            pers_best_hit: bests[2][0].score,
+            overall_best_hit: bests[3][0]
+        });
     });
 });
 
 router.get("/scores", bouncer, (request, response) => {
-    let pers_best_score_table = pers_best_scores[request.username];
-    let pers_best_hit_table = pers_best_hits[request.username];
-
-    response.status(200);
-    response.send({
-        pers_bests: pers_best_score_table,
-        overall_bests: best_scores,
-        pers_best_hits: pers_best_hit_table,
-        overall_best_hits: best_hits
+    db.getScores(request.username, false).then((bests) => {
+        response.status(200);
+        response.send({
+            pers_bests: bests[0],
+            overall_bests: bests[1],
+            pers_best_hits: bests[2],
+            overall_best_hits: bests[3]
+        });
     });
 });
 
