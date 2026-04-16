@@ -211,30 +211,6 @@ function compareScoreRowsRev(row1, row2) {
     return row2.score > row1.score || -(row1.score > row2.score);
 }
 
-function updateScores(table, username, score, is_hit) {
-    let compareFun;
-    if (is_hit) {
-        compareFun = compareScoreRowsRev;
-    }
-    else {
-        compareFun = compareScoreRows;
-    }
-
-    var old_best = table[0];
-
-    const newRow = new ScoreRow(username, score);
-    table.push(newRow);
-    table.sort(compareFun);
-    table.splice(10);
-
-    if (old_best) {
-        return old_best.score;
-    }
-    else {
-        return undefined;
-    }
-}
-
 router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
     let score = request.body.score;
     Promise.all([
@@ -258,38 +234,31 @@ router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
 });
 
 router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
-    if (pers_best_hits[request.username] === undefined) {
-        pers_best_hits[request.username] = [];
-    }
-
-    let hit = request.body.score;
-    let old_pers_best = updateScores(pers_best_hits[request.username], null, hit, true);
-    let old_best = updateScores(best_hits, request.username, hit, true);
-    let bestness = 0; // Meaning this score is not a record
-    if (old_best === undefined || hit > old_best) {
-        bestness = 2; // Meaning this score is a new record overall
-    }
-    else if (old_pers_best === undefined || hit > old_pers_best) {
-        bestness = 1; // Meaning this score is a new personal record
-    }
-    response.status(201);
-    response.send({ bestness: bestness });
+    let score = request.body.score;
+    Promise.all([
+        db.updateOverallBests(request.username, score, true),
+        db.updatePersonalBests(request.username, score, true)
+    ]).then((old_bests) => {
+        let old_overall_best = old_bests[0];
+        let old_pers_best = old_bests[1];
+        let bestness = 0; // Meaning this score is not a record
+        if (old_overall_best === undefined || score > old_overall_best.score) {
+            bestness = 2; // Meaning this score is a new record overall
+        }
+        else if (old_pers_best === undefined || score > old_pers_best.score) {
+            bestness = 1; // Meaning this score is a new personal record
+        }
+        response.status(201);
+        response.send({ bestness: bestness });
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+    });
 });
 
 router.get("/bests", bouncer, (request, response) => {
-    let pers_best_score_table = pers_best_scores[request.username];
-    let pers_best_score;
-    if (pers_best_score_table) {
-        pers_best_score = pers_best_score_table[0].score;
-    }
-    let overall_best_score = best_scores[0];
-
-    let pers_best_hit_table = pers_best_hits[request.username];
-    let pers_best_hit;
-    if (pers_best_hit_table) {
-        pers_best_hit = pers_best_hit_table[0].score;
-    }
-    let overall_best_hit = best_hits[0];
+    db.getBests(request.username).then((bests) => {
+        
+    });
 
     response.status(200);
     response.send({
