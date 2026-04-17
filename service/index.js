@@ -217,7 +217,7 @@ router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
         response.status(201);
         response.send({ bestness: bestness });
     }).catch((error) => {
-        console.log(JSON.stringify(error));
+        console.log("Error updating scores");
     });
 });
 
@@ -239,7 +239,7 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
         response.status(201);
         response.send({ bestness: bestness });
     }).catch((error) => {
-        console.log(JSON.stringify(error));
+        console.log("Error updating hits");
     });
 });
 

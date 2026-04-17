@@ -53,43 +53,67 @@ function getIdentity(authToken) {
 
 
 
-function compareScoreRows(row1, row2) {
-    return row2.score < row1.score || -(row1.score < row2.score);
+function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied, the one that was
+    earned first comes first in the score table */
+    let initial = row2.score < row1.score || -(row1.score < row2.score);
+    if (!initial) {
+        return row1.ordinal > row2.ordinal;
+    }
+    return initial;
 }
 
-function compareScoreRowsRev(row1, row2) {
-    return row2.score > row1.score || -(row1.score > row2.score);
+function compareScoreRowsRev(row1, row2) { // See comment on `compareScoreRows`
+    let initial = row2.score > row1.score || -(row1.score > row2.score);
+    if (!initial) {
+        return row1.ordinal > row2.ordinal;
+    }
+    return initial;
 }
 
+function reIndex(table) { // See comment on `compareScoreRows`
+    for (let i = 0; i < table.length; i++) {
+        table[i].ordinal = i;
+    }
+}
 
 
 function finalUpdateTable(collection, username, score, compareFun) {
     return new Promise((resolve, reject) => {
         collection.find({}).toArray().then((table) => {
-            table.sort(compareFun); // Apparently the storage order on MongoDB is not something to count on
+            table.sort((row1, row2) => {row1.ordinal > row2.ordinal}); /* Apparently the storage order on MongoDB is not something to 
+            count on, so things might have gotten out of order at some point*/
             var old_best = table[0];
 
-            const newRow = {ordinal: table.length, username: username, score: score };
-            console.log(JSON.stringify(newRow));
-            table.push(newRow);
-            table.sort(compareFun);
-            table.splice(10);
+            const newRow = {ordinal: 10, username: username, score: score };
+            let numRows = table.length;
+            if (!numRows || compareFun(newRow, table[numRows - 1]) < 0 || table.length < 10) {
+                table.push(newRow);
+                table.sort(compareFun);
+                reIndex(table);
+                table.splice(10);
 
-            collection.drop().then((result) => {
-                if (result) {
-                    collection.insertMany(table).then((result) => {
-                        resolve(old_best);
-                    }).catch((error) => {
-                        reject(error);
-                    });
-                }
-                else {
-                    reject("Failed to drop collection");
-                }
-            }).catch((error) => {
-                reject(error);
-            });
+                collection.drop().then((result) => {
+                    if (result) {
+                        collection.insertMany(table).then((result) => {
+                            resolve(old_best);
+                        }).catch((error) => {
+                            reject(error);
+                        });
+                    }
+                    else {
+                        console.log("Failed to drop collection");
+                        reject("Failed to drop collection");
+                    }
+                }).catch((error) => {
+                    console.log("Failed to drop collection (catch)");
+                    reject(error);
+                });
+            }
+            else {
+                resolve(old_best);
+            }
         }).catch((error) => {
+            console.log("Failed to create array");
             reject(error);
         });
     });
