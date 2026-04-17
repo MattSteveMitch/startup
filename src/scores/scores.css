@@ -107,7 +107,7 @@ section.score {
 }
 
 @media (max-width: 1100px) {
-    main {
+    .all-scores {
         display: block;
     }
 
