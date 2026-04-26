@@ -1,3 +1,4 @@
+"use strict";
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
@@ -274,6 +275,11 @@ router.get("/bests", bouncer, (request, response) => {
 
 router.get("/scores", bouncer, (request, response) => {
     db.getScores(request.username, false).then((bests) => {
+        bests[0].sort(db.compareScoreRows);
+        bests[1].sort(db.compareScoreRows);
+        bests[2].sort(db.compareScoreRowsRev);
+        bests[3].sort(db.compareScoreRowsRev);
+
         response.status(200);
         response.send({
             pers_bests: bests[0],

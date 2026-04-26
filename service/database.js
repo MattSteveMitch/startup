@@ -1,3 +1,4 @@
+"use strict";
 const MongoDB = require("mongodb");
 const config = require("./dbConfig.json");
 const url = "mongodb+srv://" + config.userName + ":" + config.password + "@" + config.hostname;
@@ -51,13 +52,15 @@ function getIdentity(authToken) {
     return sessions.findOne({ _id: authToken }, { username: 1 });
 }
 
-
+function compareOrdinals(row1, row2) {
+    return row2.ordinal < row1.ordinal || -(row1.ordinal < row2.ordinal);
+}
 
 function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied, the one that was
     earned first comes first in the score table */
     let initial = row2.score < row1.score || -(row1.score < row2.score);
     if (!initial) {
-        return row1.ordinal > row2.ordinal;
+        return compareOrdinals(row1, row2);
     }
     return initial;
 }
@@ -65,7 +68,7 @@ function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied
 function compareScoreRowsRev(row1, row2) { // See comment on `compareScoreRows`
     let initial = row2.score > row1.score || -(row1.score > row2.score);
     if (!initial) {
-        return row1.ordinal > row2.ordinal;
+        return compareOrdinals(row1, row2);
     }
     return initial;
 }
@@ -80,7 +83,7 @@ function reIndex(table) { // See comment on `compareScoreRows`
 function finalUpdateTable(collection, username, score, compareFun) {
     return new Promise((resolve, reject) => {
         collection.find({}).toArray().then((table) => {
-            table.sort((row1, row2) => {row1.ordinal > row2.ordinal}); /* Apparently the storage order on MongoDB is not something to 
+            table.sort(compareOrdinals); /* Apparently the storage order on MongoDB is not something to 
             count on, so things might have gotten out of order at some point*/
             var old_best = table[0];
 
@@ -154,23 +157,14 @@ function getScores(username, bestsOnly) {
     let pers_best_hits = db.collection(username + "_best_hits");
     let best_hits = db.collection("best_hits");
 
-    let options_hits, options_scores;
-    if (bestsOnly) {
-        options_scores = {$sort: {score: 1, ordinal: 1}, limit: 1};
-        options_hits = {$sort: {score: -1, ordinal: 1}, limit: 1};
-    }
-    else {
-        options_scores = {$sort: {score: 1, ordinal: 1}};
-        options_hits = {$sort: {score: -1, ordinal: 1}};
-    }
     return Promise.all([
-        pers_best_scores.find({}, options_scores).toArray(), best_scores.find({}, options_scores).toArray(),
-        pers_best_hits.find({}, options_hits).toArray(), best_hits.find({}, options_hits).toArray()
+        pers_best_scores.find({}).toArray(), best_scores.find({}).toArray(),
+        pers_best_hits.find({}).toArray(), best_hits.find({}).toArray()
     ]);
 }
 
 
 module.exports = {
     createAccount, getEmail: getEmail, usernameExists, getAccount, newSession, deleteSession,
-    getIdentity, updateOverallBests, updatePersonalBests, getScores
+    getIdentity, updateOverallBests, updatePersonalBests, getScores, compareScoreRows, compareScoreRowsRev
 };
