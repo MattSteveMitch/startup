@@ -24,8 +24,8 @@ export function Login() {
     var xkcd = new Image();
 
     React.useEffect(() => {
-        let comicNum = Math.floor((Math.random() * 3232 + 1));
-        if (comicNum === 179) {comicNum++;} // That one has an F-bomb in it. I thought better of you, Randall.
+        let comicNum = Math.floor((Math.random() * 2132 + 1101)); // Some of the earlier comics are more dirty, so I don't select before 1100.
+        // That's not to say that the ones I do select are all clean, but they seem more so.
         fetch(
             "/api/xkcd/" + comicNum,
             {method: "get", 

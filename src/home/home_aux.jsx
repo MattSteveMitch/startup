@@ -1,10 +1,13 @@
 const emailsCache = new Object();
 const usernamesCache = new Object();
 
-function notEmpty(fields, emptyMsgs, index, errorMsgRef) {
+function correctLength(fields, emptyMsgs, index, errorMsgRef, isEmail = false) {
     if (!fields[index]) {
-        errorMsgRef.current.innerHTML = emptyMsgs[index];
-        errorMsgRef.current.className = "errorMsg bad";
+        setErrMsg(errorMsgRef, emptyMsgs[index], false);
+        return false;
+    }
+    else if ((!isEmail && fields[index].length > 16) || (isEmail && fields[index].length > 60)) {
+        setErrMsg(errorMsgRef, "Too many characters in box " + (index + 1), false);
         return false;
     }
 
@@ -25,7 +28,7 @@ export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
     let failMsg = "Email already registered";
 
     return new Promise((resolve, reject) => {
-        if (notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
+        if (correctLength(fields, emptyMsgs, 0, errorMsgRef)) {
             var cachedResult = emailsCache[fields[0]];
             if (cachedResult === undefined) {
                 fetch("/api/availableEmail/" + fields[0], {
@@ -83,7 +86,7 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
         checkUniqueEmail(fields, emptyMsgs, errorMsgRef).then((goodEmail) => {
             if (goodEmail) {
-                if (notEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
+                if (correctLength(fields, emptyMsgs, 1, errorMsgRef)) {
                     var cachedResult = usernamesCache[fields[1]];
                     if (cachedResult === undefined) {
                         fetch("/api/goodUsername/" + fields[1] + "/register", {
@@ -138,7 +141,7 @@ export function checkRegPassword(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
         checkUniqueUsername(fields, emptyMsgs, errorMsgRef).then((goodUsername) => {
             if (goodUsername) {
-                if (notEmpty(fields, emptyMsgs, 2, errorMsgRef)) {
+                if (correctLength(fields, emptyMsgs, 2, errorMsgRef)) {
                     clearError(errorMsgRef);
                     resolve(true);
                 }
@@ -158,7 +161,7 @@ export function checkPasswordsMatch(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
         checkRegPassword(fields, emptyMsgs, errorMsgRef).then((goodPassword) => {
             if (goodPassword) {
-                if (notEmpty(fields, emptyMsgs, 2, errorMsgRef)) {
+                if (correctLength(fields, emptyMsgs, 2, errorMsgRef)) {
                     if (fields[2] === fields[3]) {
                         setErrMsg(errorMsgRef, "Passwords match", true);
                         resolve(true);
@@ -193,7 +196,7 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
                     setErrMsg(errorMsgRef, "Account successfully created", true);
                     document.location.href = "/";
                 }
-                else if (response.status === 409) {
+                else if (response.status === 409 || response.status === 400) {
                     response.json().then((result) => {
                         setErrMsg(errorMsgRef, result.msg, false);
                     });
@@ -211,7 +214,7 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
 
 export function checkValidUsername(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
-        if (notEmpty(fields, emptyMsgs, 0, errorMsgRef)) {
+        if (correctLength(fields, emptyMsgs, 0, errorMsgRef)) {
             fetch("/api/goodUsername/" + fields[0] + "/login", {
                 method: "get",
                 headers: { "Content-type": "application/json; charset=UTF-8" }
@@ -243,7 +246,7 @@ export function checkLoginPassword(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
         checkValidUsername(fields, emptyMsgs, errorMsgRef).then((goodUsername) => {
             if (goodUsername) {
-                if (notEmpty(fields, emptyMsgs, 1, errorMsgRef)) {
+                if (correctLength(fields, emptyMsgs, 1, errorMsgRef)) {
                     clearError(errorMsgRef);
                     resolve(true);
                 }

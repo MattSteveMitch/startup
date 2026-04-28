@@ -52,7 +52,25 @@ router.get("/goodUsername/:username/register", (request, response) => {
     handleGoodUsernameAPI(request, response, true);
 });
 
-router.post("/account", async (request, response) => {
+function verifyLength(request, response, next) {
+    if (request.body.email.length > 60) {
+        response.status(400);
+        response.send({msg: "Email too long"});
+    } 
+    else if (request.body.username.length > 16) {
+        response.status(400);
+        response.send({msg: "Username too long"});
+    }
+    else if (request.body.password.length > 16) {
+        response.status(400);
+        response.send({msg: "Password too long"});
+    }
+    else {
+        next();
+    }
+}
+
+router.post("/account", verifyLength, async (request, response) => {
     db.getEmail(request.body.email).then((result) => {
         if (result) {
             response.status(409);

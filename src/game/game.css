@@ -38,6 +38,10 @@ main {
         }
     }
 
+    h2.head {
+        padding-right: 50px;
+    }
+
     h2.subhead {
         font-family: Courier;
         color: black;
@@ -186,7 +190,7 @@ main {
         opacity: 0.8;
     }
 
-    @media (max-width: 1150px) {
+    @media (max-width: 1199px) {
         section.sidebar {
             position: absolute;
             top: 660px;
