@@ -24,6 +24,15 @@ nav {
     display: flex;
     height: 28px;
     background-color: var(--backg);
+    font-size: 15px;
+    font-family: starsight;
+}
+
+nav > p {
+    padding-right: 30px;
+    > span {
+        font-weight: bold;
+    }
 }
 
 .navlink {

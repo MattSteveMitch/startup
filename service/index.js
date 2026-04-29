@@ -55,15 +55,15 @@ router.get("/goodUsername/:username/register", (request, response) => {
 function verifyLength(request, response, next) {
     if (request.body.email.length > 60) {
         response.status(400);
-        response.send({msg: "Email too long"});
-    } 
+        response.send({ msg: "Email too long" });
+    }
     else if (request.body.username.length > 16) {
         response.status(400);
-        response.send({msg: "Username too long"});
+        response.send({ msg: "Username too long" });
     }
     else if (request.body.password.length > 16) {
         response.status(400);
-        response.send({msg: "Password too long"});
+        response.send({ msg: "Password too long" });
     }
     else {
         next();
@@ -218,48 +218,40 @@ function compareScoreRowsRev(row1, row2) {
     return row2.score > row1.score || -(row1.score > row2.score);
 }
 
-router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
+function newScoreHandler(request, response, is_hit) {
     let score = request.body.score;
     Promise.all([
-        db.updateOverallBests(request.username, score, false),
-        db.updatePersonalBests(request.username, score, false)
+        db.updateOverallBests(request.username, score, is_hit),
+        db.updatePersonalBests(request.username, score, is_hit)
     ]).then((old_bests) => {
         let old_overall_best = old_bests[0];
         let old_pers_best = old_bests[1];
         let bestness = 0; // Meaning this score is not a record
-        if (old_overall_best === undefined || score < old_overall_best.score) {
+        if (
+            old_overall_best === undefined ||
+            ((!is_hit && score < old_overall_best.score) || (is_hit && score > old_overall_best.score))
+        ) {
             bestness = 2; // Meaning this score is a new record overall
         }
-        else if (old_pers_best === undefined || score < old_pers_best.score) {
+        else if (
+            old_pers_best === undefined ||
+            ((!is_hit && score < old_pers_best.score) || (is_hit && score > old_pers_best.score))
+        ) {
             bestness = 1; // Meaning this score is a new personal record
         }
         response.status(201);
         response.send({ bestness: bestness });
     }).catch((error) => {
-        console.log("Error updating scores");
+        console.log("Error updating score: is_hit = " + is_hit);
     });
+}
+
+router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
+    newScoreHandler(request, response, false);
 });
 
 router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
-    let score = request.body.score;
-    Promise.all([
-        db.updateOverallBests(request.username, score, true),
-        db.updatePersonalBests(request.username, score, true)
-    ]).then((old_bests) => {
-        let old_overall_best = old_bests[0];
-        let old_pers_best = old_bests[1];
-        let bestness = 0; // Meaning this score is not a record
-        if (old_overall_best === undefined || score > old_overall_best.score) {
-            bestness = 2; // Meaning this score is a new record overall
-        }
-        else if (old_pers_best === undefined || score > old_pers_best.score) {
-            bestness = 1; // Meaning this score is a new personal record
-        }
-        response.status(201);
-        response.send({ bestness: bestness });
-    }).catch((error) => {
-        console.log("Error updating hits");
-    });
+    newScoreHandler(request, response, true);
 });
 
 router.get("/bests", bouncer, (request, response) => {

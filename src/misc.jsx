@@ -22,6 +22,7 @@ export function Navbar() {
                     <NavLink className="navlink" to="/game">Game</NavLink>
                     <NavLink className="navlink" to="/scores">Scores</NavLink>
                 </div>
+                <p>Logged in as <span>{localStorage.getItem("username")}</span></p>
                 <NavLink className="navlink" to="/">Log out</NavLink>
             </nav>
         );
