@@ -254,8 +254,17 @@ router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
     newScoreHandler(request, response, true);
 });
 
+function sortAll(scores) {
+    scores[0].sort(db.compareScoreRows);
+    scores[1].sort(db.compareScoreRows);
+    scores[2].sort(db.compareScoreRowsRev);
+    scores[3].sort(db.compareScoreRowsRev);
+}
+
 router.get("/bests", bouncer, (request, response) => {
     db.getScores(request.username, true).then((bests) => {
+        sortAll(bests);
+
         let pers_best_row = bests[0][0];
         let pers_best_hit_row = bests[2][0];
         let pers_best, pers_best_hit;
@@ -285,10 +294,7 @@ router.get("/bests", bouncer, (request, response) => {
 
 router.get("/scores", bouncer, (request, response) => {
     db.getScores(request.username, false).then((bests) => {
-        bests[0].sort(db.compareScoreRows);
-        bests[1].sort(db.compareScoreRows);
-        bests[2].sort(db.compareScoreRowsRev);
-        bests[3].sort(db.compareScoreRowsRev);
+        sortAll(bests);
 
         response.status(200);
         response.send({

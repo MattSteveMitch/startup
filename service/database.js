@@ -157,16 +157,9 @@ function getScores(username, bestsOnly) {
     let pers_best_hits = db.collection(username + "_best_hits");
     let best_hits = db.collection("best_hits");
 
-    let options;
-    if (bestsOnly) {
-        options = {limit: 1};
-    }
-    else {
-        options = {};
-    }
     return Promise.all([
-        pers_best_scores.find({}, options).toArray(), best_scores.find({}, options).toArray(),
-        pers_best_hits.find({}, options).toArray(), best_hits.find({}, options).toArray()
+        pers_best_scores.find({}).toArray(), best_scores.find({}).toArray(),
+        pers_best_hits.find({}).toArray(), best_hits.find({}).toArray()
     ]);
 }
 
