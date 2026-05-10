@@ -1,10 +1,10 @@
 "use strict";
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bcrypt = require("bcryptjs");
-const uuid = require("uuid");
+import express from "express";
+import cookieParser from "cookie-parser";
+import bcrypt from "bcryptjs";
+import {v7 as uuid} from "uuid";
 
-const db = require("./database.js");
+import * as db from "./database.js";
 
 const app = express();
 

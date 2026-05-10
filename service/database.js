@@ -1,13 +1,17 @@
 "use strict";
-const MongoDB = require("mongodb");
-const config = require("./dbConfig.json");
+import MongoDB from "mongodb";
+import config from "./dbConfig.json" with {type: "json"};
 const url = "mongodb+srv://" + config.userName + ":" + config.password + "@" + config.hostname;
+console.log(url);
 const myClient = new MongoDB.MongoClient(url);
 const db = myClient.db("startup");
 
 db.command({ ping: 1 }).then(() => {
     console.log("Connected to database");
-}).catch((_) => { process.exit(1); });
+}).catch((_) => {
+    console.log("Couldn't connect to database");
+    process.exit(1);
+});
 
 const emails = db.collection("emails");
 const sessions = db.collection("sessions");
@@ -15,40 +19,40 @@ const accounts = db.collection("accounts");
 const score_tables = [db.collection("best_scores"),
 db.collection("best_hits")];
 
-function getEmail(email) {
+export function getEmail(email) {
     return emails.findOne({ _id: email });
 }
 
-function usernameExists(username) {
+export function usernameExists(username) {
     return accounts.findOne({ _id: username }, { _id: 1 });
 }
 
-function createAccount(username, password, email) {
+export function createAccount(username, password, email) {
     return Promise.all([
         accounts.insertOne({ _id: username, password: password, email: email, token: null }),
         emails.insertOne({ _id: email })
     ]);
 }
 
-function getAccount(username) {
+export function getAccount(username) {
     return accounts.findOne({ _id: username });
 }
 
-function newSession(username, authToken) {
+export function newSession(username, authToken) {
     return Promise.all([
         sessions.insertOne({ _id: authToken, username: username }),
         accounts.updateOne({ _id: username }, { $set: { token: authToken } })
     ]);
 }
 
-function deleteSession(authToken, username) {
+export function deleteSession(authToken, username) {
     return Promise.all([
         sessions.deleteOne({ _id: authToken }),
         accounts.updateOne({ _id: username }, { $unset: { token: 1 } })
     ]);
 }
 
-function getIdentity(authToken) {
+export function getIdentity(authToken) {
     return sessions.findOne({ _id: authToken }, { username: 1 });
 }
 
@@ -56,7 +60,7 @@ function compareOrdinals(row1, row2) {
     return row2.ordinal < row1.ordinal || -(row1.ordinal < row2.ordinal);
 }
 
-function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied, the one that was
+export function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied, the one that was
     earned first comes first in the score table */
     let initial = row2.score < row1.score || -(row1.score < row2.score);
     if (!initial) {
@@ -65,7 +69,7 @@ function compareScoreRows(row1, row2) { /* To ensure that if two scores are tied
     return initial;
 }
 
-function compareScoreRowsRev(row1, row2) { // See comment on `compareScoreRows`
+export function compareScoreRowsRev(row1, row2) { // See comment on `compareScoreRows`
     let initial = row2.score > row1.score || -(row1.score > row2.score);
     if (!initial) {
         return compareOrdinals(row1, row2);
@@ -78,7 +82,6 @@ function reIndex(table) { // See comment on `compareScoreRows`
         table[i].ordinal = i;
     }
 }
-
 
 function finalUpdateTable(collection, username, score, compareFun) {
     return new Promise((resolve, reject) => {
@@ -122,7 +125,7 @@ function finalUpdateTable(collection, username, score, compareFun) {
     });
 }
 
-function updateOverallBests(username, score, is_hit) {
+export function updateOverallBests(username, score, is_hit) {
     let collection, compareFun;
     if (is_hit) {
         collection = score_tables[1];
@@ -136,7 +139,7 @@ function updateOverallBests(username, score, is_hit) {
     return finalUpdateTable(collection, username, score, compareFun);
 }
 
-function updatePersonalBests(username, score, is_hit) {
+export function updatePersonalBests(username, score, is_hit) {
     let compareFun, collection_str;
     if (is_hit) {
         collection_str = "_best_hits";
@@ -151,7 +154,7 @@ function updatePersonalBests(username, score, is_hit) {
     return finalUpdateTable(collection, username, score, compareFun);
 }
 
-function getScores(username, bestsOnly) {
+export function getScores(username, bestsOnly) {
     let pers_best_scores = db.collection(username + "_best_scores");
     let best_scores = db.collection("best_scores");
     let pers_best_hits = db.collection(username + "_best_hits");
@@ -162,8 +165,3 @@ function getScores(username, bestsOnly) {
         pers_best_hits.find({}).toArray(), best_hits.find({}).toArray()
     ]);
 }
-
-module.exports = {
-    createAccount, getEmail: getEmail, usernameExists, getAccount, newSession, deleteSession,
-    getIdentity, updateOverallBests, updatePersonalBests, getScores, compareScoreRows, compareScoreRowsRev
-};
