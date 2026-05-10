@@ -311,5 +311,4 @@ app.use((request, response) => {
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
-console.log("starting up server");
 app.listen(port, () => { console.log("listening"); });

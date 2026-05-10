@@ -2,7 +2,6 @@
 import MongoDB from "mongodb";
 import config from "./dbConfig.json" with {type: "json"};
 const url = "mongodb+srv://" + config.userName + ":" + config.password + "@" + config.hostname;
-console.log(url);
 const myClient = new MongoDB.MongoClient(url);
 const db = myClient.db("startup");
 
