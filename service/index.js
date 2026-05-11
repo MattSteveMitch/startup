@@ -2,7 +2,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs";
-import {v7 as uuid} from "uuid";
+import * as uuid from "uuid";
+import path from "path";
 
 import * as db from "./database.js";
 
@@ -307,7 +308,7 @@ router.get("/scores", bouncer, (request, response) => {
 });
 
 app.use((request, response) => {
-    response.sendFile(__dirname + "/public/index.html");
+    response.sendFile(path.resolve() + "/public/index.html");
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
