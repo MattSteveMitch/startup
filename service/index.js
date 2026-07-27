@@ -4,8 +4,11 @@ import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs";
 import * as uuid from "uuid";
 import path from "path";
+import * as ws from "ws";
 
 import * as db from "./database.js";
+
+const port = 4000;
 
 const app = express();
 
@@ -311,5 +314,12 @@ app.use((request, response) => {
     response.sendFile(path.resolve() + "/public/index.html");
 });
 
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
-app.listen(port, () => { console.log("listening"); });
+const httpServer = app.listen(port, () => { console.log("listening"); });
+
+const wsServer = new ws.WebSocketServer({server: httpServer});
+
+wsServer.on("connection", (connection) => {
+    connection.isAlive = true;
+    console.log("Connecting");
+    connection.send("This is server to client. Do you copy? Over.");
+});

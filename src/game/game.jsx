@@ -114,6 +114,11 @@ export function Game() {
             variable, that frame has already happened, so it's trying to cancel a frame that's passed already,
             so the animation continues. There's probably a better way, but I can't find it. That's my TED talk. */
             windowEventTarget.removeEventListener("wheel", scrollHandler, {passive: false});
+            
+            if (environment.websocket) {
+                environment.websocket.close();
+                environment.websocket = null;
+            }
         });
     }, []);
 
@@ -187,7 +192,7 @@ export function Game() {
                         width={windowSize[0]} height={windowSize[1]} id="gameWindow"
                         onClick={(event) => {
                             if (!environment.started) {
-                                runGame(windowRef, environment.setStarted);
+                                runGame(windowRef, environment);
                                 loadAssets(assetsMap, img_names, sound_names, environment.setLoaded);
                             }
                             else {
