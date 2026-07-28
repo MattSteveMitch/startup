@@ -97,22 +97,35 @@ export function loadThumbnail() {
     return Promise.all([thumbnail_loaded, play_button_loaded]);
 }
 
+function drawPlayArrow(assets, gameWindow) {
+    gameWindow.globalAlpha = 0.6;
+    gameWindow.drawImage(
+        assets.play_button, 
+        (windowSize[0] - assets.buttonSize) / 2, 
+        (windowSize[1] - assets.buttonSize) / 2, 
+        assets.buttonSize, assets.buttonSize
+    );
+    gameWindow.globalAlpha = 1;
+}
+
+function displayLoadingText(gameWindow) {
+    gameWindow.fillStyle = "white";
+    gameWindow.font = "50px starsight";
+    gameWindow.fillText("Loading...", 345, 540, 600);
+}
+
 export function updateGraphicsP0(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
     if (!(environment.started)) {
-        gameWindow.globalAlpha = 0.6;
-        gameWindow.drawImage(
-            assets.play_button, 
-            (windowSize[0] - assets.buttonSize) / 2, 
-            (windowSize[1] - assets.buttonSize) / 2, 
-            assets.buttonSize, assets.buttonSize
-        );
-        gameWindow.globalAlpha = 1;
+        drawPlayArrow(assets, gameWindow);
+    }
+    else {
+        displayLoadingText(gameWindow);
     }
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (environment.loaded) {
+    if (environment.loaded && environment.connected) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, frameEnd);});
         return;
     }

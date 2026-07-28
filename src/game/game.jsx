@@ -24,6 +24,7 @@ export function Game() {
     [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
     [environment.shipChoice, environment.setShip] = React.useState("");
     [environment.gamePage, environment.setGamePage] = React.useState(0);
+    [environment.connected, environment.setConnected] = React.useState(false);
     [environment.brake, environment.toggleBrake] = React.useState(false);
     [environment.advance, environment.setAdv] = React.useState(false);
     [environment.goBack, environment.setGoBack] = React.useState(false);
@@ -114,7 +115,7 @@ export function Game() {
             variable, that frame has already happened, so it's trying to cancel a frame that's passed already,
             so the animation continues. There's probably a better way, but I can't find it. That's my TED talk. */
             windowEventTarget.removeEventListener("wheel", scrollHandler, {passive: false});
-            
+
             if (environment.websocket) {
                 environment.websocket.close();
                 environment.websocket = null;
