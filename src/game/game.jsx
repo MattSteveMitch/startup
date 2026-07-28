@@ -31,7 +31,6 @@ export function Game() {
     [environment.score, environment.setScore] = React.useState(1000);
     [environment.newScore, environment.setNewScore] = React.useState(null);
     [environment.newHit, environment.setNewHit] = React.useState(null);
-    [environment.slashPresses, environment.setSlashPresses] = React.useState(0);
     [click, environment.setClick] = React.useState(false);
     [environment.rightClick, environment.setRClick] = React.useState(false);
     environment.alive = React.useState(true);
@@ -56,6 +55,7 @@ export function Game() {
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
+            event.preventDefault();
             handleKeyPress(event, environment, assetsMap); 
         };
 
@@ -71,13 +71,7 @@ export function Game() {
 
         const rightClickHandler = (event) => {
             event.preventDefault();
-            if (environment.rightClick) {
-                assetsMap.LLAttached.play();
-            }
-            else {
-                assetsMap.LLFire.play();
-            }
-            environment.setRClick(!environment.rightClick);
+            environment.websocket.send(")");
         };
 
         gameWindow = windowRef.current.getContext("2d");

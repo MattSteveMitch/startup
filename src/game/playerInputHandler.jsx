@@ -1,54 +1,37 @@
 const pi = 3.14159265358979;
-//let eventStrings = {"Slash": ""};
+let eventStrings = {"Slash": "/", "Space": " ", "Enter": "R", "Backslash": "R", "KeyR": "r", 
+    "ShiftLeft": "S", "ShiftRight": "S", "KeyS": "s", "ArrowRight": ">", "ArrowLeft": "<",
+    "KeyP": "p", "KeyM": "m"
+};
+
+function pauseGame() {
+    console.log("game paused!");
+}
+
+function advanceOne(environment) {
+    environment.setAdv(true);
+}
+
+let clientActions = {
+    "/": (environment) => {environment.toggleShooting(true);}, 
+    "S": pauseGame, "s": (_) => {console.log("sound toggled");}, 
+    ">": advanceOne, "<": (environment) => {environment.setGoBack(true);},
+    "p": advanceOne, "m": advanceOne
+};
 
 function sendWSMessage(environment, message) {
     environment.websocket.send(message);
 }
 
 export function handleKeyPress(event, environment, assets) {
-    let eventStr;
-    if (event.code) {
-        sendWSMessage(environment, event.code);
+    let eventStr = eventStrings[event.code];
+    if (eventStr) {
+        sendWSMessage(environment, eventStr);
+        let clientAction = clientActions[eventStr];
+        if (clientAction) {
+            clientAction(environment);
+        }
     }
-/*    switch (event.code) {
-        case "Slash":
-            
-            //environment.toggleShooting(true);
-            //environment.setSlashPresses(environment.slashPresses + 1);
-            //assets.laser.play();
-            break;
-        case "Space":
-            event.preventDefault();
-            environment.toggleBrake(true);
-            break;
-        case "Enter":
-            console.log("enter pressed");
-            break;
-        case "KeyR":
-            console.log("r pressed");
-            break;
-        case "ShiftLeft":
-        case "ShiftRight":
-            console.log("shift pressed");
-            break;
-        case "KeyS":
-            console.log("s pressed");
-            break;
-        case "ArrowRight":
-            console.log("right pressed");
-            environment.setAdv(true);
-            break;
-        case "ArrowLeft":
-            console.log("left pressed");
-            environment.setGoBack(true);
-            break;
-        case "KeyP":
-            console.log("p pressed");
-            break;
-        case "KeyM":
-            console.log("m pressed");
-            break;
-    }*/
 }
 
 export function handleKeyRelease(event, environment) {
