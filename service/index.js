@@ -318,8 +318,8 @@ const httpServer = app.listen(port, () => { console.log("listening"); });
 
 const wsServer = new ws.WebSocketServer({server: httpServer});
 
-wsServer.on("connection", (connection) => {
-    connection.isAlive = true;
-    console.log("Connecting");
-    connection.send("This is server to client. Do you copy? Over.");
+wsServer.on("connection", (client) => {
+    client.send("This is server to client. Do you copy? Over.");
+
+    client.on("message", (data) => {console.log(data.toString());});
 });

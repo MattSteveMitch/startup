@@ -540,7 +540,11 @@ class Promise {  // Of course, this must all be implemented using thread-safety 
 
   fun activate(fun1) {
     fun1(this.resolve, this.reject);
-    wait until isPending is false
+    while isPending: 
+      sleep a tiny fraction of a second (long enough to let other threads take over)
+    // In other words, wait until isPending is set to false, which may or may not require 
+    // waiting for another thread
+
     if this.isResolved:
       wait for access from the semaphore, then do:
       thenFunction(finalVal);

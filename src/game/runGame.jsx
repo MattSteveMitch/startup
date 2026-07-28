@@ -2,9 +2,8 @@ export function runGame(windowRef, environment) {
     windowRef.current.className = "";
     console.log("running");
 
- //   let port = window.location.port;
-   // let domain = window.location.hostname;
-    //console.log(domain);
+    environment.setStarted(true);
+
     environment.websocket = new WebSocket(
         "ws://" + window.location.hostname + ":" + window.location.port + "/ws"
     );
@@ -12,14 +11,13 @@ export function runGame(windowRef, environment) {
 
     environment.websocket.onmessage = (event) => {
         console.log("message: " + event.data);
+        if (event.data === "This is server to client. Do you copy? Over.") {
+            environment.websocket.send("This is client to server. I copy, over.");
+        }
     };
 
     environment.websocket.onopen = (event) => {
         console.log("opened socket: " + event.data);
+        environment.setConnected(true);
     };
-    environment.setStarted(true);
-}
-
-export function sendWSMessage(environment, message) {
-    environment.websocket.send(message);
 }
