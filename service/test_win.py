@@ -1,13 +1,13 @@
 import time, threading
 
-inputStr = []
+inputStr = ""
 
 def checkInput():
     global inputStr
     while True:
         newInput = input()
         s.acquire()
-        inputStr.append(newInput)
+        inputStr = inputStr + newInput
         s.release()
 
 inputScanner = threading.Thread(target = checkInput)
@@ -17,7 +17,7 @@ inputScanner.start()
 while True:
     s.acquire()
     r = inputStr
-    inputStr = []
+    inputStr = ""
     s.release()
     if len(r) > 0:
         print(r, flush = True)
