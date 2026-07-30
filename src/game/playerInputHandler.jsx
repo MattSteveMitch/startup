@@ -1,5 +1,5 @@
 const pi = 3.14159265358979;
-let eventStrings = {"Slash": "/", "Space": " ", "Enter": "R", "Backslash": "R", "KeyR": "r", 
+let keyStrings = {"Slash": "/", "Space": " ", "Enter": "R", "Backslash": "R", "KeyR": "r", 
     "ShiftLeft": "S", "ShiftRight": "S", "KeyS": "s", "ArrowRight": ">", "ArrowLeft": "<",
     "KeyP": "p", "KeyM": "m"
 };
@@ -20,14 +20,17 @@ let clientActions = {
 };
 
 function sendWSMessage(environment, message) {
+    if (!environment.connected) {
+        return;
+    }
     environment.websocket.send(message);
 }
 
 export function handleKeyPress(event, environment, assets) {
-    let eventStr = eventStrings[event.code];
-    if (eventStr) {
-        sendWSMessage(environment, eventStr);
-        let clientAction = clientActions[eventStr];
+    let keyStr = keyStrings[event.code];
+    if (keyStr) {
+        sendWSMessage(environment, "k" + keyStr);
+        let clientAction = clientActions[keyStr];
         if (clientAction) {
             clientAction(environment);
         }

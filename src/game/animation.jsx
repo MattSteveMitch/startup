@@ -155,9 +155,9 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
 
 function updateGraphicsP2(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
-    gameWindow.fillStyle = "rgb(0, 220, 130)";
-    gameWindow.font = "30px Consolas";
-    gameWindow.fillText("Press the right arrow key to continue", 140, 540, 600);
+    gameWindow.fillStyle = "white";
+    gameWindow.font = "bold 18px Consolas";
+    gameWindow.fillText("Press the right arrow key to continue", 257, 540, 600);
 
     if (!environment.keepAnimating.current) {
         return;

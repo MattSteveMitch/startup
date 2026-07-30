@@ -23,7 +23,6 @@ export function updateScores(environment) {
             if (response.status === 201) {
                 response.json().then((body) => {
                     bestness = body.bestness;
-                    console.log("bestness: " + bestness);
                     if (bestness) {
                         environment.currentScoreRef.current.className = "number-area best";
                         environment.personalBestScoreRef.current.className = "score number new";

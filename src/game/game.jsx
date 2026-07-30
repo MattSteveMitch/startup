@@ -51,7 +51,6 @@ export function Game() {
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
     environment.gameErrorMsgRef = React.useRef(null);
-//    environment.gameErrorMsgRef
 
     React.useEffect(() => {
         const keyDownHandler = (event) => {
@@ -71,7 +70,9 @@ export function Game() {
 
         const rightClickHandler = (event) => {
             event.preventDefault();
-            environment.websocket.send(")");
+            if (environment.connected) {
+                environment.websocket.send(")");
+            }
         };
 
         gameWindow = windowRef.current.getContext("2d");

@@ -1,5 +1,5 @@
 POCO, MBOT = 'poco.png', 'm-bot.png'
-import sys, math, random, shelve, time
+import sys, math, random, time
 #This program does not use NumPy.
 
 MACHINEGUN=False
@@ -45,8 +45,11 @@ def getInputEvents():
     global inputEvents
     # define this function depending on OS
 
+    return returnVal.split("\n")
+
 def exitcheck():
     events = getInputEvents()
+    
     for i in range(len(events)):
         if thisevent[i] == "q":
             sys.exit()
@@ -57,15 +60,13 @@ def pause(duration):
         exitcheck()
 
 def chooseship():
-    global SHIPTYPE, inputEvents
+    global SHIPTYPE
 
     pause(2)
 
     done=True
     while not done:
-        time.sleep(0.01)
-        thisevent = eventfile.readline()
-        if thisevent != "":
+        for thisevent in getInputEvents():
             firstChar = thisevent[0]
             if firstChar == "k":
                 nextChar = thisevent[1]
@@ -76,27 +77,20 @@ def chooseship():
                     done=True
                     SHIPTYPE=MBOT
             elif firstChar == "q":
-                eventfile.close()
-                pygame.quit()
                 sys.exit()
-
-           # thisevent = eventfile.readline()
 
 
 chooseship()
-ship=pygame.image.load(SHIPTYPE).convert_alpha()
+
 if SHIPTYPE==MBOT:
-    ship=pygame.transform.smoothscale(ship, (64, 48))
     sensitivity = 13.33
     collisionvects=[[-22, 0], [-19, -9], [-28.0,-21.0], [-21.0,-20.0], [-8.0,-14.0], [3.0,-12.0], [13.0, -9.0], [9, 0], [13.0,9.0], [3.0,12.0], [-8.0,14.0], [-21.0,20.0], [-28.0,21.0], [-19, 9]]
 if SHIPTYPE==POCO:
-    ship=pygame.transform.smoothscale(ship, (72, 45))
     sensitivity = 6.67
     collisionvects=[[-12, -9], [0.0,-10.0], [-7, -3], [25.0,0.0], [-7, 3], [0.0,10.0], [-12, 9], [-19.0,20.0], [-22.0,19.0], [-23.0,0.0], [-22.0,-19.0], [-19.0,-20.0]]
 newcollisionvects=collisionvects.copy()
 exploding=False
 frames=0
-clock=pygame.time.Clock()
 destructors=[]
 explosions=[]
 explosions2=[]
@@ -115,7 +109,7 @@ krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap = False, Fals
 crashes=0
 untilkrellshoots=400
 krellshot=None
-tophits=shelve.open('starsight best hit')
+#tophits=shelve.open('starsight best hit')
 
 class explosion:
     def __init__(self, pos, duration=5, is_ship=False, rate=6, source=None):
@@ -191,65 +185,12 @@ def primetoshoot(): # Machine gun shoots every 13th frame; this changes the fram
 
 def events():
     global mouse, veloc, brake, start, respawn, alive, stopshoot, LLactive, LLangle,\
-framessincearrow, gamepause, restart, sound, framessincesound
-    for thisevent in pygame.event.get():
-        if thisevent.type==pygame.MOUSEMOTION:
-            mouse=[thisevent.pos[0], thisevent.pos[1]]
-        elif thisevent.type==pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif thisevent.type==pygame.KEYDOWN:
-            if thisevent.key==pygame.K_SLASH and alive and start:
-                if MACHINEGUN:
-                    primetoshoot()
-                    stopshoot=False
-                else:
-                    destructors.append(destructor())
-                    if SHIPTYPE==MBOT: destructors.append(destructor())
-                    if sound: destructorsound.play()
-            elif thisevent.key==pygame.K_SPACE: brake=True
-            elif thisevent.key==pygame.K_RETURN and (not alive or not krell.life): respawn=True
-            elif thisevent.key==pygame.K_r: restart=True
-            elif thisevent.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
-                gamepause=2
-                musicchannel.pause()
-            elif thisevent.key==pygame.K_s:
-                if sound:
-                    musicchannel.pause()
-                else:
-                    if alive: musicchannel.unpause()
-                sound = not sound
-                framessincesound=0
-        elif thisevent.type==pygame.KEYUP:
-            if thisevent.key==pygame.K_SLASH: stopshoot=True
-            elif thisevent.key==pygame.K_SPACE: brake=False
-            elif thisevent.key==pygame.K_e and alive and SHIPTYPE!=POCO: death(False)
-        elif thisevent.type==pygame.MOUSEBUTTONDOWN:
-            if thisevent.button==1: start=True
-            elif thisevent.button==3 and alive and start:
-                if not LLactive:
-                    if sound: LLfiringsound.play()
-                LLactive = not LLactive
-            elif thisevent.button==4:
-                LLangle+=45
-                framessincearrow=0
-            elif thisevent.button==5:
-                LLangle-=45
-                framessincearrow=0
-'''
-def events():
-    global mouse, veloc, brake, start, respawn, alive, stopshoot, LLactive, LLangle,\
 framessincearrow, gamepause, restart, sound, framessincesound, eventfile
-    
-    pygame.event.get()
-    thisevent = eventfile.readline()
-    while thisevent != "":
+    for thisevent in getInputEvents():
         firstChar = thisevent[0]
         if firstChar == "m": # Mouse motion
             mouse = [int(thisevent[1:3], 36), int(thisevent[3:5], 36)]
         elif firstChar == "q": # X button on window
-            eventfile.close()
-            pygame.quit()
             sys.exit()
         elif firstChar == "k": # Key down
             nextChar = thisevent[1]
@@ -293,9 +234,6 @@ framessincearrow, gamepause, restart, sound, framessincesound, eventfile
             LLangle+=45
             framessincearrow=0
 
-        thisevent = eventfile.readline()
-
-#'''
 
 def lineintersection(m1, b1, m2, b2):
     if round(m1 - m2, 7) == 0:
