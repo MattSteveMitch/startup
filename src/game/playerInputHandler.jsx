@@ -19,17 +19,17 @@ let clientActions = {
     "p": advanceOne, "m": advanceOne
 };
 
-function sendWSMessage(environment, message) {
+function sendEventWS(environment, message) {
     if (!environment.connected) {
         return;
     }
-    environment.websocket.send(message);
+    environment.websocket.send(message + "\n");
 }
 
 export function handleKeyPress(event, environment, assets) {
     let keyStr = keyStrings[event.code];
     if (keyStr) {
-        sendWSMessage(environment, "k" + keyStr);
+        sendEventWS(environment, "k" + keyStr);
         let clientAction = clientActions[keyStr];
         if (clientAction) {
             clientAction(environment);
@@ -40,11 +40,11 @@ export function handleKeyPress(event, environment, assets) {
 export function handleKeyRelease(event, environment) {
     switch (event.code) {
         case "Slash":
-            sendWSMessage(environment, "l/");
+            sendEventWS(environment, "l/");
             environment.toggleShooting(false);
             break;
         case "Space":
-            sendWSMessage(environment, "l ");
+            sendEventWS(environment, "l ");
             environment.toggleBrake(false);
     }
 }
@@ -52,21 +52,21 @@ export function handleKeyRelease(event, environment) {
 export function handleMouseMove(newPos, environment) {
     let xStr = "0" + newPos.nativeEvent.offsetX.toString(36);
     let yStr = "0" + newPos.nativeEvent.offsetY.toString(36);
-    sendWSMessage(environment, "m" + xStr.slice(-2) + yStr.slice(-2));
+    sendEventWS(environment, "m" + xStr.slice(-2) + yStr.slice(-2));
     //environment.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
 }
 
 export function handleScroll(event, environment) {
     if (event.deltaY < 0) {
-        sendWSMessage(environment, "+");
+        sendEventWS(environment, "+");
         environment.setLLAngle(environment.LLAngle - (pi / 4));
     }
     else {
-        sendWSMessage(environment, "-");
+        sendEventWS(environment, "-");
         environment.setLLAngle(environment.LLAngle + (pi / 4));
     }
 }
 
 export function handleClick(event, environment) {
-    sendWSMessage(environment, "(");
+    sendEventWS(environment, "(");
 }

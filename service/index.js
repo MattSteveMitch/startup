@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import * as uuid from "uuid";
 import path from "path";
 import * as ws from "ws";
+import child_process from "node:child_process";
 
 import * as db from "./database.js";
 
@@ -318,8 +319,20 @@ const httpServer = app.listen(port, () => { console.log("listening"); });
 
 const wsServer = new ws.WebSocketServer({server: httpServer});
 
-wsServer.on("connection", (client) => {
-    client.send("This is server to client. Do you copy? Over.");
+//let pyProc = child_process.spawn("python", ["Starsight - win.py"]);
+//pyProc.stdout.on("data", (message) => {console.log(message.toString());});
 
-    client.on("message", (data) => {console.log(data.toString());});
+wsServer.on("connection", (client) => {
+    client.pyProc = child_process.spawn("python", ["Starsight - win.py"]);
+    client.pyProc.stdout.on("data", (message) => {console.log(message.toString());});
+
+    client.on("message", (data) => {
+        //console.log(data.toString());
+        client.pyProc.stdin.write(data.toString());
+    });
+
+    client.on("close", (_) => {
+        console.log("Closed connection");
+        client.pyProc.kill();
+    });
 });

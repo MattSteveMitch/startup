@@ -71,7 +71,7 @@ export function Game() {
         const rightClickHandler = (event) => {
             event.preventDefault();
             if (environment.connected) {
-                environment.websocket.send(")");
+                environment.websocket.send(")\n");
             }
         };
 
