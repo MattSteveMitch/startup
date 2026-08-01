@@ -1,5 +1,5 @@
 POCO, MBOT = 'poco.png', 'm-bot.png'
-import sys, math, random, time, threading
+import sys, math, random, time, threading, numpy
 #This program does not use NumPy.
 
 print("starting", flush = True)
@@ -40,7 +40,7 @@ brake, start, respawn, alive, done, restart = False, False, False, True, False, 
 angledeg=0
 anglerad=0
 
-inputEvents = ""
+inputEvents = []
 eventSem = threading.Semaphore()
 
 def checkInput():
@@ -48,7 +48,7 @@ def checkInput():
     while True:
         newInput = input()
         eventSem.acquire()
-        inputEvents = inputEvents + newInput
+        inputEvents.append(newInput)
         eventSem.release()
 
 inputScanner = threading.Thread(target = checkInput)
@@ -59,10 +59,10 @@ def getInputEvents():
 
     eventSem.acquire()
     returnVal = inputEvents
-    inputEvents = ""
+    inputEvents = []
     eventSem.release()
 
-    return returnVal.split("\n")
+    return returnVal
 
 def exitcheck():
     for thisevent in getInputEvents():
@@ -469,6 +469,99 @@ def destructormove():
         if this.pos1[0]>2000 or this.pos1[0]<-1050 or this.pos1[1]>1900 or this.pos1[1]<-1050:
             destructors.remove(this)
 
+format2dig = "{0:>2}"
+format3dig = "{0:>3}"
+def encodeSingleCoord(num, format_):
+    return format_.format(numpy.base_repr(round(num) + 97, 36))
+
+def encodeNum(num):
+    return format2dig.format(numpy.base_repr(round(num), 36))
+
+def encodeCoords(coords):
+    if coords[0]>scrsize[0]+97 or coords[0]<-97 or coords[1]>scrsize[1]+97 or coords[1]<-97: #If its center is far enough offscreen
+    # that no part of it will be seen onscreen, don't render it. It just so happens that 97 pixels is about how much tolerance
+    # I can give before the number won't always fit in an unsigned 2-digit base-36 representation.
+        return ""
+
+    return encodeSingleCoord(coords[0], format2dig) + encodeSingleCoord(coords[1], format2dig)
+
+def encodeLineSegmCoords(coords): # If one end of a line segment goes offscreen, we can't just skip rendering it, so we skip the offscreen check.
+    # We also give it 3 digits to work with since now it has a much wider range of possible coordinates
+    return encodeSingleCoord(coords[0], format3dig) + encodeSingleCoord(coords[1], format3dig)
+
+def updategraphics():
+    global rotationangle
+
+    rotationangle += 3
+    if alive:
+        if SHIPTYPE == MBOT:
+            graphicsstring = "m"
+        else:
+            graphicsstring = "p"            
+        graphicsstring += encodeCoords(pos) + "\n" # Position of the ship
+    else:
+        graphicsstring = "\n"
+
+    graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
+
+#    graphicsstring += "b\n" # Render background on top of everything, erasing it all
+    if framessincearrow<110:
+        arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
+
+    shield = encodeNum(rotationangle % 360) # Shield is rotated at the given angle
+    # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
+    # the other shield layer rotated at the opposite angle as this one
+
+    if framessincearrow<110 and alive:
+        graphicsstring += arrow
+    graphicsstring += "\n"
+    
+    if LLactive:
+        graphicsstring += encodeLineSegmCoords(LLtip)
+    graphicsstring += "\n"
+    
+    graphicsstring += numpy.base_repr(round(magn(accel)*20000), 36) + "\n" # Magnitude of acceleration of the ship,
+    # for the purposes of flame length and steering arrow length
+
+    if krellshot!=None:
+        graphicsstring += encodeLineSegmCoords(krellshot.pos1) + encodeLineSegmCoords(krellshot.pos2)
+    graphicsstring += "\n"
+
+    for this in destructors:
+        graphicsstring += encodeCoords(this.pos1) + encodeCoords(this.pos2)
+    graphicsstring += "\n"
+
+    for meteor in obstacles:
+        if meteor.life and not meteor.offscreen:
+            graphicsstring += encodeCoords(meteor.pos) + "\n"
+    graphicsstring += "\n"
+
+    for expl in explosions2:
+        r, p = expl.radius, expl.pos
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
+    graphicsstring += "\n"
+
+    if krell.shield > 0:
+        graphicsstring += shield
+    graphicsstring += "\n"
+
+    for expl in explosions:
+        r, p = expl.radius, expl.pos
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
+    graphicsstring += "\n"
+
+    if krell.shield>0:
+        status = str(math.ceil(krell.shield))
+    else:
+        status = str(math.ceil(krell.health))
+    graphicsstring += status + "\n"
+
+    if done or not krell.life:
+        graphicsstring += "d"
+
+    print(graphicsstring, flush = True)
+
+'''
 def updategraphics():
     global rotationangle
 
@@ -542,7 +635,9 @@ def updategraphics():
         graphicsstring += "d"
 
     print(graphicsstring, flush = True)
-    
+
+'''
+
 
 def collisionship():
     global krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap, start, alive
@@ -611,10 +706,10 @@ def destructor_hit_rock():
             explosions2.append(explosion(meteor.pos, duration=1, rate=20))
         if meteor.life:
             for shot in destructors:
-                if magn(vectdiff(shot.pos1, meteor.pos))<40 and not meteor.offscreen:
+                if magn(vectdiff(shot.pos1, meteor.pos))<40:
                     meteor.breaking=True
                     destructors.remove(shot)
-            if krellshot!=None and magn(vectdiff(krellshot.pos1, meteor.pos))<40 and not meteor.offscreen:
+            if krellshot!=None and distpointlinesegm(meteor.pos, krellshot.pos1, krellshot.pos2)<40 and not meteor.offscreen:
 #                if sound: rockbreak.play()
                 explosions2.append(explosion(meteor.pos, duration=1, rate=20))
                 meteor.life=False
