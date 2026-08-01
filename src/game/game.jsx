@@ -7,8 +7,8 @@ import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from 
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "controls", 
-    "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", "sound_off", 
-    "sound_on", "text"];
+    "choose_ship", "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", 
+    "sound_off", "sound_on", "text"];
 
 const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
     "rush e", "silence", "wilhelm"];
@@ -22,7 +22,7 @@ assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
 export function Game() {
-    [environment.mousePos, environment.setMouse] = React.useState([0, 0]);
+    [environment.choosingShip, environment.setChoosingShip] = React.useState(false);
     [environment.shipChoice, environment.setShip] = React.useState("");
     [environment.gamePage, environment.setGamePage] = React.useState(0);
     [environment.connected, environment.setConnected] = React.useState(false);

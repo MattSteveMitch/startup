@@ -493,14 +493,10 @@ def updategraphics():
     global rotationangle
 
     rotationangle += 3
+    graphicsstring = "b"
     if alive:
-        if SHIPTYPE == MBOT:
-            graphicsstring = "bm"  # B means render the background first
-        else:
-            graphicsstring = "bp"            
-        graphicsstring += encodeCoords(pos) + "\n" # Position of the ship
-    else:
-        graphicsstring = "b\n"
+        graphicsstring += encodeCoords(pos) # Position of the ship
+    graphicsstring += "\n"
 
     graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
 
@@ -930,7 +926,6 @@ def get_explsn_point(meteor):
 
 def startloop():
     global screenNum, MACHINEGUN, done
-    print("i", flush = True) # i for introduction screen
 
     while screenNum < 2:
         for thisevent in getInputEvents():
@@ -941,8 +936,6 @@ def startloop():
                 nextChar = thisevent[1]
                 if nextChar == ">": # Right arrow key
                     screenNum += 1
-                    print("c", flush = True) # c for control explanation screen. If we're moving past that on to the game screen, the game screen will
-                    # overwrite the control screen before the graphics are refreshed.
                 elif nextChar == "/":
                     MACHINEGUN=True
             elif firstChar == "q":

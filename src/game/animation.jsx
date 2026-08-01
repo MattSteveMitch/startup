@@ -153,6 +153,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     }
     else {
         environment.setAdv(false);
+        environment.setChoosingShip(true);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
 
@@ -160,17 +161,16 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
 }
 
 function updateGraphicsP2(assets, gameWindow, environment) {
-    gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
-    rightKeyText(gameWindow);
+    gameWindow.drawImage(assets.choose_ship, 0, 0,  windowSize[0], windowSize[1]);
 
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (!environment.advance) {
+    if (!environment.shipChoice) {
+        console.log(environment.choosingShip);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
     else {
-        environment.setAdv(false);
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
 
@@ -178,7 +178,7 @@ function updateGraphicsP2(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP3(assets, gameWindow, environment) {
-    gameWindow.drawImage(assets.controls, 0, 0,  windowSize[0], windowSize[1]);
+    gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
     rightKeyText(gameWindow);
 
     if (!environment.keepAnimating.current) {
@@ -196,6 +196,24 @@ function updateGraphicsP3(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP4(assets, gameWindow, environment) {
+    gameWindow.drawImage(assets.controls, 0, 0,  windowSize[0], windowSize[1]);
+    rightKeyText(gameWindow);
+
+    if (!environment.keepAnimating.current) {
+        return;
+    }
+    if (!environment.advance) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+    }
+    else {
+        environment.setAdv(false);
+        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
+    }
+
+    return;
+}
+
+function updateGraphicsP5(assets, gameWindow, environment) {
     environment.setScore(environment.score - 1);
     gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);
     let mouse = environment.mousePos;
@@ -220,7 +238,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         return;
     }
     if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     else {
         environment.setAdv(false);
@@ -229,7 +247,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     return;
 }
 
-function updateGraphicsP5(assets, gameWindow, environment) {
+/*function updateGraphicsP5(assets, gameWindow, environment) {
     gameWindow.fillStyle = "black";
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
@@ -246,81 +264,6 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     }
     else {
         resetVariables(environment);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
-}
-
-/*
-    rotationangle += 3
-    if alive:
-        if SHIPTYPE == MBOT:
-            graphicsstring = "m"
-        else:
-            graphicsstring = "p"
-    else:
-        graphicsstring = ""
-
-    graphicsstring += str(round(pos[0])) + " " + str(round(pos[1])) + "\n" # Starts with position of the ship
-    graphicsstring += str(round(angledeg)) + "\n" # The angle of the ship
-
-#    graphicsstring += "b\n" # Render background on top of everything, erasing it all
-    if framessincearrow<110:
-        arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
-
-    shield = str(round(rotationangle)) # Shield is rotated at the given angle
-    # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
-    # the other shield layer rotated at the opposite angle as this one
-
-    if framessincearrow<110 and alive:
-        graphicsstring += arrow
-    graphicsstring += "\n"
-    
-    if LLactive:
-        graphicsstring += str(round(LLtip[0])) + " " + str(round(LLtip[1]))
-    graphicsstring += "\n"
-    
-    graphicsstring += str(round(magn(accel)*20000)) + "\n" # Magnitude of acceleration of the ship,
-    # for the purposes of flame length and steering arrow length
-    
-    if krellshot!=None:
-        graphicsstring += str(round(krellshot.pos1[0])) + " " + str(round(krellshot.pos1[1])) + "\n" + \
-        str(round(krellshot.pos2[0])) + " " + str(round(krellshot.pos2[1]))
-    graphicsstring += "\n"
-
-    for this in destructors:
-        graphicsstring += str(round(this.pos1[0])) + " " + str(round(this.pos1[1])) + " " + \
-        str(round(this.pos2[0])) + " " + str(round(this.pos2[1])) + "\n"
-    graphicsstring += "\n"
-
-    for meteor in obstacles:
-        if meteor.life and not meteor.offscreen:
-            graphicsstring += str(round(meteor.pos[0])) + " " + str(round(meteor.pos[1])) + "\n"
-    graphicsstring += "\n"
-
-    for expl in explosions2:
-        r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
-
-    if krell.shield > 0:
-        graphicsstring += shield
-    graphicsstring += "\n"
-
-    for expl in explosions:
-        r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
-
-    if krell.shield>0:
-        status = str(math.ceil(krell.shield))
-    else:
-        status = str(math.ceil(krell.health))
-    graphicsstring += status + "\n"
-
-    if done or not krell.life:
-        graphicsstring += "d"
-
-
-#    graphicsstring += "\n----------------------------------------------------\n"
-    sendgraphicsstring(graphicsstring)
-*/
+}*/

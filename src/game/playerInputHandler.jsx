@@ -12,11 +12,21 @@ function advanceOne(environment) {
     environment.setAdv(true);
 }
 
+function chooseShip(environment, ship) {
+    console.log("choosing ship");
+    if (environment.choosingShip) {
+        console.log("ship chosen: " + ship);
+        environment.setShip(ship);
+        environment.setChoosingShip(false);
+    }
+}
+
 let clientActions = {
     "/": (environment) => {environment.toggleShooting(true);}, 
     "S": pauseGame, "s": (_) => {console.log("sound toggled");}, 
     ">": advanceOne, "<": (environment) => {environment.setGoBack(true);},
-    "p": advanceOne, "m": advanceOne
+    "p": (environment) => {chooseShip(environment, "p");}, 
+    "m": (environment) => {chooseShip(environment, "m");}
 };
 
 function sendEventWS(environment, message) {
