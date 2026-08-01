@@ -114,6 +114,12 @@ function displayLoadingText(gameWindow) {
     gameWindow.fillText("Loading...", 345, 540, 600);
 }
 
+function rightKeyText(gameWindow) {
+    gameWindow.fillStyle = "white";
+    gameWindow.font = "bold 18px Consolas";
+    gameWindow.fillText("Press the right arrow key to continue", 257, 540, 600);
+}
+
 export function updateGraphicsP0(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
     if (!(environment.started)) {
@@ -155,9 +161,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
 
 function updateGraphicsP2(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
-    gameWindow.fillStyle = "white";
-    gameWindow.font = "bold 18px Consolas";
-    gameWindow.fillText("Press the right arrow key to continue", 257, 540, 600);
+    rightKeyText(gameWindow);
 
     if (!environment.keepAnimating.current) {
         return;
@@ -174,6 +178,24 @@ function updateGraphicsP2(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP3(assets, gameWindow, environment) {
+    gameWindow.drawImage(assets.controls, 0, 0,  windowSize[0], windowSize[1]);
+    rightKeyText(gameWindow);
+
+    if (!environment.keepAnimating.current) {
+        return;
+    }
+    if (!environment.advance) {
+        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
+    }
+    else {
+        environment.setAdv(false);
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+    }
+
+    return;
+}
+
+function updateGraphicsP4(assets, gameWindow, environment) {
     environment.setScore(environment.score - 1);
     gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);
     let mouse = environment.mousePos;
@@ -198,16 +220,16 @@ function updateGraphicsP3(assets, gameWindow, environment) {
         return;
     }
     if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     else {
         environment.setAdv(false);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     return;
 }
 
-function updateGraphicsP4(assets, gameWindow, environment) {
+function updateGraphicsP5(assets, gameWindow, environment) {
     gameWindow.fillStyle = "black";
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
@@ -220,7 +242,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         return;
     }
     if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     else {
         resetVariables(environment);

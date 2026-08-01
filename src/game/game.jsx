@@ -6,8 +6,9 @@ import { Navbar } from "../misc.jsx";
 import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from "./updateScores.jsx";
 import "./game.css";
 
-const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "explosion_img", 
-    "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", "sound_off", "sound_on", "text"];
+const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "controls", 
+    "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", "sound_off", 
+    "sound_on", "text"];
 
 const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
     "rush e", "silence", "wilhelm"];

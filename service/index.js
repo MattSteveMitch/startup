@@ -324,7 +324,7 @@ const wsServer = new ws.WebSocketServer({server: httpServer});
 
 wsServer.on("connection", (client) => {
     client.pyProc = child_process.spawn("python", ["Starsight - win.py"]);
-    client.pyProc.stdout.on("data", (message) => {console.log(message.toString());});
+//    client.pyProc.stdout.on("data", (message) => {console.log(message.toString());});
 
     client.on("message", (data) => {
         //console.log(data.toString());
@@ -332,7 +332,7 @@ wsServer.on("connection", (client) => {
     });
 
     client.on("close", (_) => {
-        console.log("Closed connection");
-        client.pyProc.kill();
+        client.pyProc.stdin.write("q\n"); // Send signal to end program
+        console.log("Closed Python");
     });
 });

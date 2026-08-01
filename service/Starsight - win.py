@@ -50,6 +50,8 @@ def checkInput():
         eventSem.acquire()
         inputEvents.append(newInput)
         eventSem.release()
+        if newInput == "q":
+            return
 
 inputScanner = threading.Thread(target = checkInput)
 inputScanner.start()
@@ -76,8 +78,6 @@ def pause(duration):
 
 def chooseship():
     global SHIPTYPE
-
-    pause(2)
 
     done=False
     while not done:
@@ -112,7 +112,7 @@ destructors=[]
 explosions=[]
 explosions2=[]
 side=1
-gamepause=2
+screenNum=0
 
 LLattached, LLactive, LLlength, LLvector, directionfired, LLtip, LLangle = False, False, 1, [0, 0], None, pos.copy(), 0
 
@@ -202,7 +202,7 @@ def primetoshoot(): # Machine gun shoots every 13th frame; this changes the fram
 
 def events():
     global mouse, veloc, brake, start, respawn, alive, stopshoot, LLactive, LLangle,\
-framessincearrow, gamepause, restart, sound, framessincesound
+framessincearrow, screenNum, restart, sound, framessincesound
     for thisevent in getInputEvents():
         if len(thisevent) == 0:
             continue
@@ -227,7 +227,7 @@ framessincearrow, gamepause, restart, sound, framessincesound
                 respawn=True
             elif nextChar == "r": restart=True
             elif nextChar == "S": # If key is Shift
-                gamepause=True
+                screenNum=1
     #            musicchannel.pause()
 #            elif nextChar == "s":
  #               if sound:
@@ -495,12 +495,12 @@ def updategraphics():
     rotationangle += 3
     if alive:
         if SHIPTYPE == MBOT:
-            graphicsstring = "m"
+            graphicsstring = "bm"  # B means render the background first
         else:
-            graphicsstring = "p"            
+            graphicsstring = "bp"            
         graphicsstring += encodeCoords(pos) + "\n" # Position of the ship
     else:
-        graphicsstring = "\n"
+        graphicsstring = "b\n"
 
     graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
 
@@ -929,10 +929,10 @@ def get_explsn_point(meteor):
     return vectsum(scalrmult(unit(vectdiff([725, 390], meteor.pos)), 40), meteor.pos)
 
 def startloop():
-    global gamepause, MACHINEGUN, done
-    print("c", flush = True)
+    global screenNum, MACHINEGUN, done
+    print("i", flush = True) # i for introduction screen
 
-    while gamepause:
+    while screenNum < 2:
         for thisevent in getInputEvents():
             if len(thisevent) == 0:
                 continue
@@ -940,7 +940,9 @@ def startloop():
             if firstChar == "k": # Key down
                 nextChar = thisevent[1]
                 if nextChar == ">": # Right arrow key
-                    gamepause=False
+                    screenNum += 1
+                    print("c", flush = True) # c for control explanation screen. If we're moving past that on to the game screen, the game screen will
+                    # overwrite the control screen before the graphics are refreshed.
                 elif nextChar == "/":
                     MACHINEGUN=True
             elif firstChar == "q":
@@ -983,7 +985,7 @@ while True:
     if start: moverocks()
     anglecalculations()
     events()
-    if gamepause: startloop()
+    if screenNum < 2: startloop()
     destructor_hit_rock()
     lightlancing()
     if frames%3!=0: updategraphics()
