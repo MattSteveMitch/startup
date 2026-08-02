@@ -63,7 +63,7 @@ function loadAssetsProm(imgNames, soundNames) {
     return Promise.all(promises);
 }
 
-export function loadAssets(assetsRef, img_names, sound_names, setLoaded) {
+export function loadAssets(environment, assetsRef, img_names, sound_names) {
     var assetsProm = loadAssetsProm(img_names, sound_names);
 
     assetsProm.then((assets) => {
@@ -75,7 +75,7 @@ export function loadAssets(assetsRef, img_names, sound_names, setLoaded) {
             assetsRef[sound_names[i]] = assets[img_names.length + i];
         }
         
-        setLoaded(true);
+        environment.loaded = true;
     });
 }
 
@@ -152,8 +152,8 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
-        environment.setAdv(false);
-        environment.setChoosingShip(true);
+        environment.advance = false;
+        environment.choosingShip = true;
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
 
@@ -167,7 +167,6 @@ function updateGraphicsP2(assets, gameWindow, environment) {
         return;
     }
     if (!environment.shipChoice) {
-        console.log(environment.choosingShip);
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
     else {
@@ -188,7 +187,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
     else {
-        environment.setAdv(false);
+        environment.advance = false;
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
 
@@ -206,7 +205,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     else {
-        environment.setAdv(false);
+        environment.advance = false;
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
 
@@ -214,18 +213,18 @@ function updateGraphicsP4(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP5(assets, gameWindow, environment) {
-    environment.setScore(environment.score - 1);
+    environment.score -= 1;
     gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);
     let mouse = environment.mousePos;
-    let angle = environment.LLAngle;
-    if (environment.brake) {
+//    let angle = environment.LLAngle;
+/*     if (environment.brake) {
         angle += pi;
-    }
+    } */
 
     if (environment.rightClick) {
-        drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
+//        drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
     }
-    drawModified(gameWindow, assets["m-bot"], mouse, angle, false);
+//    drawModified(gameWindow, assets["m-bot"], mouse, angle, false);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
     gameWindow.font = "20px Consolas";
     gameWindow.fillText("Score: " + environment.score, 50, 35);
@@ -241,13 +240,13 @@ function updateGraphicsP5(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     else {
-        environment.setAdv(false);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
+        environment.advance = false;
+        requestAnimationFrame((frameEnd) => {updateGraphicsP6(assets, gameWindow, environment);});
     }
     return;
 }
 
-/*function updateGraphicsP5(assets, gameWindow, environment) {
+function updateGraphicsP6(assets, gameWindow, environment) {
     gameWindow.fillStyle = "black";
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
@@ -260,10 +259,10 @@ function updateGraphicsP5(assets, gameWindow, environment) {
         return;
     }
     if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP6(assets, gameWindow, environment);});
     }
     else {
         resetVariables(environment);
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
-}*/
+}

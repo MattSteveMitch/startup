@@ -16,30 +16,30 @@ const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAtt
 const assetsMap = Object();
 const environment = Object();
 
+environment.choosingShip = false;
+environment.shipChoice = "";
+environment.connected = false;
+//[environment.brake, environment.toggleBrake] = React.useState(false);
+environment.advance = false;
+environment.goBack = false;
+environment.score = 1000;
+//[click, environment.setClick] = React.useState(false);
+//[environment.rightClick, environment.setRClick] = React.useState(false);
+//environment.alive = React.useState(true);
+//[respawning, environment.setRespawning] = React.useState(false);
+environment.shooting = false;
+environment.loaded = false;
+environment.started = false;
+//[environment.LLAngle, environment.setLLAngle] = React.useState(0);
+
 var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
 export function Game() {
-    [environment.choosingShip, environment.setChoosingShip] = React.useState(false);
-    [environment.shipChoice, environment.setShip] = React.useState("");
-    [environment.gamePage, environment.setGamePage] = React.useState(0);
-    [environment.connected, environment.setConnected] = React.useState(false);
-    [environment.brake, environment.toggleBrake] = React.useState(false);
-    [environment.advance, environment.setAdv] = React.useState(false);
-    [environment.goBack, environment.setGoBack] = React.useState(false);
-    [environment.score, environment.setScore] = React.useState(1000);
     [environment.newScore, environment.setNewScore] = React.useState(null);
     [environment.newHit, environment.setNewHit] = React.useState(null);
-    [click, environment.setClick] = React.useState(false);
-    [environment.rightClick, environment.setRClick] = React.useState(false);
-    environment.alive = React.useState(true);
-    [respawning, environment.setRespawning] = React.useState(false);
-    [environment.shooting, environment.toggleShooting] = React.useState(false);
-    [environment.loaded, environment.setLoaded] = React.useState(false);
-    [environment.started, environment.setStarted] = React.useState(false);
-    [environment.LLAngle, environment.setLLAngle] = React.useState(0);
     var windowRef = React.useRef(null);
     environment.latestScoreSideRef = React.useRef(null);
     environment.personalBestScoreRef = React.useRef(null);
@@ -190,7 +190,7 @@ export function Game() {
                         onClick={(event) => {
                             if (!environment.started) {
                                 runGame(windowRef, environment);
-                                loadAssets(assetsMap, img_names, sound_names, environment.setLoaded);
+                                loadAssets(environment, assetsMap, img_names, sound_names);
                             }
                             else {
                                 handleClick(event, environment);

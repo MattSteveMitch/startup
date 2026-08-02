@@ -114,8 +114,8 @@ export function updateBests(response, environment) {
 }
 
 export function resetVariables(environment) {
-    environment.setAdv(false);
-    environment.setScore(1000);
+    environment.advance = false;
+    environment.score = 1000;
     //environment.setSlashPresses(0);
     environment.currentScoreRef.current.className = "number-area";
     environment.personalBestScoreRef.current.className = "score number";

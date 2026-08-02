@@ -2,7 +2,7 @@ export function runGame(windowRef, environment) {
     windowRef.current.className = "";
     console.log("running");
 
-    environment.setStarted(true);
+    environment.started = true;
 
     environment.websocket = new WebSocket(
         "ws://" + window.location.hostname + ":" + window.location.port + "/ws"
@@ -18,6 +18,6 @@ export function runGame(windowRef, environment) {
 
     environment.websocket.onopen = (event) => {
         console.log("opened socket: " + event.data);
-        environment.setConnected(true);
+        environment.connected = true;
     };
 }
