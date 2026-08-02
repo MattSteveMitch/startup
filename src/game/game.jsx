@@ -16,22 +16,6 @@ const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAtt
 const assetsMap = Object();
 const environment = Object();
 
-environment.choosingShip = false;
-environment.shipChoice = "";
-environment.connected = false;
-//[environment.brake, environment.toggleBrake] = React.useState(false);
-environment.advance = false;
-environment.goBack = false;
-environment.score = 1000;
-//[click, environment.setClick] = React.useState(false);
-//[environment.rightClick, environment.setRClick] = React.useState(false);
-//environment.alive = React.useState(true);
-//[respawning, environment.setRespawning] = React.useState(false);
-environment.shooting = false;
-environment.loaded = false;
-environment.started = false;
-//[environment.LLAngle, environment.setLLAngle] = React.useState(0);
-
 var respawning, click, gameWindow;
 // brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
 assetsMap.buttonSize = windowSize[1] / 4;
@@ -54,6 +38,22 @@ export function Game() {
     environment.gameErrorMsgRef = React.useRef(null);
 
     React.useEffect(() => {
+        environment.choosingShip = false;
+        environment.shipChoice = "";
+        environment.connected = false;
+        //[environment.brake, environment.toggleBrake] = React.useState(false);
+        environment.advance = false;
+        environment.goBack = false;
+        environment.score = 1000;
+        //[click, environment.setClick] = React.useState(false);
+        //[environment.rightClick, environment.setRClick] = React.useState(false);
+        //environment.alive = React.useState(true);
+        //[respawning, environment.setRespawning] = React.useState(false);
+        environment.shooting = false;
+        environment.loaded = false;
+        environment.started = false;
+        //[environment.LLAngle, environment.setLLAngle] = React.useState(0);
+
         const keyDownHandler = (event) => {
             event.preventDefault();
             handleKeyPress(event, environment, assetsMap); 
