@@ -1,10 +1,11 @@
 import time, select, sys
 
-inputStr = ""
+inputEvents = []
 
 while True:
 #    time.sleep(3)
     
-    if len(select.select([sys.stdin], [], [], 0)[0]) != 0:
-        inputStr = input()
-        print(inputStr)
+    while len(select.select([sys.stdin], [], [], 0)[0]) != 0:
+        inputEvents.append(input())        
+        print(inputEvents)
+    inputEvents.clear()
