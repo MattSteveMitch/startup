@@ -51,6 +51,7 @@ export function Game() {
         //environment.alive = React.useState(true);
         //[respawning, environment.setRespawning] = React.useState(false);
         environment.shooting = false;
+        environment.brakeOn = false;
         environment.loaded = false;
         environment.started = false;
         environment.renderingString = "";

@@ -24,7 +24,8 @@ let clientActions = {
     "S": pauseGame, "s": (_) => {console.log("sound toggled");}, 
     ">": advanceOne, "<": (environment) => {environment.goBack = true;},
     "p": (environment) => {chooseShip(environment, "p");}, 
-    "m": (environment) => {chooseShip(environment, "m");}
+    "m": (environment) => {chooseShip(environment, "m");},
+    " ": (environment) => {environment.brakeOn = true;}
 };
 
 function sendEventWS(environment, message) {
@@ -53,7 +54,7 @@ export function handleKeyRelease(event, environment) {
             break;
         case "Space":
             sendEventWS(environment, "l ");
-        //    environment.toggleBrake(false);
+            environment.brakeOn = false;
     }
 }
 

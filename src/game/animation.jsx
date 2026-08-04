@@ -2,6 +2,7 @@ import {resetVariables} from "./updateScores.jsx";
 
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
+const LLRed = "rgb(255, 100, 70)";
 
 const readyAssets = Object();
 
@@ -40,6 +41,15 @@ function drawLineQuick(canvas, pos1, pos2) {
     canvas.beginPath();
     canvas.moveTo(pos1[0], pos1[1]);
     canvas.lineTo(pos2[0], pos2[1]);
+    canvas.stroke();
+}
+
+function drawCircle(canvas, color, pos, radius) {
+    canvas.beginPath();
+    canvas.strokeStyle = color;
+    canvas.arc(pos[0], pos[1], radius, 0, 2*pi);
+    canvas.fillStyle = color;
+    canvas.fill();
     canvas.stroke();
 }
 
@@ -155,12 +165,30 @@ function parseData(environment) {
 function render(environment, gameWindow, assets) {
     var frameData = parseData(environment);
     gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
+    if (!isNaN(frameData.LLArrow)) {
+        drawModified(gameWindow, assets.arrow, frameData.shipPos, 
+            frameData.shipAngle - frameData.LLArrow, [1, 1], true);
+    }
+    if (frameData.LLTip) {
+        drawLine(gameWindow, LLRed, frameData.shipPos, frameData.LLTip, 2);
+    }
     if (frameData.shipPos) {
         drawModified(gameWindow, readyAssets.ship, frameData.shipPos, frameData.shipAngle, 
             [0.3333, 0.3333], true);
+        let angleRad = frameData.shipAngle * pi / 180;
+        drawModified(gameWindow, assets.flame,
+            [Math.round(frameData.shipPos[0] - readyAssets.back * Math.cos(angleRad)),
+            Math.round(frameData.shipPos[1] - readyAssets.back * Math.sin(angleRad))],
+            frameData.shipAngle, [frameData.accel_magnitude / (assets.flame.width * 5), 0.5], 
+            true);
+        //(round(pos[0] - back*math.cos(anglerad)) ,  round(pos[1] - back*math.sin(anglerad)))
     }
-    drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
-        [frameData.accel_magnitude / 121, 1], true);
+    if (!environment.brakeOn) {
+        drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
+            [frameData.accel_magnitude / 121, 1], true);
+    }
+    drawCircle(gameWindow, "white", [550, 425], 5);
+    drawCircle(gameWindow, "black", [550, 425], 1);
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -215,9 +243,11 @@ function updateGraphicsP2(assets, gameWindow, environment) {
     else {
         if (environment.shipChoice == "p") {
             readyAssets.ship = assets.poco;
+            readyAssets.back = 29;
         }
         else if (environment.shipChoice == "m") {
             readyAssets.ship = assets["m-bot"];
+            readyAssets.back = 24;
         }
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
