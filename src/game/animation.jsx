@@ -3,6 +3,7 @@ import {resetVariables} from "./updateScores.jsx";
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
 const LLRed = "rgb(255, 100, 70)";
+const destructorYellow = "rgb(255, 255, 200)";
 
 const readyAssets = Object();
 
@@ -50,7 +51,6 @@ function drawCircle(canvas, color, pos, radius) {
     canvas.arc(pos[0], pos[1], radius, 0, 2*pi);
     canvas.fillStyle = color;
     canvas.fill();
-    canvas.stroke();
 }
 
 function loadAssetsProm(imgNames, soundNames) {
@@ -151,6 +151,21 @@ function parseCoords(coordsStr, length) {
     }
 }
 
+function distance(pos1, pos2) {
+    return Math.sqrt((pos1[1] - pos2[1])**2 + (pos1[0] - pos2[0])**2);
+}
+
+function parseDestructors(destructorsStr) {
+    var destructors = [];
+    for (let i = 0; i < destructorsStr.length; i += 8) {
+        var thisDestr = [parseCoords(destructorsStr.slice(i, i + 4), 2), 
+            parseCoords(destructorsStr.slice(i + 4, i + 8), 2)];
+        destructors.push(thisDestr);
+    }
+
+    return destructors;
+}
+
 function parseData(environment) {
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
@@ -159,6 +174,8 @@ function parseData(environment) {
     frameData.LLArrow = parseInt(frameStrings[1].slice(2, 3)) * 45;
     frameData.LLTip = parseCoords(frameStrings[2], 3);
     frameData.accel_magnitude = parseInt(frameStrings[3], 36);
+    frameData.krellshot = [parseCoords(frameStrings[4], 3), parseCoords(frameStrings[4].slice(6, 12), 3)];
+    frameData.destructors = parseDestructors(frameStrings[5]);
     return frameData;
 }
 
@@ -172,6 +189,9 @@ function render(environment, gameWindow, assets) {
     if (frameData.LLTip) {
         drawLine(gameWindow, LLRed, frameData.shipPos, frameData.LLTip, 2);
     }
+    if (frameData.krellshot[0]) {
+        drawLine(gameWindow, destructorYellow, frameData.krellshot[0], frameData.krellshot[1], 6);
+    }
     if (frameData.shipPos) {
         drawModified(gameWindow, readyAssets.ship, frameData.shipPos, frameData.shipAngle, 
             [0.3333, 0.3333], true);
@@ -181,7 +201,10 @@ function render(environment, gameWindow, assets) {
             Math.round(frameData.shipPos[1] - readyAssets.back * Math.sin(angleRad))],
             frameData.shipAngle, [frameData.accel_magnitude / (assets.flame.width * 5), 0.5], 
             true);
-        //(round(pos[0] - back*math.cos(anglerad)) ,  round(pos[1] - back*math.sin(anglerad)))
+    }
+    for (let i = 0; i < frameData.destructors.length; i++) {
+        drawLine(gameWindow, destructorYellow, frameData.destructors[i][0], 
+            frameData.destructors[i][1], 3);
     }
     if (!environment.brakeOn) {
         drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
