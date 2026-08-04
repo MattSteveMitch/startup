@@ -36,6 +36,7 @@ export function Game() {
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
     environment.gameErrorMsgRef = React.useRef(null);
+    environment.renderingStr = "";
 
     React.useEffect(() => {
         environment.choosingShip = false;
@@ -52,6 +53,7 @@ export function Game() {
         environment.shooting = false;
         environment.loaded = false;
         environment.started = false;
+        environment.renderingString = "";
         //[environment.LLAngle, environment.setLLAngle] = React.useState(0);
 
         const keyDownHandler = (event) => {

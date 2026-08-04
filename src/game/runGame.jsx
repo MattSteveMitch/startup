@@ -10,7 +10,8 @@ export function runGame(windowRef, environment) {
     console.log(environment.websocket);
 
     environment.websocket.onmessage = (event) => {
-        console.log("message: " + event.data);
+        //console.log("message! " + event.data.slice(0, 4));
+        environment.renderingStr = event.data;
         if (event.data === "This is server to client. Do you copy? Over.") {
             environment.websocket.send("This is client to server. I copy, over.");
         }

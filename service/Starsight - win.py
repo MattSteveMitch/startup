@@ -1,8 +1,8 @@
-POCO, MBOT = 'poco.png', 'm-bot.png'
+POCO, MBOT = 'poco.png', 'm-bot_new.png'
 import sys, math, random, time, threading, numpy
 #This program does not use NumPy.
 
-print("starting", flush = True)
+#print("starting", flush = True)
 MACHINEGUN=False
 SHIMMER = True
 sound=True
@@ -31,7 +31,7 @@ part2=['To move:                                   Move your cursor in relation 
 'To exit this screen:                       Press the right arrow key.',\
 'To turn sound on/off:                      Press "S".']
 
-scrsize=[1100, 700]
+scrsize=[1100, 850]
 
 rotationangle = 0
 
@@ -98,7 +98,7 @@ def chooseship():
 
 
 chooseship()
-print("ship chosen", flush = True)
+#print("ship chosen", flush = True)
 if SHIPTYPE==MBOT:
     sensitivity = 13.33
     collisionvects=[[-22, 0], [-19, -9], [-28.0,-21.0], [-21.0,-20.0], [-8.0,-14.0], [3.0,-12.0], [13.0, -9.0], [9, 0], [13.0,9.0], [3.0,12.0], [-8.0,14.0], [-21.0,20.0], [-28.0,21.0], [-19, 9]]
@@ -493,14 +493,14 @@ def updategraphics():
     global rotationangle
 
     rotationangle += 3
-    graphicsstring = "b"
+    graphicsstring = ""
     if alive:
         graphicsstring += encodeCoords(pos) # Position of the ship
-    graphicsstring += "\n"
+    graphicsstring += ","
 
     graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
 
-#    graphicsstring += "b\n" # Render background on top of everything, erasing it all
+#    graphicsstring += "b," # Render background on top of everything, erasing it all
     if framessincearrow<110:
         arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
 
@@ -510,47 +510,47 @@ def updategraphics():
 
     if framessincearrow<110 and alive:
         graphicsstring += arrow
-    graphicsstring += "\n"
+    graphicsstring += ","
     
     if LLactive:
         graphicsstring += encodeLineSegmCoords(LLtip)
-    graphicsstring += "\n"
+    graphicsstring += ","
     
-    graphicsstring += numpy.base_repr(round(magn(accel)*20000), 36) + "\n" # Magnitude of acceleration of the ship,
+    graphicsstring += numpy.base_repr(round(magn(accel)*20000), 36) + "," # Magnitude of acceleration of the ship,
     # for the purposes of flame length and steering arrow length
 
     if krellshot!=None:
         graphicsstring += encodeLineSegmCoords(krellshot.pos1) + encodeLineSegmCoords(krellshot.pos2)
-    graphicsstring += "\n"
+    graphicsstring += ","
 
     for this in destructors:
         graphicsstring += encodeCoords(this.pos1) + encodeCoords(this.pos2)
-    graphicsstring += "\n"
+    graphicsstring += ","
 
     for meteor in obstacles:
         if meteor.life and not meteor.offscreen:
-            graphicsstring += encodeCoords(meteor.pos) + "\n"
-    graphicsstring += "\n"
+            graphicsstring += encodeCoords(meteor.pos) + ","
+    graphicsstring += ","
 
     for expl in explosions2:
         r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + ","
+    graphicsstring += ","
 
     if krell.shield > 0:
         graphicsstring += shield
-    graphicsstring += "\n"
+    graphicsstring += ","
 
     for expl in explosions:
         r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
+        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + ","
+    graphicsstring += ","
 
     if krell.shield>0:
         status = str(math.ceil(krell.shield))
     else:
         status = str(math.ceil(krell.health))
-    graphicsstring += status + "\n"
+    graphicsstring += status + ","
 
     if done or not krell.life:
         graphicsstring += "d"
@@ -867,9 +867,9 @@ def managekrell():
                 explosions.append(explosion(get_explsn_point(rock), source=rock))
                 rock.veloc=[0, 0]
                 LLactive=False
-                if damage>tophits['besthit']:
-                    tophits['besthit']=damage
-                    #print('New record: most damaging hit! '+str(tophits['besthit']))
+#                if damage>tophits['besthit']:
+ #                   tophits['besthit']=damage
+  #                  print('New record: most damaging hit! '+str(tophits['besthit']))
             rock.was_in_krellarea=True
         else: rock.was_in_krellarea=False
     if krell.health<=0 and not krell.exploding:
@@ -952,6 +952,8 @@ krell=krell()
 startloop()
 #musicchannel.play(intro)
 
+startTime = time.time_ns()
+
 #mark = time.time()
 while True:
 #    if not (musicchannel.get_busy()) and sound:
@@ -981,8 +983,12 @@ while True:
     if screenNum < 2: startloop()
     destructor_hit_rock()
     lightlancing()
-    if frames%3!=0: updategraphics()
-    #if frames%3==0: clock.tick(58)
-    #if frames%100==0:
-     #   print(time.time() - mark)
-      #  mark = time.time()
+    updategraphics()
+    
+    elapsedTime = time.time_ns() - startTime
+    if elapsedTime < 16000000:
+        time.sleep(0.016 - (elapsedTime/1000000000))
+    startTime = time.time_ns()
+#    if frames%700==0:
+ #       print(time.time_ns() - mark, file = sys.stderr)
+  #      mark = time.time_ns()

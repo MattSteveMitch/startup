@@ -324,7 +324,8 @@ const wsServer = new ws.WebSocketServer({server: httpServer});
 
 wsServer.on("connection", (client) => {
     client.pyProc = child_process.spawn("python", ["Starsight - win.py"]);
-    client.pyProc.stdout.on("data", (message) => {console.log(message.toString());});
+    client.pyProc.stdout.on("data", (message) => {client.send(message.toString());});
+    client.pyProc.stderr.on("data", (message) => {console.log(message.toString());});
 
     client.on("message", (data) => {
         //console.log(data.toString());

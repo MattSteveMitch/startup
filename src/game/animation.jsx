@@ -3,6 +3,8 @@ import {resetVariables} from "./updateScores.jsx";
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
 
+const readyAssets = Object();
+
 function vectSum(vect1, vect2) {
     return [vect1[0] + vect2[0], vect1[1] + vect2[1]];
 }
@@ -20,7 +22,7 @@ function drawCentered(canvas, img, pos) {
     canvas.drawImage(img, pos[0] - (img.width / 2), pos[1] - (img.height / 2));
 }
 
-function drawModified(canvas, img, pos, rotationAngle, is_deg) {
+function drawModified(canvas, img, pos, rotationAngle, scale_factor, is_deg) {
     var angleRad = rotationAngle;
     if (is_deg) {
         angleRad = pi * rotationAngle / 180;
@@ -28,6 +30,7 @@ function drawModified(canvas, img, pos, rotationAngle, is_deg) {
     canvas.save();
     canvas.translate(pos[0], pos[1]);
     canvas.rotate(angleRad);
+    canvas.scale(scale_factor[0], scale_factor[1]);
     drawCentered(canvas, img, [0, 0]);
 
     canvas.restore();
@@ -120,6 +123,46 @@ function rightKeyText(gameWindow) {
     gameWindow.fillText("Press the right arrow key to continue", 257, 540, 600);
 }
 
+function parseSingleCoord(coordStr) {
+    return parseInt(coordStr, 36) - 97;
+}
+
+function parseNum(numStr) {
+    return parseInt(numStr, 36);
+}
+
+function parseCoords(coordsStr, length) {
+    if (coordsStr.length > 0) {
+        return [parseSingleCoord(coordsStr.slice(0, length)), 
+            parseSingleCoord(coordsStr.slice(length, length * 2))];
+    }
+    else {
+        return null;
+    }
+}
+
+function parseData(environment) {
+    var frameStrings = environment.renderingStr.split(",");
+    var frameData = Object();
+    frameData.shipPos = parseCoords(frameStrings[0], 2);
+    frameData.shipAngle = parseNum(frameStrings[1].slice(0, 2));
+    frameData.LLArrow = parseInt(frameStrings[1].slice(2, 3)) * 45;
+    frameData.LLTip = parseCoords(frameStrings[2], 3);
+    frameData.accel_magnitude = parseInt(frameStrings[3], 36);
+    return frameData;
+}
+
+function render(environment, gameWindow, assets) {
+    var frameData = parseData(environment);
+    gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
+    if (frameData.shipPos) {
+        drawModified(gameWindow, readyAssets.ship, frameData.shipPos, frameData.shipAngle, 
+            [0.3333, 0.3333], true);
+    }
+    drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
+        [frameData.accel_magnitude / 121, 1], true);
+}
+
 export function updateGraphicsP0(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.thumbnail, 0, 0, windowSize[0], windowSize[1]);
     if (!(environment.started)) {
@@ -148,7 +191,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (prevFrame - pageBeginTime < 2000) {
+    if (prevFrame - pageBeginTime < 500) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
@@ -170,6 +213,12 @@ function updateGraphicsP2(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP2(assets, gameWindow, environment);});
     }
     else {
+        if (environment.shipChoice == "p") {
+            readyAssets.ship = assets.poco;
+        }
+        else if (environment.shipChoice == "m") {
+            readyAssets.ship = assets["m-bot"];
+        }
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
 
@@ -188,6 +237,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     }
     else {
         environment.advance = false;
+        readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
 
@@ -213,8 +263,10 @@ function updateGraphicsP4(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP5(assets, gameWindow, environment) {
-    environment.score -= 1;
-    gameWindow.drawImage(assets.background2, 0, 0, windowSize[0], windowSize[1]);
+    //environment.score -= 1;
+    if (environment.renderingStr) {
+        render(environment, gameWindow, assets);
+    }
     let mouse = environment.mousePos;
 //    let angle = environment.LLAngle;
 /*     if (environment.brake) {
@@ -224,7 +276,6 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     if (environment.rightClick) {
 //        drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
     }
-//    drawModified(gameWindow, assets["m-bot"], mouse, angle, false);
     gameWindow.fillStyle = "rgb(0, 220, 130)";
     gameWindow.font = "20px Consolas";
     gameWindow.fillText("Score: " + environment.score, 50, 35);
