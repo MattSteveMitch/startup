@@ -43,14 +43,13 @@ anglerad=0
 inputEvents = []
 
 
-
 def getInputEvents():
-    global inputEvents, eventSem
+    global inputEvents
 
     while len(select.select([sys.stdin], [], [], 0)[0]) != 0:
         inputEvents.append(input())
     returnVal = inputEvents
-    inputEvents.clear()
+    inputEvents = []
 
     return returnVal
 
