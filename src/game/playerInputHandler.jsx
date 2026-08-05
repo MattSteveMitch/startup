@@ -37,7 +37,7 @@ function sendEventWS(environment, message) {
 
 export function handleKeyPress(event, environment, assets) {
     let keyStr = keyStrings[event.code];
-    if (keyStr) {
+    if (keyStr && !event.repeat) {
         sendEventWS(environment, "k" + keyStr);
         let clientAction = clientActions[keyStr];
         if (clientAction) {

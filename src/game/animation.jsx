@@ -169,7 +169,12 @@ function parseDestructors(destructorsStr) {
 function parseData(environment) {
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
-    frameData.shipPos = parseCoords(frameStrings[0], 2);
+    if (frameStrings[0].length > 4) {
+        frameData.shipPos = parseCoords(frameStrings[0], 3);
+    }
+    else {
+        frameData.shipPos = parseCoords(frameStrings[0], 2);
+    }
     frameData.shipAngle = parseNum(frameStrings[1].slice(0, 2));
     frameData.LLArrow = parseInt(frameStrings[1].slice(2, 3)) * 45;
     frameData.LLTip = parseCoords(frameStrings[2], 3);

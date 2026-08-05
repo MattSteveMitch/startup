@@ -482,7 +482,11 @@ def updategraphics():
     rotationangle += 3
     graphicsstring = ""
     if alive:
-        graphicsstring += encodeCoords(pos) # Position of the ship
+        if LLactive:
+            graphicsstring += encodeLineSegmCoords(pos) # If the light-lance is active, we're going to be drawing a line segment coming from
+            # the ship; even if the ship is offscreen, the light-lance might be onscreen, and we need to know what direction it's pointing
+        else:
+            graphicsstring += encodeCoords(pos) # Position of the ship
     graphicsstring += ","
 
     graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
@@ -973,12 +977,13 @@ while True:
     if screenNum < 2: startloop()
     destructor_hit_rock()
     lightlancing()
-    updategraphics()
-    
-    elapsedTime = time.time_ns() - startTime
-    if elapsedTime < 16000000:
-        time.sleep(0.016 - (elapsedTime/1000000000))
-    startTime = time.time_ns()
+
+    if not frames % 3:
+        updategraphics()
+        elapsedTime = time.time_ns() - startTime
+        if elapsedTime < 16000000:
+            time.sleep(0.016 - (elapsedTime/1000000000))
+        startTime = time.time_ns()
 #    if frames%700==0:
  #       print(time.time_ns() - mark, file = sys.stderr)
   #      mark = time.time_ns()
