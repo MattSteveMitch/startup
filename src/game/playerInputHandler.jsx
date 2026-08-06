@@ -1,6 +1,6 @@
 const pi = 3.14159265358979;
 let keyStrings = {"Slash": "/", "Space": " ", "Enter": "R", "Backslash": "R", "KeyR": "r", 
-    "ShiftLeft": "S", "ShiftRight": "S", "KeyS": "s", "ArrowRight": ">", "ArrowLeft": "<",
+    "ShiftLeft": "S", "ShiftRight": "S", "KeyS": "s", "ArrowRight": ">", "ArrowLeft": "S",
     "KeyP": "p", "KeyM": "m"
 };
 
@@ -12,6 +12,10 @@ function advanceOne(environment) {
     environment.advance = true;
 }
 
+function goBack(environment) {
+    environment.goBack = true;
+}
+
 function chooseShip(environment, ship) {
     if (environment.choosingShip) {
         environment.shipChoice = ship;
@@ -21,8 +25,8 @@ function chooseShip(environment, ship) {
 
 let clientActions = {
     "/": (environment) => {environment.shooting = true;}, 
-    "S": pauseGame, "s": (_) => {console.log("sound toggled");}, 
-    ">": advanceOne, "<": (environment) => {environment.goBack = true;},
+    "S": goBack, "s": (_) => {console.log("sound toggled");}, 
+    ">": advanceOne,
     "p": (environment) => {chooseShip(environment, "p");}, 
     "m": (environment) => {chooseShip(environment, "m");},
     " ": (environment) => {environment.brakeOn = true;}

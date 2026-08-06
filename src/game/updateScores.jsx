@@ -100,7 +100,6 @@ export function updateBests(response, environment) {
                 setBestHit(environment, best_hit.score, best_hit.username);
             }
             if (body.pers_best_hit !== undefined) {
-                console.log("personal best hit: " + body.pers_best_hit);
                 environment.personalBestHitRef.current.innerHTML = body.pers_best_hit;
             }
         });

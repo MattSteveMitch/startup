@@ -192,7 +192,6 @@ function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether t
 }
 
 function parseData(environment) {
-    console.log(environment.renderingStr);
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
     if (frameStrings[0].length > 4) {
@@ -365,6 +364,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     else {
+        environment.goBack = false;
         environment.advance = false;
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
@@ -372,10 +372,31 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     return;
 }
 
+function handleError(error, gameWindow, environment, renderStr) {
+    console.log(error);
+    console.log("Rendering data: \"" + renderStr + "\"");
+    gameWindow.fillStyle = "black";
+    gameWindow.fillRect(-1, -1, 1110, 710);
+    gameWindow.fillStyle = "red";
+    gameWindow.font = "bold 24px Consolas";
+    gameWindow.fillText("Rendering error; see debug console for details.", 50, 200, 700);
+    gameWindow.fillText("Please email details to mattstevemitch@gmail.com.", 50, 230, 700);
+    gameWindow.font = "bold 16px Consolas";
+    gameWindow.fillText("Rendering data: \"" + renderStr + "\"", 50, 260, 800);
+    environment.websocket.close();
+    environment.connected = false;
+}
+
 function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
-        render(environment, gameWindow, assets);
+        try {
+            render(environment, gameWindow, assets);
+        }
+        catch (error) {
+            handleError(error, gameWindow, environment, renderStr);
+            return;
+        }
     }
     let mouse = environment.mousePos;
 
@@ -389,12 +410,13 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (!environment.advance) {
+    if (!environment.goBack) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     else {
+        environment.goBack = false;
         environment.advance = false;
-        requestAnimationFrame((frameEnd) => {updateGraphicsP6(assets, gameWindow, environment);});
+        requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     return;
 }
