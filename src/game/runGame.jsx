@@ -5,7 +5,7 @@ export function runGame(windowRef, environment) {
     environment.started = true;
 
     environment.websocket = new WebSocket(
-        "ws://" + window.location.hostname + ":" + window.location.port + "/ws"
+        "wss://" + window.location.hostname + ":" + window.location.port
     );
 
     environment.websocket.onmessage = (event) => {

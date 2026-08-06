@@ -121,16 +121,15 @@ function drawPlayArrow(assets, gameWindow) {
     gameWindow.globalAlpha = 1;
 }
 
-function displayLoadingText(gameWindow) {
-    gameWindow.fillStyle = "white";
-    gameWindow.font = "50px starsight";
-    gameWindow.fillText("Loading...", 345, 540, 600);
+function drawText(gameWindow, text, color, font, pos, maxWidth) {
+    gameWindow.fillStyle = color;
+    gameWindow.font = font;
+    gameWindow.fillText(text, pos[0], pos[1], maxWidth);
 }
 
 function rightKeyText(gameWindow) {
-    gameWindow.fillStyle = "white";
-    gameWindow.font = "bold 18px Consolas";
-    gameWindow.fillText("Press the right arrow key to continue", 257, 540, 600);
+    drawText(gameWindow, "Press the right arrow key to continue", "white", 
+        "bold 18px Consolas", [257, 540], 600);
 }
 
 function parseSingleCoord(coordStr) {
@@ -210,11 +209,14 @@ function parseData(environment) {
     frameData.explosionsBottom = parseExplosions(frameStrings[7], false);
     frameData.shieldAngle = parseInt(frameStrings[8], 36);
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
+    frameData.status = parseInt(frameStrings[10], 36);
     return frameData;
 }
 
 function render(environment, gameWindow, assets) {
     var frameData = parseData(environment);
+    let shieldUp = !isNaN(frameData.shieldAngle);
+
     gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
     if (!isNaN(frameData.LLArrow)) {
         drawModified(gameWindow, assets.arrow, frameData.shipPos, 
@@ -248,12 +250,12 @@ function render(environment, gameWindow, assets) {
         drawModified(gameWindow, assets.explosion_img, frameData.explosionsBottom[i].pos, 
             0, [scale_factor, scale_factor], true);
     }
-    if (!isNaN(frameData.shieldAngle)) {
+    if (shieldUp) {
         drawModified(gameWindow, assets.bubble, [690, 390], -frameData.shieldAngle,
             [1, 1], true);
     }
     drawCentered(gameWindow, assets.krell, [600, 390]);
-    if (!isNaN(frameData.shieldAngle)) {
+    if (shieldUp) {
         drawModified(gameWindow, assets.bubble, [690, 390], frameData.shieldAngle,
             [1, 1], true);
     }
@@ -268,6 +270,9 @@ function render(environment, gameWindow, assets) {
         drawModified(gameWindow, assets.explosion_img, frameData.explosionsTop[i].pos, 
             0, [scale_factor, scale_factor], true);
     }
+    let statusStr = shieldUp ? "Krell shield: " : "Krell ship health: ";
+    drawText(gameWindow, statusStr + frameData.status, "red", "bold 20px Courier",
+        [70, 50], 200);
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -276,7 +281,7 @@ export function updateGraphicsP0(assets, gameWindow, environment) {
         drawPlayArrow(assets, gameWindow);
     }
     else {
-        displayLoadingText(gameWindow);
+        drawText(gameWindow, "Loading...", "white", "50px starsight", [345, 540], 600);
     }
     if (!environment.keepAnimating.current) {
         return;
@@ -298,7 +303,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (prevFrame - pageBeginTime < 500) {
+    if (prevFrame - pageBeginTime < 2000) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
@@ -377,12 +382,12 @@ function handleError(error, gameWindow, environment, renderStr) {
     console.log("Rendering data: \"" + renderStr + "\"");
     gameWindow.fillStyle = "black";
     gameWindow.fillRect(-1, -1, 1110, 710);
-    gameWindow.fillStyle = "red";
-    gameWindow.font = "bold 24px Consolas";
-    gameWindow.fillText("Rendering error; see debug console for details.", 50, 200, 700);
+    drawText(gameWindow, "Rendering error; see debug console for details.", "red", 
+        "bold 24px Consolas", [50, 200], 700);
     gameWindow.fillText("Please email details to mattstevemitch@gmail.com.", 50, 230, 700);
+    drawText(gameWindow, "Rendering data: \"" + renderStr + "\"", "red", 
+        "bold 16px Consolas", [50, 260], 800);
     gameWindow.font = "bold 16px Consolas";
-    gameWindow.fillText("Rendering data: \"" + renderStr + "\"", 50, 260, 800);
     environment.websocket.close();
     environment.connected = false;
 }
@@ -398,14 +403,6 @@ function updateGraphicsP5(assets, gameWindow, environment) {
             return;
         }
     }
-    let mouse = environment.mousePos;
-
-    gameWindow.fillStyle = "rgb(0, 220, 130)";
-    gameWindow.font = "20px Consolas";
-    gameWindow.fillText("Score: " + environment.score, 50, 35);
-
-    gameWindow.fillStyle = "rgb(0, 220, 130)";
-    gameWindow.font = "20px Consolas";
 
     if (!environment.keepAnimating.current) {
         return;
@@ -419,25 +416,4 @@ function updateGraphicsP5(assets, gameWindow, environment) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     return;
-}
-
-function updateGraphicsP6(assets, gameWindow, environment) {
-    gameWindow.fillStyle = "black";
-    gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
-    gameWindow.fillStyle = "rgb(0, 220, 130)";
-    gameWindow.font = "60px Consolas";
-    gameWindow.fillText("Score: " + environment.score, 240, 300);
-    environment.setNewScore(environment.score);
-    //environment.setNewHit(environment.slashPresses);
-
-    if (!environment.keepAnimating.current) {
-        return;
-    }
-    if (!environment.advance) {
-        requestAnimationFrame((frameEnd) => {updateGraphicsP6(assets, gameWindow, environment);});
-    }
-    else {
-        resetVariables(environment);
-        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
-    }
 }
