@@ -1,6 +1,5 @@
 POCO, MBOT = 1, 2
-import sys, math, random, time, threading, numpy
-#This program does not use NumPy.
+import sys, math, random, time, select, numpy
 
 #print("starting", flush = True)
 MACHINEGUN=False
