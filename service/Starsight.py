@@ -488,8 +488,8 @@ format3dig = "{0:>3}"
 def encodeSingleCoord(num, format_):
     return format_.format(numpy.base_repr(round(num) + 97, 36))
 
-def encodeNum(num):
-    return format2dig.format(numpy.base_repr(round(num), 36))
+def encodeNum(num, format_):
+    return format_.format(numpy.base_repr(round(num), 36))
 
 def encodeCoords(coords):
     if coords[0]>scrsize[0]+97 or coords[0]<-97 or coords[1]>scrsize[1]+97 or coords[1]<-97: #If its center is far enough offscreen
@@ -516,13 +516,13 @@ def updategraphics():
             graphicsstring += encodeCoords(pos) # Position of the ship
     graphicsstring += ","
 
-    graphicsstring += encodeNum(angledeg % 360) # The angle of the ship
+    graphicsstring += encodeNum(angledeg % 360, format2dig) # The angle of the ship
 
 #    graphicsstring += "b," # Render background on top of everything, erasing it all
     if framessincearrow<110:
         arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
 
-    shield = encodeNum(rotationangle % 360) # Shield is rotated at the given angle
+    shield = encodeNum(rotationangle % 360, format2dig) # Shield is rotated at the given angle
     # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
     # the other shield layer rotated at the opposite angle as this one
 
@@ -555,7 +555,7 @@ def updategraphics():
 
     for expl in explosions2:
         r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + ","
+        graphicsstring += encodeNum(r, format2dig) + encodeLineSegmCoords(p)
     graphicsstring += ","
 
     if krell.shield > 0:
@@ -564,96 +564,19 @@ def updategraphics():
 
     for expl in explosions:
         r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + ","
+        graphicsstring += encodeNum(r, format3dig) + encodeCoords(p)
     graphicsstring += ","
 
     if krell.shield>0:
-        status = str(math.ceil(krell.shield))
+        status = numpy.base_repr(math.ceil(krell.shield), 36)
     else:
-        status = str(math.ceil(krell.health))
+        status = numpy.base_repr(math.ceil(krell.health), 36)
     graphicsstring += status + ","
 
     if done or not krell.life:
         graphicsstring += "d"
 
     print(graphicsstring, flush = True)
-
-'''
-def updategraphics():
-    global rotationangle
-
-    rotationangle += 3
-    if alive:
-        if SHIPTYPE == MBOT:
-            graphicsstring = "m"
-        else:
-            graphicsstring = "p"
-    else:
-        graphicsstring = ""
-
-    graphicsstring += str(round(pos[0])) + " " + str(round(pos[1])) + "\n" # Starts with position of the ship
-    graphicsstring += str(round(angledeg)) + "\n" # The angle of the ship
-
-#    graphicsstring += "b\n" # Render background on top of everything, erasing it all
-    if framessincearrow<110:
-        arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
-
-    shield = str(round(rotationangle)) # Shield is rotated at the given angle
-    # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
-    # the other shield layer rotated at the opposite angle as this one
-
-    if framessincearrow<110 and alive:
-        graphicsstring += arrow
-    graphicsstring += "\n"
-    
-    if LLactive:
-        graphicsstring += str(round(LLtip[0])) + " " + str(round(LLtip[1]))
-    graphicsstring += "\n"
-    
-    graphicsstring += str(round(magn(accel)*20000)) + "\n" # Magnitude of acceleration of the ship,
-    # for the purposes of flame length and steering arrow length
-    
-    if krellshot!=None:
-        graphicsstring += str(round(krellshot.pos1[0])) + " " + str(round(krellshot.pos1[1])) + "\n" + \
-        str(round(krellshot.pos2[0])) + " " + str(round(krellshot.pos2[1]))
-    graphicsstring += "\n"
-
-    for this in destructors:
-        graphicsstring += str(round(this.pos1[0])) + " " + str(round(this.pos1[1])) + " " + \
-        str(round(this.pos2[0])) + " " + str(round(this.pos2[1])) + "\n"
-    graphicsstring += "\n"
-
-    for meteor in obstacles:
-        if meteor.life and not meteor.offscreen:
-            graphicsstring += str(round(meteor.pos[0])) + " " + str(round(meteor.pos[1])) + "\n"
-    graphicsstring += "\n"
-
-    for expl in explosions2:
-        r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
-
-    if krell.shield > 0:
-        graphicsstring += shield
-    graphicsstring += "\n"
-
-    for expl in explosions:
-        r, p = expl.radius, expl.pos
-        graphicsstring += str(round(r)) + " " + str(round(p[0])) + " " + str(round(p[1])) + "\n"
-    graphicsstring += "\n"
-
-    if krell.shield>0:
-        status = str(math.ceil(krell.shield))
-    else:
-        status = str(math.ceil(krell.health))
-    graphicsstring += status + "\n"
-
-    if done or not krell.life:
-        graphicsstring += "d"
-
-    print(graphicsstring, flush = True)
-
-'''
 
 
 def collisionship():

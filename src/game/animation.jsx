@@ -176,6 +176,21 @@ function parseAsteroids(asterStr) {
     return asteroids;
 }
 
+function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether the explosion 
+    is rendered on top of the mothership or below, because it's encoded differently depending 
+    on that because... long story.*/
+    let [coordLen, sizeLen] = is_on_top ? [2, 3] : [3, 2];
+    var explosions = [];
+    for (let i = 0; i < explStr.length; i += 7 + !is_on_top) {
+        let thisExpl = new Object();
+        thisExpl.size = parseInt(explStr.slice(i, i + sizeLen), 36);
+        thisExpl.pos = parseCoords(explStr.slice(i + sizeLen, i + 7 + !is_on_top), coordLen);
+        explosions.push(thisExpl);
+    }
+    
+    return explosions;
+}
+
 function parseData(environment) {
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
@@ -192,6 +207,9 @@ function parseData(environment) {
     frameData.krellshot = [parseCoords(frameStrings[4], 3), parseCoords(frameStrings[4].slice(6, 12), 3)];
     frameData.destructors = parseDestructors(frameStrings[5]);
     frameData.asteroids = parseAsteroids(frameStrings[6]);
+    frameData.explosionsBottom = parseExplosions(frameStrings[7], false);
+
+    frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     return frameData;
 }
 
@@ -224,6 +242,16 @@ function render(environment, gameWindow, assets) {
     }
     for (let i = 0; i < frameData.asteroids.length; i++) {
         drawModified(gameWindow, assets.rock, frameData.asteroids[i], 0, [1, 1], true);
+    }
+    for (let i = 0; i < frameData.explosionsBottom.length; i++) {
+        let scale_factor = frameData.explosionsBottom[i].size / 500;
+        drawModified(gameWindow, assets.explosion_img, frameData.explosionsBottom[i].pos, 
+            0, [scale_factor, scale_factor], true);
+    }
+    for (let i = 0; i < frameData.explosionsTop.length; i++) {
+        let scale_factor = frameData.explosionsTop[i].size / 500;
+        drawModified(gameWindow, assets.explosion_img, frameData.explosionsTop[i].pos, 
+            0, [scale_factor, scale_factor], true);
     }
     if (!environment.brakeOn) {
         drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
@@ -261,7 +289,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (prevFrame - pageBeginTime < 2000) {
+    if (prevFrame - pageBeginTime < 500) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
