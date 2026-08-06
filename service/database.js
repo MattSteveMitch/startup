@@ -6,7 +6,7 @@ const myClient = new MongoDB.MongoClient(url);
 const db = myClient.db("startup");
 
 db.command({ ping: 1 }).then(() => {
-    console.log("Connected to database");
+    console.log("Connected");
 }).catch((_) => {
     console.log("Couldn't connect to database");
     process.exit(1);

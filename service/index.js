@@ -315,7 +315,7 @@ app.use((request, response) => {
     response.sendFile(path.resolve() + "/public/index.html");
 });
 
-const httpServer = app.listen(port, () => { console.log("listening"); });
+const httpServer = app.listen(port);
 
 const wsServer = new ws.WebSocketServer({server: httpServer});
 

@@ -1,4 +1,4 @@
-POCO, MBOT = 'poco.png', 'm-bot_new.png'
+POCO, MBOT = 1, 2
 import sys, math, random, time, threading, numpy
 #This program does not use NumPy.
 
@@ -108,9 +108,11 @@ if SHIPTYPE==POCO:
 newcollisionvects=collisionvects.copy()
 exploding=False
 frames=0
-destructors=[]
-explosions=[]
-explosions2=[]
+explosions=set([])
+explosions2=set([])
+destructors=set([])
+destructorsToCull = 0
+
 side=1
 screenNum=0
 
@@ -137,6 +139,7 @@ class explosion:
         self.radius=30
         self.is_ship=is_ship
         self.source=source
+        self.markedForRemoval = False
 
 class meteor:
     def reset(self):
@@ -173,6 +176,7 @@ class destructor:
         self.pos1=vectsum(pos, scalrmult(self.direction, 4), shift)
         self.pos2=self.pos1
         self.can_hit_krell = not collisionkrell(self.pos1, 0)
+        self.markedForRemoval = False
         side*=-1
 
 class krell:
@@ -218,8 +222,8 @@ framessincearrow, screenNum, restart, sound, framessincesound
                     primetoshoot()
                     stopshoot=False
                 else:
-                    destructors.append(destructor())
-                    if SHIPTYPE==MBOT: destructors.append(destructor())
+                    destructors.add(destructor())
+                    if SHIPTYPE==MBOT: destructors.add(destructor())
 #                    if sound: destructorsound.play()
             elif nextChar == " ":
                 brake=True
@@ -411,7 +415,7 @@ def quadraticsolve(a, b, c):
     if radicand<0: return ()
     if radicand==0: return -b/(2*a)
     root=math.sqrt(radicand)
-    return ((-b+root)/(2*a), (-b-root)/(2*a))   
+    return ((-b+root)/(2*a), (-b-root)/(2*a))
 
 def screenpos(vector):
     return (round(vector[0]), round(vector[1]))
@@ -450,24 +454,48 @@ def end():
 
 def explode():
     global pos, veloc, explosions
-    for expl in explosions+explosions2:
-        if expl!=None:
-            expl.radius+=expl.rate
-            expl.rate*=expl.multiplier
-            if expl.rate<0.24:
-                if expl.source!=None: expl.source.life=False
-                if expl.is_ship:
-                    pos=[-1500, 0]
-                    end()
-                if expl in explosions: explosions.remove(expl)
-                else: explosions2.remove(expl)
+    explosionsToCull = [0, 0]
+    expl_sets = [explosions, explosions2];
+
+    for i in (0, 1):
+        for expl in expl_sets[i]:
+            if expl!=None:
+                expl.radius+=expl.rate
+                expl.rate*=expl.multiplier
+                if expl.rate<0.24:
+                    if expl.source!=None: expl.source.life=False
+                    if expl.is_ship:
+                        pos=[-1500, 0]
+                        end()
+                    expl.markedForRemoval = True
+                    explosionsToCull[i] += 1
+
+    for i in (0, 1):
+        while explosionsToCull[i]:
+            for expl in expl_sets[i]:
+                if expl.markedForRemoval:
+                    expl_sets[i].remove(expl)
+                    explosionsToCull[i] -= 1
+                    break
+
 
 def destructormove():
+    global destructorsToCull
     for this in destructors:
         this.pos1=vectsum(this.pos1, this.veloc)
         this.pos2=vectsum(this.pos1, scalrmult(this.direction, this.LENGTH))
         if this.pos1[0]>2000 or this.pos1[0]<-1050 or this.pos1[1]>1900 or this.pos1[1]<-1050:
-            destructors.remove(this)
+            if not this.markedForRemoval: # If it has already been marked for removal, then we shouldn't increment the cull counter again!
+                destructorsToCull += 1
+            this.markedForRemoval = True
+
+    while destructorsToCull:
+        for this in destructors:
+            if this.markedForRemoval:
+                destructors.remove(this)
+                destructorsToCull -= 1
+                break
+
 
 format2dig = "{0:>2}"
 format3dig = "{0:>3}"
@@ -536,7 +564,7 @@ def updategraphics():
 
     for meteor in obstacles:
         if meteor.life and not meteor.offscreen:
-            graphicsstring += encodeCoords(meteor.pos) + ","
+            graphicsstring += encodeCoords(meteor.pos)
     graphicsstring += ","
 
     for expl in explosions2:
@@ -701,20 +729,23 @@ def collisionkrell(point, radius):
         return False
 
 def destructor_hit_rock():
+    global destructorsToCull
     for meteor in obstacles:
         if meteor.breaking: meteor.countdown-=1
         if meteor.countdown==0:
             meteor.life=False
 #            if sound: rockbreak.play()
-            explosions2.append(explosion(meteor.pos, duration=1, rate=20))
+            explosions2.add(explosion(meteor.pos, duration=1, rate=20))
         if meteor.life:
             for shot in destructors:
                 if magn(vectdiff(shot.pos1, meteor.pos))<40:
                     meteor.breaking=True
-                    destructors.remove(shot)
+                    if not shot.markedForRemoval: # If it has already been marked for removal, then we shouldn't increment the cull counter again!
+                        destructorsToCull += 1
+                    shot.markedForRemoval = True
             if krellshot!=None and distpointlinesegm(meteor.pos, krellshot.pos1, krellshot.pos2)<40 and not meteor.offscreen:
 #                if sound: rockbreak.play()
-                explosions2.append(explosion(meteor.pos, duration=1, rate=20))
+                explosions2.add(explosion(meteor.pos, duration=1, rate=20))
                 meteor.life=False
 
 def moverocks():
@@ -733,9 +764,10 @@ background, MACHINEGUN
     exploding=False
     done=False
     pos=[scrsize[0]/2-200, scrsize[1]/2]
-    explosions=[]
-    explosions2=[]
-    destructors=[]
+    explosions=set([])
+    explosions2=set([])
+    destructors=set([])
+    destructorsToCull = 0
     veloc=[0, 0]
     accel=[0, 0]
     start=False
@@ -776,8 +808,8 @@ def anglecalculations():
 def manageframes():
     global frames, start, obstacles, destructors, framessincearrow, untilkrellshoots, beginning, framessincesound
     if frames%13==0 and not stopshoot and alive and start:
-        destructors.append(destructor())
-        if SHIPTYPE==MBOT: destructors.append(destructor())
+        destructors.add(destructor())
+        if SHIPTYPE==MBOT: destructors.add(destructor())
 #        if sound: destructorsound.play()
     frames+=1
     if magn(veloc)<0.07 and start and alive and not krell.exploding: untilkrellshoots-=1
@@ -871,7 +903,7 @@ def managekrell():
                 damage=(impactforce-.82)*150
                 if krell.shield<=0: krell.health-=damage
                 else: krell.shield-=damage
-                explosions.append(explosion(get_explsn_point(rock), source=rock))
+                explosions.add(explosion(get_explsn_point(rock), source=rock))
                 rock.veloc=[0, 0]
                 LLactive=False
 #                if damage>tophits['besthit']:
@@ -880,7 +912,7 @@ def managekrell():
             rock.was_in_krellarea=True
         else: rock.was_in_krellarea=False
     if krell.health<=0 and not krell.exploding:
-        explosions.append(explosion([725, 390], rate=20, source=krell))
+        explosions.add(explosion([725, 390], rate=20, source=krell))
         krell.exploding=True
     if untilkrellshoots==0:
 #        if sound: wilhelmchannel.play(wilhelm)
@@ -912,15 +944,18 @@ def death(hit_krell):
     alive=False
     veloc=[0, 0]
     accel=[0, 0]
-    if not hit_krell: explosions2.append(explosion(pos, is_ship=True))
-    else: explosions.append(explosion(pos, is_ship=True))
+    if not hit_krell: explosions2.add(explosion(pos, is_ship=True))
+    else: explosions.add(explosion(pos, is_ship=True))
     LLactive=False
     crashes+=1
 
 def destructor_hit_krell():
+    global destructorsToCull
     for shot in destructors:
         if shot.can_hit_krell and collisionkrell(shot.pos1, 0):
-            destructors.remove(shot)
+            if not shot.markedForRemoval: # If it has already been marked for removal, then we shouldn't increment the cull counter again!
+                destructorsToCull += 1
+            shot.markedForRemoval = True
             if krell.shield>0:
                 if SHIPTYPE==MBOT: krell.shield-=.2
                 else: krell.shield-=.4

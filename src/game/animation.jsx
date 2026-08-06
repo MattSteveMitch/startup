@@ -166,6 +166,16 @@ function parseDestructors(destructorsStr) {
     return destructors;
 }
 
+function parseAsteroids(asterStr) {
+    var asteroids = [];
+    for (let i = 0; i < asterStr.length; i+= 4) {
+        var thisAster = parseCoords(asterStr.slice(i, i + 4), 2);
+        asteroids.push(thisAster);
+    }
+
+    return asteroids;
+}
+
 function parseData(environment) {
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
@@ -181,6 +191,7 @@ function parseData(environment) {
     frameData.accel_magnitude = parseInt(frameStrings[3], 36);
     frameData.krellshot = [parseCoords(frameStrings[4], 3), parseCoords(frameStrings[4].slice(6, 12), 3)];
     frameData.destructors = parseDestructors(frameStrings[5]);
+    frameData.asteroids = parseAsteroids(frameStrings[6]);
     return frameData;
 }
 
@@ -210,6 +221,9 @@ function render(environment, gameWindow, assets) {
     for (let i = 0; i < frameData.destructors.length; i++) {
         drawLine(gameWindow, destructorYellow, frameData.destructors[i][0], 
             frameData.destructors[i][1], 3);
+    }
+    for (let i = 0; i < frameData.asteroids.length; i++) {
+        drawModified(gameWindow, assets.rock, frameData.asteroids[i], 0, [1, 1], true);
     }
     if (!environment.brakeOn) {
         drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
@@ -247,7 +261,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (prevFrame - pageBeginTime < 500) {
+    if (prevFrame - pageBeginTime < 2000) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP1(frameEnd, assets, gameWindow, environment, pageBeginTime);});
     }
     else {
