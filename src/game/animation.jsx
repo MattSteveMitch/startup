@@ -192,6 +192,7 @@ function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether t
 }
 
 function parseData(environment) {
+    console.log(environment.renderingStr);
     var frameStrings = environment.renderingStr.split(",");
     var frameData = Object();
     if (frameStrings[0].length > 4) {
@@ -208,7 +209,7 @@ function parseData(environment) {
     frameData.destructors = parseDestructors(frameStrings[5]);
     frameData.asteroids = parseAsteroids(frameStrings[6]);
     frameData.explosionsBottom = parseExplosions(frameStrings[7], false);
-
+    frameData.shieldAngle = parseInt(frameStrings[8], 36);
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     return frameData;
 }
@@ -241,17 +242,21 @@ function render(environment, gameWindow, assets) {
             frameData.destructors[i][1], 3);
     }
     for (let i = 0; i < frameData.asteroids.length; i++) {
-        drawModified(gameWindow, assets.rock, frameData.asteroids[i], 0, [1, 1], true);
+        drawCentered(gameWindow, assets.rock, frameData.asteroids[i]);
     }
     for (let i = 0; i < frameData.explosionsBottom.length; i++) {
         let scale_factor = frameData.explosionsBottom[i].size / 500;
         drawModified(gameWindow, assets.explosion_img, frameData.explosionsBottom[i].pos, 
             0, [scale_factor, scale_factor], true);
     }
-    for (let i = 0; i < frameData.explosionsTop.length; i++) {
-        let scale_factor = frameData.explosionsTop[i].size / 500;
-        drawModified(gameWindow, assets.explosion_img, frameData.explosionsTop[i].pos, 
-            0, [scale_factor, scale_factor], true);
+    if (!isNaN(frameData.shieldAngle)) {
+        drawModified(gameWindow, assets.bubble, [690, 390], -frameData.shieldAngle,
+            [1, 1], true);
+    }
+    drawCentered(gameWindow, assets.krell, [600, 390]);
+    if (!isNaN(frameData.shieldAngle)) {
+        drawModified(gameWindow, assets.bubble, [690, 390], frameData.shieldAngle,
+            [1, 1], true);
     }
     if (!environment.brakeOn) {
         drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
@@ -259,6 +264,11 @@ function render(environment, gameWindow, assets) {
     }
     drawCircle(gameWindow, "white", [550, 425], 5);
     drawCircle(gameWindow, "black", [550, 425], 1);
+    for (let i = 0; i < frameData.explosionsTop.length; i++) {
+        let scale_factor = frameData.explosionsTop[i].size / 500;
+        drawModified(gameWindow, assets.explosion_img, frameData.explosionsTop[i].pos, 
+            0, [scale_factor, scale_factor], true);
+    }
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -363,26 +373,18 @@ function updateGraphicsP4(assets, gameWindow, environment) {
 }
 
 function updateGraphicsP5(assets, gameWindow, environment) {
-    //environment.score -= 1;
-    if (environment.renderingStr) {
+    var renderStr = environment.renderingStr;
+    if (renderStr) {
         render(environment, gameWindow, assets);
     }
     let mouse = environment.mousePos;
-//    let angle = environment.LLAngle;
-/*     if (environment.brake) {
-        angle += pi;
-    } */
 
-    if (environment.rightClick) {
-//        drawLine(gameWindow, "rgb(255, 100, 70)", mouse, vectSum(mouse, [Math.cos(angle) * 100, Math.sin(angle) * 100]), 3);
-    }
     gameWindow.fillStyle = "rgb(0, 220, 130)";
     gameWindow.font = "20px Consolas";
     gameWindow.fillText("Score: " + environment.score, 50, 35);
 
     gameWindow.fillStyle = "rgb(0, 220, 130)";
     gameWindow.font = "20px Consolas";
-    //gameWindow.fillText("Hit placeholder: " + environment.slashPresses, 600, 35);
 
     if (!environment.keepAnimating.current) {
         return;

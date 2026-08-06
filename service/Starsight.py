@@ -507,7 +507,11 @@ def updategraphics():
     global rotationangle
 
     rotationangle += 3
-    graphicsstring = ""
+    if restart:
+        graphicsstring = "b" # Meaning select a new background pattern
+    else:
+        graphicsstring = ""
+
     if alive:
         if LLactive:
             graphicsstring += encodeLineSegmCoords(pos) # If the light-lance is active, we're going to be drawing a line segment coming from
@@ -518,7 +522,6 @@ def updategraphics():
 
     graphicsstring += encodeNum(angledeg % 360, format2dig) # The angle of the ship
 
-#    graphicsstring += "b," # Render background on top of everything, erasing it all
     if framessincearrow<110:
         arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
 
@@ -669,7 +672,7 @@ def moverocks():
 def newgame(complete=False):
     global exploding, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
 LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, firstmusicloop, \
-background, MACHINEGUN
+MACHINEGUN
     exploding=False
     done=False
     pos=[scrsize[0]/2-200, scrsize[1]/2]
@@ -689,7 +692,6 @@ background, MACHINEGUN
     if complete: MACHINEGUN = False
     obstaclelist()
     if krell.exploding: krell.life=False
-    if complete: background = backgrounds[random.randint(0, len(backgrounds) - 1)]
     if complete or not krell.life:
         krell.reset()
         crashes=0
