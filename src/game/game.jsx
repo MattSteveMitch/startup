@@ -36,7 +36,6 @@ export function Game() {
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
     environment.gameErrorMsgRef = React.useRef(null);
-    environment.renderingStr = "";
 
     React.useEffect(() => {
         environment.choosingShip = false;
@@ -45,7 +44,7 @@ export function Game() {
         //[environment.brake, environment.toggleBrake] = React.useState(false);
         environment.advance = false;
         environment.goBack = false;
-        environment.score = 1000;
+        environment.won = false;
         //[click, environment.setClick] = React.useState(false);
         //[environment.rightClick, environment.setRClick] = React.useState(false);
         //environment.alive = React.useState(true);
@@ -54,7 +53,7 @@ export function Game() {
         environment.brakeOn = false;
         environment.loaded = false;
         environment.started = false;
-        environment.renderingString = "";
+        environment.renderingStr = "";
         //[environment.LLAngle, environment.setLLAngle] = React.useState(0);
 
         const keyDownHandler = (event) => {

@@ -584,7 +584,7 @@ def updategraphics():
         status = numpy.base_repr(math.ceil(krell.health), 36)
     graphicsstring += status + ","
 
-    if done or not krell.life:
+    if done and krell.life and not krell.exploding:
         graphicsstring += encodeNum(crashes, format2dig)
 
     print(graphicsstring, flush = True)
@@ -906,8 +906,10 @@ def startloop():
 #    if sound: musicchannel.unpause()
 
 def endloop():
+    global screenNum
     while not restart and not respawn:
         events()
+        screenNum = 2 # Can't pause on end screen, that just causes issues
         time.sleep(0.1) # So as not to consume resources while idle
 
 obstaclelist()

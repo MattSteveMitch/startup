@@ -222,15 +222,31 @@ function parseData(environment) {
     return frameData;
 }
 
-function deathText(gameWindow, deaths) {
-    drawText(gameWindow, deaths, "red", "bold 70px Courier", [100, 100], 100);
+function deathText(environment, gameWindow, deaths, is_win) {
+    let plural = (deaths !== 1);
+    let times = plural ? " times." : " time.";
+    if (is_win) {
+        drawText(gameWindow, "Game finished! You died", 
+            "rgb(0, 255, 0)", "normal 60px Cambria", [100, 158], 800);
+        gameWindow.fillText("a total of " + deaths + times, 100, 218, 800);
+    }
+    else {
+        drawText(gameWindow, "You have died " + deaths + times, 
+            "rgb(0, 255, 0)", "normal 60px Cambria", [100, 158], 800);
+    }
 }
 
 function render(environment, gameWindow, assets) {
     var frameData = parseData(environment);
     if (frameData.won) {
-        deathText(gameWindow, frameData.deaths);
+        if (!environment.won) {
+            deathText(environment, gameWindow, frameData.deaths, true);
+            environment.won = true;
+        }
         return;
+    }
+    else {
+        environment.won = false;
     }
     let shieldUp = !isNaN(frameData.shieldAngle);
 
@@ -289,10 +305,10 @@ function render(environment, gameWindow, assets) {
     }
     let statusStr = shieldUp ? "Krell shield: " : "Krell ship health: ";
     drawText(gameWindow, statusStr + frameData.status, "red", "bold 20px Courier",
-        [70, 50], 400);
+        [70, 67], 400);
 
     if (!isNaN(frameData.deaths)) {
-        deathText(gameWindow, frameData.deaths);
+        deathText(environment, gameWindow, frameData.deaths, false);
     }
 }
 
@@ -428,7 +444,9 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     if (!environment.keepAnimating.current) {
         return;
     }
-    if (!environment.goBack) {
+
+    if (!environment.goBack || environment.won) {
+        environment.goBack = false;
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
     else {
