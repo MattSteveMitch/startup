@@ -192,7 +192,15 @@ function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether t
 
 function parseData(environment) {
     var frameStrings = environment.renderingStr.split(",");
+
     var frameData = Object();
+    frameData.won = false;
+
+    if (frameStrings.length === 1) {
+        frameData.won = true;
+        frameData.deaths = parseInt(frameStrings[0], 36);
+        return frameData;
+    }
     if (frameStrings[0].length > 4) {
         frameData.shipPos = parseCoords(frameStrings[0], 3);
     }
@@ -210,11 +218,20 @@ function parseData(environment) {
     frameData.shieldAngle = parseInt(frameStrings[8], 36);
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     frameData.status = parseInt(frameStrings[10], 36);
+    frameData.deaths = parseInt(frameStrings[11], 36);
     return frameData;
+}
+
+function deathText(gameWindow, deaths) {
+    drawText(gameWindow, deaths, "red", "bold 70px Courier", [100, 100], 100);
 }
 
 function render(environment, gameWindow, assets) {
     var frameData = parseData(environment);
+    if (frameData.won) {
+        deathText(gameWindow, frameData.deaths);
+        return;
+    }
     let shieldUp = !isNaN(frameData.shieldAngle);
 
     gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
@@ -272,7 +289,11 @@ function render(environment, gameWindow, assets) {
     }
     let statusStr = shieldUp ? "Krell shield: " : "Krell ship health: ";
     drawText(gameWindow, statusStr + frameData.status, "red", "bold 20px Courier",
-        [70, 50], 200);
+        [70, 50], 400);
+
+    if (!isNaN(frameData.deaths)) {
+        deathText(gameWindow, frameData.deaths);
+    }
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {

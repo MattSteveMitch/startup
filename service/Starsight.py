@@ -117,13 +117,14 @@ krellshot=None
 #tophits=shelve.open('starsight best hit')
 
 class explosion:
-    def __init__(self, pos, duration=5, is_ship=False, rate=6, source=None):
+    def __init__(self, pos, duration=5, is_ship=False, rate=6, source=None, is_krell=False):
 #        if sound and duration==5: explodechannel.play(explosionsfx)
         self.pos=pos
         self.multiplier=1-.075/duration
         self.rate=rate
         self.radius=30
         self.is_ship=is_ship
+        self.is_krell=is_krell
         self.source=source
         self.markedForRemoval = False
 
@@ -416,6 +417,8 @@ def brakeon():
 def deathtext():
 #    drawtext('Best Score: '+str(bestscore), pygame.font.SysFont('cambria', 60), window, (100, 260), GREEN)
     plural = crashes!=1
+    if (not krell.life) or krell.exploding:
+        print(encodeNum(crashes, format2dig), flush = True)
   #  if plural: times=' times.'
    # else: times=' time.'
     #if krell.life and not krell.exploding:
@@ -565,10 +568,15 @@ def updategraphics():
         graphicsstring += shield
     graphicsstring += ","
 
+    krellsplosion = ""
     for expl in explosions:
         r, p = expl.radius, expl.pos
+        if expl.is_krell:
+            krellsplosion = encodeNum(r, format3dig) + encodeCoords(p)
+            continue
         graphicsstring += encodeNum(r, format3dig) + encodeCoords(p)
-    graphicsstring += ","
+    
+    graphicsstring += krellsplosion + ","
 
     if krell.shield>0:
         status = numpy.base_repr(math.ceil(krell.shield), 36)
@@ -577,7 +585,7 @@ def updategraphics():
     graphicsstring += status + ","
 
     if done or not krell.life:
-        graphicsstring += "d"
+        graphicsstring += encodeNum(crashes, format2dig)
 
     print(graphicsstring, flush = True)
 
@@ -823,7 +831,7 @@ def managekrell():
             rock.was_in_krellarea=True
         else: rock.was_in_krellarea=False
     if krell.health<=0 and not krell.exploding:
-        explosions.add(explosion([725, 390], rate=20, source=krell))
+        explosions.add(explosion([725, 390], rate=20, source=krell, is_krell=True))
         krell.exploding=True
     if untilkrellshoots==0:
 #        if sound: wilhelmchannel.play(wilhelm)
@@ -858,7 +866,8 @@ def death(hit_krell):
     if not hit_krell: explosions2.add(explosion(pos, is_ship=True))
     else: explosions.add(explosion(pos, is_ship=True))
     LLactive=False
-    crashes+=1
+    if crashes < 1295: # "zz" in base 36
+        crashes+=1
 
 def destructor_hit_krell():
     global destructorsToCull
@@ -898,7 +907,8 @@ def startloop():
 
 def endloop():
     while not restart and not respawn:
-        events()    
+        events()
+        time.sleep(0.1) # So as not to consume resources while idle
 
 obstaclelist()
 krell=krell()
@@ -946,3 +956,4 @@ while True:
 #    if frames%700==0:
  #       print(time.time_ns() - mark, file = sys.stderr)
   #      mark = time.time_ns()
+
