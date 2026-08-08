@@ -712,7 +712,7 @@ MACHINEGUN
 def kinematics():
     global brake, accel, veloc, pos
     if brake: brakeon()
-    elif start and alive: accel=scalrmult(vectsum(mouse, scalrmult(scrsize, -.5)), 1.5/(300000/sensitivity))
+    elif start and alive: accel=scalrmult(vectsum(mouse, [-440, -280]), 1.5/(300000/sensitivity))
     veloc=vectsum(veloc, accel)
     pos=vectsum(pos, veloc)
 

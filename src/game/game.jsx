@@ -83,6 +83,7 @@ export function Game() {
             assetsMap.thumbnail = thumbnail_imgs[0];
             assetsMap.play_button = thumbnail_imgs[1];
             requestAnimationFrame((lastFrameTime) => {
+                gameWindow.save();
                 updateGraphicsP0(assetsMap, gameWindow, environment);
             });
         });

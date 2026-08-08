@@ -4,6 +4,7 @@ const pi = 3.14159265358979;
 export const windowSize = [880, 560];
 const LLRed = "rgb(255, 100, 70)";
 const destructorYellow = "rgb(255, 255, 200)";
+const steeringCenter = [windowSize[0] / 2, windowSize[1] / 2];
 
 const readyAssets = Object();
 
@@ -293,11 +294,11 @@ function render(environment, gameWindow, assets) {
             [1, 1], true);
     }
     if (!environment.brakeOn) {
-        drawModified(gameWindow, assets.arrow, [550, 425], frameData.shipAngle, 
+        drawModified(gameWindow, assets.arrow, steeringCenter, frameData.shipAngle, 
             [frameData.accel_magnitude / 121, 1], true);
     }
-    drawCircle(gameWindow, "white", [550, 425], 5);
-    drawCircle(gameWindow, "black", [550, 425], 1);
+    drawCircle(gameWindow, "white", steeringCenter, 5);
+    drawCircle(gameWindow, "black", steeringCenter, 1);
     for (let i = 0; i < frameData.explosionsTop.length; i++) {
         let scale_factor = frameData.explosionsTop[i].size / 500;
         drawModified(gameWindow, assets.explosion_img, frameData.explosionsTop[i].pos, 
@@ -433,7 +434,10 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
         try {
+//            gameWindow.scale(0.2, 0.2);
             render(environment, gameWindow, assets);
+  //          gameWindow.restore();
+    //        gameWindow.save();
         }
         catch (error) {
             handleError(error, gameWindow, environment, renderStr);
