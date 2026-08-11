@@ -223,41 +223,53 @@ function compareScoreRowsRev(row1, row2) {
     return row2.score > row1.score || -(row1.score > row2.score);
 }
 
-function newScoreHandler(request, response, is_hit) {
-    let score = request.body.score;
-    Promise.all([
-        db.updateOverallBests(request.username, score, is_hit),
-        db.updatePersonalBests(request.username, score, is_hit)
-    ]).then((old_bests) => {
-        let old_overall_best = old_bests[0];
-        let old_pers_best = old_bests[1];
-        let bestness = 0; // Meaning this score is not a record
-        if (
-            old_overall_best === undefined ||
-            ((!is_hit && score < old_overall_best.score) || (is_hit && score > old_overall_best.score))
-        ) {
-            bestness = 2; // Meaning this score is a new record overall
-        }
-        else if (
-            old_pers_best === undefined ||
-            ((!is_hit && score < old_pers_best.score) || (is_hit && score > old_pers_best.score))
-        ) {
-            bestness = 1; // Meaning this score is a new personal record
-        }
-        response.status(201);
-        response.send({ bestness: bestness });
-    }).catch((error) => {
-        console.log("Error updating score: is_hit = " + is_hit);
+function getBestness(old_bests, score, is_hit) {
+    let old_overall_best = old_bests[0];
+    let old_pers_best = old_bests[1];
+    if (
+        old_overall_best === undefined ||
+        ((!is_hit && score < old_overall_best.score) || (is_hit && score > old_overall_best.score))
+    ) {
+        return 2; // Meaning this score is a new record overall
+    }
+    else if (
+        old_pers_best === undefined ||
+        ((!is_hit && score < old_pers_best.score) || (is_hit && score > old_pers_best.score))
+    ) {
+        return 1; // Meaning this score is a new personal record
+    }
+
+    return 0; // Meaning this score is not a record
+}
+
+function newScoreHandler(authToken, score, is_hit) {
+    return new Promise((resolve, reject) => {
+        db.getIdentity(authToken).then((result) => {
+            if (!result) {
+                reject("Player not logged in");
+            }
+            else {
+                var username = result.username;
+                Promise.all([
+                    db.updateOverallBests(username, score, is_hit),
+                    db.updatePersonalBests(username, score, is_hit)
+                ]).then((old_bests) => {
+                    resolve(old_bests);
+                }).catch((error) => {
+                    reject("Error updating score: is_hit = " + is_hit);
+                });
+            }
+        });
     });
 }
 
-router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
+/*router.post("/score", bouncer, nullScoreSlayer, (request, response) => {
     newScoreHandler(request, response, false);
 });
 
 router.post("/hit", bouncer, nullScoreSlayer, (request, response) => {
     newScoreHandler(request, response, true);
-});
+});*/
 
 function sortAll(scores) {
     scores[0].sort(db.compareScoreRows);
@@ -321,14 +333,51 @@ const wsServer = new ws.WebSocketServer({server: httpServer});
 
 //let pyProc = child_process.spawn("python", ["Starsight - win.py"]);
 //pyProc.stdout.on("data", (message) => {console.log(message.toString());});
+const bestnessSymbols = [["$", "!"], ["*", "#"]];
 
-wsServer.on("connection", (client) => {
+function getAuthToken(request) {
+    let cookies = request.headers.cookie;
+    let beginInd = cookies.search("authToken=") + 10;
+    let endInd = cookies.slice(beginInd).search(";");
+    let authToken = endInd === -1 ? 
+        cookies.slice(beginInd) : cookies.slice(beginInd, beginInd + endInd);
+    return authToken;
+}
+
+wsServer.on("connection", (client, request) => {
+    client.authToken = getAuthToken(request);
+
     client.pyProc = child_process.spawn("python3", ["Starsight.py"]);
-    client.pyProc.stdout.on("data", (message) => {client.send(message.toString());});
-    client.pyProc.stderr.on("data", (message) => {console.log(message.toString());});
+    client.pyProc.stdout.on("data", (message) => {
+        client.send(message.toString());
+    });
+    client.pyProc.stderr.on("data", (data) => {
+        let message = data.toString();
+        let is_hit, score;
+        if (message[0] === "S") {
+            is_hit = false;
+            score = parseInt(message.slice(1));
+        }
+        else if (message[0] === "H") {
+            is_hit = true;
+            score = parseFloat(message.slice(1));
+        }
+
+        newScoreHandler(client.authToken, score, is_hit).then((old_bests) => {
+            let bestness = getBestness(old_bests, score, is_hit);
+
+            if (bestness) { // If it's a new record in some way, notify the client
+                let symbol = bestnessSymbols[+is_hit][bestness - 1];
+                let scoreStr = is_hit ? 
+                    Math.round(score * 10).toString(36) : score.toString(36);
+                //client.send(symbol + scoreStr);
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+    });
 
     client.on("message", (data) => {
-        //console.log(data.toString());
         client.pyProc.stdin.write(data.toString());
     });
 

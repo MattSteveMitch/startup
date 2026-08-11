@@ -199,6 +199,7 @@ function parseData(environment) {
 
     if (frameStrings.length === 1) {
         frameData.won = true;
+        console.log("win: " + frameStrings[0]);
         frameData.deaths = parseInt(frameStrings[0], 36);
         return frameData;
     }
@@ -220,6 +221,9 @@ function parseData(environment) {
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     frameData.status = parseInt(frameStrings[10], 36);
     frameData.deaths = parseInt(frameStrings[11], 36);
+    if (!isNaN(frameData.deaths)) {
+        console.log("renderStr: " + frameStrings[0]);
+    }
     return frameData;
 }
 

@@ -36,6 +36,7 @@ export function Game() {
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
     environment.gameErrorMsgRef = React.useRef(null);
+    environment.personalBestHitSideRef = React.useRef(null);
 
     React.useEffect(() => {
         environment.choosingShip = false;
@@ -174,6 +175,7 @@ export function Game() {
                             <h3 className="game-page">Personal best hit:</h3>
                             <div className="number-area">
                                 <p ref={environment.personalBestHitRef} className="hit number personal"></p>
+                                <p ref={environment.personalBestHitSideRef} className="hit-side-text"></p>
                             </div>
                         </section>
                         <section>

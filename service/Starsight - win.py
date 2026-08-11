@@ -38,6 +38,7 @@ mouse, accel, veloc, pos = [450,450], [0, 0], [0, 0], [scrsize[0]/2-200, scrsize
 brake, start, respawn, alive, done, restart = False, False, False, True, False, False
 angledeg=0
 anglerad=0
+winMsgSent=False
 
 inputEvents = []
 eventSem = threading.Semaphore()
@@ -430,8 +431,6 @@ def brakeon():
 def deathtext():
 #    drawtext('Best Score: '+str(bestscore), pygame.font.SysFont('cambria', 60), window, (100, 260), GREEN)
     plural = crashes!=1
-    if (not krell.life) or krell.exploding:
-        print(encodeNum(crashes, format2dig), flush = True)
   #  if plural: times=' times.'
    # else: times=' time.'
     #if krell.life and not krell.exploding:
@@ -444,13 +443,18 @@ def deathtext():
     #    pygame.display.update()
 
 def end():
-    global done, bestscore
+    global done, bestscore, winMsgSent
     if not MACHINEGUN: legit=True
     else: legit=False
 #    scorefile=shelve.open('starsight bestscore')
  #   bestscore=scorefile['bestscore']
   #  if ((not krell.life) or krell.exploding) and crashes<bestscore and legit: scorefile['bestscore']=crashes
    # scorefile.close()
+    if ((not krell.life) or krell.exploding) and legit:
+        print(encodeNum(crashes, format2dig), flush = True)
+        if not winMsgSent:
+            print("S" + str(crashes), file = sys.stderr)
+            winMsgSent = True
     deathtext()
     done=True
 
@@ -693,9 +697,10 @@ def moverocks():
 def newgame(complete=False):
     global exploding, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
 LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, firstmusicloop, \
-MACHINEGUN
+winMsgSent, MACHINEGUN
     exploding=False
     done=False
+    winMsgSent=False
     pos=[scrsize[0]/2-200, scrsize[1]/2]
     explosions=set([])
     explosions2=set([])
@@ -838,9 +843,8 @@ def managekrell():
                 explosions.add(explosion(get_explsn_point(rock), source=rock))
                 rock.veloc=[0, 0]
                 LLactive=False
-#                if damage>tophits['besthit']:
- #                   tophits['besthit']=damage
-  #                  print('New record: most damaging hit! '+str(tophits['besthit']))
+                print("H" + str(round(damage, 1)), file = sys.stderr)
+
             rock.was_in_krellarea=True
         else: rock.was_in_krellarea=False
     if krell.health<=0 and not krell.exploding:
