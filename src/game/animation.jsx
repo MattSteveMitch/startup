@@ -192,17 +192,25 @@ function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether t
 }
 
 function parseData(environment) {
-    var frameStrings = environment.renderingStr.split(",");
+    var rawString = environment.renderingStr;
+    var frameStrings = rawString.slice(0, -1).split(",");
 
     var frameData = Object();
     frameData.won = false;
+    frameData.error = false;
 
+    if (rawString[rawString.length - 1] !== ".") {
+        frameData.error = true;
+        console.log("Frame rendering error: " + rawString);
+        return frameData;
+    }
     if (frameStrings.length === 1) {
+        //console.log(frameStrings[0]);
         frameData.won = true;
-        console.log("win: " + frameStrings[0]);
         frameData.deaths = parseInt(frameStrings[0], 36);
         return frameData;
     }
+//    if (frameStrings[0][0] === "b") {console.log("new");}
     if (frameStrings[0].length > 4) {
         frameData.shipPos = parseCoords(frameStrings[0], 3);
     }
@@ -221,9 +229,9 @@ function parseData(environment) {
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     frameData.status = parseInt(frameStrings[10], 36);
     frameData.deaths = parseInt(frameStrings[11], 36);
-    if (!isNaN(frameData.deaths)) {
+/*     if (!isNaN(frameData.deaths)) {
         console.log("renderStr: " + frameStrings[0]);
-    }
+    } */
     return frameData;
 }
 
@@ -242,7 +250,12 @@ function deathText(environment, gameWindow, deaths, is_win) {
 }
 
 function render(environment, gameWindow, assets) {
+    if (environment.restarting) {
+        reset(environment, assets);
+        environment.restarting = false;
+    }
     var frameData = parseData(environment);
+    if (frameData.error) {return;}
     if (frameData.won) {
         if (!environment.won) {
             deathText(environment, gameWindow, frameData.deaths, true);
@@ -251,6 +264,9 @@ function render(environment, gameWindow, assets) {
         return;
     }
     else {
+        if (environment.won) {
+            reset(environment, assets);
+        }
         environment.won = false;
     }
     let shieldUp = !isNaN(frameData.shieldAngle);
@@ -315,6 +331,11 @@ function render(environment, gameWindow, assets) {
     if (!isNaN(frameData.deaths)) {
         deathText(environment, gameWindow, frameData.deaths, false);
     }
+}
+
+function reset(environment, assets) {    
+    readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
+    resetVariables(environment);
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -393,7 +414,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     }
     else {
         environment.advance = false;
-        readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
+        reset(environment, assets);
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
 

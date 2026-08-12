@@ -26,7 +26,7 @@ function chooseShip(environment, ship) {
 let clientActions = {
     "/": (environment) => {environment.shooting = true;}, 
     "S": goBack, "s": (_) => {console.log("sound toggled");}, 
-    ">": advanceOne,
+    ">": advanceOne, "r": (environment) => {environment.restarting = true;},
     "p": (environment) => {chooseShip(environment, "p");}, 
     "m": (environment) => {chooseShip(environment, "m");},
     " ": (environment) => {environment.brakeOn = true;}

@@ -119,15 +119,12 @@ function bouncer(request, response, next) {
     });
 }
 
-function nullScoreSlayer(request, response, next) {
-    let score = request.body.score;
+function checkNotNull(score) {
     if (score === undefined || score === null) {
-        response.status(400);
-        response.send();
+        console.log("Error! Score value is null");
+        return false;
     }
-    else {
-        next();
-    }
+    return true;
 }
 
 function checkLogin(request, response, next) {
@@ -333,7 +330,7 @@ const wsServer = new ws.WebSocketServer({server: httpServer});
 
 //let pyProc = child_process.spawn("python", ["Starsight - win.py"]);
 //pyProc.stdout.on("data", (message) => {console.log(message.toString());});
-const bestnessSymbols = [["$", "!"], ["*", "#"]];
+const bestnessSymbols = [["$", "+", "!"], ["*", "#", "@"]];
 
 function getAuthToken(request) {
     let cookies = request.headers.cookie;
@@ -351,8 +348,10 @@ wsServer.on("connection", (client, request) => {
     client.pyProc.stdout.on("data", (message) => {
         client.send(message.toString());
     });
+
     client.pyProc.stderr.on("data", (data) => {
         let message = data.toString();
+        //console.log(message);
         let is_hit, score;
         if (message[0] === "S") {
             is_hit = false;
@@ -362,16 +361,15 @@ wsServer.on("connection", (client, request) => {
             is_hit = true;
             score = parseFloat(message.slice(1));
         }
+        else {return;}
 
         newScoreHandler(client.authToken, score, is_hit).then((old_bests) => {
             let bestness = getBestness(old_bests, score, is_hit);
 
-            if (bestness) { // If it's a new record in some way, notify the client
-                let symbol = bestnessSymbols[+is_hit][bestness - 1];
-                let scoreStr = is_hit ? 
-                    Math.round(score * 10).toString(36) : score.toString(36);
-                //client.send(symbol + scoreStr);
-            }
+            let symbol = bestnessSymbols[+is_hit][bestness];
+            let scoreStr = is_hit ? 
+                Math.round(score * 10).toString(36) : score.toString(36);
+            client.send(symbol + scoreStr);
         }).catch((error) => {
             console.log(error);
         });

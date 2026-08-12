@@ -1,3 +1,9 @@
+import {updateScores, updateHits} from "./updateScores.jsx";
+
+const newScoreBestness = {"$": 0, "+": 1, "!": 2}; // Characters representing score bestnesses
+const newHitBestness = {"*": 0, "#": 1, "@": 2}; // Characters representing hit bestnesses
+
+
 export function runGame(windowRef, environment) {
     windowRef.current.className = "";
     console.log("running");
@@ -9,8 +15,20 @@ export function runGame(windowRef, environment) {
     );
 
     environment.websocket.onmessage = (event) => {
-    //    console.log(event.data);
-        environment.renderingStr = event.data;
+        //console.log(event.data);
+        let scoreBestness = newScoreBestness[event.data[0]];
+        let bestness = scoreBestness ?? newHitBestness[event.data[0]];
+        if (bestness !== undefined) {
+            if (scoreBestness !== undefined) {
+                updateScores(environment, parseInt(event.data.slice(1), 36), bestness);
+            }
+            else {
+                updateHits(environment, parseInt(event.data.slice(1), 36) / 10, bestness);
+            }
+        }
+        else {
+            environment.renderingStr = event.data;
+        }
     };
 
     environment.websocket.onopen = (event) => {

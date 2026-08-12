@@ -38,6 +38,7 @@ mouse, accel, veloc, pos = [450,450], [0, 0], [0, 0], [scrsize[0]/2-200, scrsize
 brake, start, respawn, alive, done, restart = False, False, False, True, False, False
 angledeg=0
 anglerad=0
+winMsgSent=False
 
 inputEvents = []
 
@@ -437,7 +438,7 @@ def end():
   #  if ((not krell.life) or krell.exploding) and crashes<bestscore and legit: scorefile['bestscore']=crashes
    # scorefile.close()
     if ((not krell.life) or krell.exploding) and legit:
-        print(encodeNum(crashes, format2dig), flush = True)
+        print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
         if not winMsgSent:
             print("S" + str(crashes), file = sys.stderr)
             winMsgSent = True
@@ -513,10 +514,7 @@ def updategraphics():
     global rotationangle
 
     rotationangle += 3
-    if restart:
-        graphicsstring = "b" # Meaning select a new background pattern
-    else:
-        graphicsstring = ""
+    graphicsstring = ""
 
     if alive:
         if LLactive:
@@ -589,8 +587,9 @@ def updategraphics():
 
     if done and krell.life and not krell.exploding:
         graphicsstring += encodeNum(crashes, format2dig)
+    graphicsstring += "."
 
-    print(graphicsstring, flush = True)
+    print(graphicsstring, flush = True, end = "")
 
 
 def collisionship():

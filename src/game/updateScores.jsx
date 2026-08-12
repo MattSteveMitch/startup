@@ -10,78 +10,36 @@ export function setBestHit(environment, hit, setter) {
     environment.bestHitSetterRef.current.innerHTML = "Set by " + setter;
 }
 
-export function updateScores(environment) {
+export function updateScores(environment, score, bestness) {
     let myUsername = localStorage.getItem("username");
-    let bestness;
 
-    if (!nullish(environment.newScore)) {
-        fetch("/api/score", {
-            method: "post",
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-            body: JSON.stringify({score: environment.newScore})
-        }).then((response) => {
-            if (response.status === 201) {
-                response.json().then((body) => {
-                    bestness = body.bestness;
-                    if (bestness) {
-                        environment.currentScoreRef.current.className = "number-area best";
-                        environment.personalBestScoreRef.current.className = "score number new";
-                        environment.personalBestScoreRef.current.innerHTML = environment.newScore;
-                        environment.shareButtonRef.current.className = "share new-best";
-                    }
-                    if (bestness === 2) {
-                        environment.overallBestScoreRef.current.className = "score number new";
-                        environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
-                        setBestScore(environment, environment.newScore, myUsername);
-                    }
-                });
-            }
-            else if (response.status === 401) {
-                environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
-            }
-            else {
-                environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
-            }
-        }).catch((error) => {
-            environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
-        });
-    }
+        if (bestness) {
+            environment.currentScoreRef.current.className = "number-area best";
+            environment.personalBestScoreRef.current.className = "score number new";
+            environment.personalBestScoreRef.current.innerHTML = score;
+            environment.shareButtonRef.current.className = "share new-best";
+        }
+        if (bestness === 2) {
+            environment.overallBestScoreRef.current.className = "score number new";
+            environment.bestScoreSetterRef.current.className = "score-side-text new-setter";
+            setBestScore(environment, score, myUsername);
+        }
+        environment.setNewScore(score);
 }
 
-export function updateHits(environment) {
+export function updateHits(environment, hit, bestness) {
     let myUsername = localStorage.getItem("username");
-    let bestness;
 
-    if (!nullish(environment.newHit)) {
-        fetch("/api/hit", {
-            method: "post",
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-            body: JSON.stringify({score: environment.newHit})
-        }).then((response) => {
-            if (response.status === 201) {
-                response.json().then((body) => {
-                    bestness = body.bestness;
-                    if (bestness) {
-                        environment.personalBestHitRef.current.className = "hit number personal new";
-                        environment.personalBestHitRef.current.innerHTML = environment.newHit;
-                    }
-                    if (bestness === 2) {
-                        environment.overallBestHitRef.current.className = "hit number overall new";
-                        environment.bestHitSetterRef.current.className = "hit-side-text new-setter";
-                        setBestHit(environment, environment.newHit, myUsername);
-                    }
-                });
-            }
-            else if (response.status === 401) {
-                environment.gameErrorMsgRef.current.innerHTML = "Error: Please log back in";
-            }
-            else {
-                environment.gameErrorMsgRef.current.innerHTML = response.status + ": " + response.statusText;
-            }
-        }).catch((error) => {
-            environment.gameErrorMsgRef.current.innerHTML = "Server unavailable";
-        });
+    if (bestness) {
+        environment.personalBestHitRef.current.className = "hit number personal new";
+        environment.personalBestHitRef.current.innerHTML = hit;
     }
+    if (bestness === 2) {
+        environment.overallBestHitRef.current.className = "hit number overall new";
+        environment.bestHitSetterRef.current.className = "hit-side-text new-setter";
+        setBestHit(environment, hit, myUsername);
+    }
+    environment.setNewHit(hit);
 }
 
 export function updateBests(response, environment) {
@@ -113,9 +71,7 @@ export function updateBests(response, environment) {
 }
 
 export function resetVariables(environment) {
-    environment.advance = false;
-    environment.score = 1000;
-    //environment.setSlashPresses(0);
+    //environment.advance = false;
     environment.currentScoreRef.current.className = "number-area";
     environment.personalBestScoreRef.current.className = "score number";
     environment.overallBestScoreRef.current.className = "score number";

@@ -42,20 +42,15 @@ export function Game() {
         environment.choosingShip = false;
         environment.shipChoice = "";
         environment.connected = false;
-        //[environment.brake, environment.toggleBrake] = React.useState(false);
         environment.advance = false;
         environment.goBack = false;
         environment.won = false;
-        //[click, environment.setClick] = React.useState(false);
-        //[environment.rightClick, environment.setRClick] = React.useState(false);
-        //environment.alive = React.useState(true);
-        //[respawning, environment.setRespawning] = React.useState(false);
         environment.shooting = false;
         environment.brakeOn = false;
         environment.loaded = false;
         environment.started = false;
         environment.renderingStr = "";
-        //[environment.LLAngle, environment.setLLAngle] = React.useState(0);
+        environment.restarting = false;
 
         const keyDownHandler = (event) => {
             event.preventDefault();
@@ -123,8 +118,8 @@ export function Game() {
         });
     }, []);
 
-    React.useEffect(() => {updateScores(environment);}, [environment.newScore]);
-    React.useEffect(() => {updateHits(environment);}, [environment.newHit]);
+//    React.useEffect(() => {updateScores(environment);}, [environment.newScore]);
+  //  React.useEffect(() => {updateHits(environment);}, [environment.newHit]);
 
 
     return (
