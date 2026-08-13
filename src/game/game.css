@@ -162,6 +162,18 @@ main {
         padding-top: 10px;
         font-weight: bold;
     }
+    
+    .hit-side-text.new-best {
+        color: var(--bright-blue);
+        display: none;
+    }
+
+    .hit-side-text.new-best.visible {
+        animation-name: fade;
+        opacity: 0%;
+        animation-duration: 3s;
+        display: block;
+    }
 
     .hit.personal.new {
         color: var(--bright-blue);

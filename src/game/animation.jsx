@@ -1,4 +1,4 @@
-import {resetVariables} from "./updateScores.jsx";
+import {resetStyling} from "./updateScores.jsx";
 
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
@@ -335,7 +335,7 @@ function render(environment, gameWindow, assets) {
 
 function reset(environment, assets) {    
     readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
-    resetVariables(environment);
+    resetStyling(environment);
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {

@@ -1,4 +1,4 @@
-import {updateScores, updateHits} from "./updateScores.jsx";
+import {updateScores, updateHits, resetHitStyling} from "./updateScores.jsx";
 
 const newScoreBestness = {"$": 0, "+": 1, "!": 2}; // Characters representing score bestnesses
 const newHitBestness = {"*": 0, "#": 1, "@": 2}; // Characters representing hit bestnesses
@@ -23,7 +23,9 @@ export function runGame(windowRef, environment) {
                 updateScores(environment, parseInt(event.data.slice(1), 36), bestness);
             }
             else {
-                updateHits(environment, parseInt(event.data.slice(1), 36) / 10, bestness);
+                let hit = parseInt(event.data.slice(1), 36) / 10;
+                resetHitStyling(environment);
+                updateHits(environment, hit, bestness);
             }
         }
         else {

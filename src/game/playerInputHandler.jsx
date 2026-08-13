@@ -66,17 +66,14 @@ export function handleMouseMove(newPos, environment) {
     let xStr = "0" + newPos.nativeEvent.offsetX.toString(36);
     let yStr = "0" + newPos.nativeEvent.offsetY.toString(36);
     sendEventWS(environment, "m" + xStr.slice(-2) + yStr.slice(-2));
-    //environment.setMouse([newPos.nativeEvent.offsetX, newPos.nativeEvent.offsetY]);
 }
 
 export function handleScroll(event, environment) {
     if (event.deltaY < 0) {
         sendEventWS(environment, "+");
-  //      environment.setLLAngle(environment.LLAngle - (pi / 4));
     }
     else {
         sendEventWS(environment, "-");
-    //    environment.setLLAngle(environment.LLAngle + (pi / 4));
     }
 }
 

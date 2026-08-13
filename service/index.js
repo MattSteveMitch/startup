@@ -66,10 +66,10 @@ function verifyLength(request, response, next) {
         response.status(400);
         response.send({ msg: "Username too long" });
     }
-    else if (request.body.password.length > 16) {
+/*    else if (request.body.password.length > 16) {
         response.status(400);
         response.send({ msg: "Password too long" });
-    }
+    }*/
     else {
         next();
     }
@@ -363,6 +363,9 @@ wsServer.on("connection", (client, request) => {
         }
         else {return;}
 
+        if (!checkNotNull(score)) {
+            return;
+        }
         newScoreHandler(client.authToken, score, is_hit).then((old_bests) => {
             let bestness = getBestness(old_bests, score, is_hit);
 

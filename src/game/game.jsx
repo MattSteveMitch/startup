@@ -16,8 +16,7 @@ const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAtt
 const assetsMap = Object();
 const environment = Object();
 
-var respawning, click, gameWindow;
-// brake, start, respawn, alive, stopshoot, LLactive, LLangle, framessincearrow, gamepause, restart, sound, framessincesound
+var gameWindow;
 assetsMap.buttonSize = windowSize[1] / 4;
 const LLFire = new Audio("assets/LLFire.mp3");
 
@@ -170,7 +169,9 @@ export function Game() {
                             <h3 className="game-page">Personal best hit:</h3>
                             <div className="number-area">
                                 <p ref={environment.personalBestHitRef} className="hit number personal"></p>
-                                <p ref={environment.personalBestHitSideRef} className="hit-side-text"></p>
+                                <p ref={environment.personalBestHitSideRef} className="hit-side-text new-best">
+                                    New record!
+                                </p>
                             </div>
                         </section>
                         <section>
