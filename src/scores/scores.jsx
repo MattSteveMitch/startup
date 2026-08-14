@@ -37,7 +37,7 @@ export function Scores() {
     let best_scores_table = [];
     for (let i = 0; i < best_scores.length; i++) {
         best_scores_table.push(
-            <tr key={i}>
+            <tr name={i + 1} key={i}>
                 <td className="rank">{i + 1}</td>
                 <td className="player">{best_scores[i].username}</td>
                 <td className="number">{best_scores[i].score}</td>
@@ -58,7 +58,7 @@ export function Scores() {
     let best_hits_table = [];
     for (let i = 0; i < best_hits.length; i++) {
         best_hits_table.push(
-            <tr key={i}>
+            <tr name={i + 1} key={i}>
                 <td className="rank">{i + 1}</td>
                 <td className="player">{best_hits[i].username}</td>
                 <td className="number">{best_hits[i].score}</td>

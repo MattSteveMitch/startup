@@ -10,15 +10,11 @@ const img_names = ["arrow", "background1", "background2", "background3", "bubble
     "choose_ship", "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", 
     "sound_off", "sound_on", "text"];
 
-const sound_names = ["e", "explosion_aud", "intro", "krellshot", "laser", "LLAttached", "LLFire", "rockbreak", 
-    "rush e", "silence", "wilhelm"];
-
 const assetsMap = Object();
 const environment = Object();
 
 var gameWindow;
 assetsMap.buttonSize = windowSize[1] / 4;
-const LLFire = new Audio("assets/LLFire.mp3");
 
 export function Game() {
     [environment.newScore, environment.setNewScore] = React.useState(null);
@@ -114,6 +110,8 @@ export function Game() {
                 environment.websocket.close();
                 environment.websocket = null;
             }
+            assetsMap.sfx.unload();
+            assetsMap.music.unload();
         });
     }, []);
 
@@ -191,7 +189,7 @@ export function Game() {
                         onClick={(event) => {
                             if (!environment.started) {
                                 runGame(windowRef, environment);
-                                loadAssets(environment, assetsMap, img_names, sound_names);
+                                loadAssets(environment, assetsMap, img_names);
                             }
                             else {
                                 handleClick(event, environment);

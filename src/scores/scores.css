@@ -1,6 +1,28 @@
 :root {
     --dark-gray: rgb(140, 140, 140);
     --darkish-gray: rgb(155, 155, 155);
+    --ight-gold: rgb(255, 222, 100);
+    
+    --gold: rgb(255, 211, 50);
+    --light-gold: rgb(255, 244, 204);
+    --silver: rgb(215, 215, 215);
+    --bronze: rgb(255, 187, 124);
+    --light-bronze: rgb(255, 221, 189);
+}
+
+tr[name="1"] > td {
+    background-image: linear-gradient(to bottom, var(--gold), var(--light-gold));
+    color: black;
+}
+
+tr[name="2"] > td {
+    background-image: linear-gradient(to bottom, var(--silver), white);
+    color: black;
+}
+
+tr[name="3"] > td {
+    background-image: linear-gradient(to bottom, var(--bronze), var(--light-bronze));
+    color: black;
 }
 
 main.scores {

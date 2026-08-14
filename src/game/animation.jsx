@@ -1,4 +1,5 @@
 import {resetStyling} from "./updateScores.jsx";
+import * as howl from "howler";
 
 const pi = 3.14159265358979;
 export const windowSize = [880, 560];
@@ -7,6 +8,8 @@ const destructorYellow = "rgb(255, 255, 200)";
 const steeringCenter = [windowSize[0] / 2, windowSize[1] / 2];
 
 const readyAssets = Object();
+
+var musicSilent, firstLoop;
 
 function vectSum(vect1, vect2) {
     return [vect1[0] + vect2[0], vect1[1] + vect2[1]];
@@ -54,10 +57,9 @@ function drawCircle(canvas, color, pos, radius) {
     canvas.fill();
 }
 
-function loadAssetsProm(imgNames, soundNames) {
+function loadAssetsProm(imgNames) {
     var images = new Array(imgNames.length).fill(null);
-    var sounds = new Array(soundNames.length).fill(null);
-    var promises = new Array(imgNames.length + soundNames.length).fill(null);
+    var promises = new Array(imgNames.length + 2).fill(null);
 
     for (let i = 0; i < imgNames.length; i++) {
         images[i] = new Image();
@@ -67,28 +69,68 @@ function loadAssetsProm(imgNames, soundNames) {
         });
     }
 
-    for (let i = 0; i < soundNames.length; i++) {
-        sounds[i] = new Audio("assets/" + soundNames[i] + ".mp3");
-        promises[imgNames.length + i] = new Promise((resolve, reject) => {
-            sounds[i].onloadeddata = () => {resolve(sounds[i]);};
-        });
-    }
+    var sfx = new howl.Howl(
+        {
+            src: "assets/sfx.mp3",
+            sprite: {
+                e: [0, 2408],
+                explosion: [2409, 1639],
+                krellshot: [4048, 310],
+                laser: [4358, 84],
+                LLAttached: [4442, 181],
+                LLFire: [4623, 523],
+                rockbreak: [5146, 361],
+                wilhelm: [5507, 973]
+            }
+        }
+    );
+    
+    var music = new howl.Howl(
+        {
+            src: "assets/music.mp3", 
+            sprite: {
+                with_intro: [0, 87966],
+                main: [20141, 67825],
+                silence: [87966, 453]
+            },
+            onend: () => {
+                console.log("done!");
+                if (musicSilent) {
+                    music.play("main");
+                }
+                else {
+                    sfx.play("e");
+                    music.play("silence");
+                }
+                musicSilent = !musicSilent;
+            }
+        }
+    );
+
+    promises[imgNames.length] = new Promise((resolve, reject) => {
+        music.on("load", () => {resolve(music);});
+    });
+
+    promises[imgNames.length + 1] = new Promise((resolve, reject) => {
+        sfx.on("load", () => {resolve(sfx);});
+    });
 
     return Promise.all(promises);
 }
 
-export function loadAssets(environment, assetsRef, img_names, sound_names) {
-    var assetsProm = loadAssetsProm(img_names, sound_names);
+export function loadAssets(environment, assetsRef, img_names) {
+    var assetsProm = loadAssetsProm(img_names);
 
     assetsProm.then((assets) => {
         for (let i = 0; i < img_names.length; i++) {
             assetsRef[img_names[i]] = assets[i];
         }
+
+        assetsRef["music"] = assets[assets.length - 2];
+        assetsRef["sfx"] = assets[assets.length - 1];
         
-        for (let i = 0; i < sound_names.length; i++) {
-            assetsRef[sound_names[i]] = assets[img_names.length + i];
-        }
-        
+        musicSilent = false;
+        firstLoop = true;
         environment.loaded = true;
     });
 }
@@ -434,6 +476,13 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     else {
         environment.goBack = false;
         environment.advance = false;
+        if (firstLoop) {
+            assets.music.play("with_intro");
+            firstLoop = false;
+        }
+        else {
+            assets.music.play();
+        }
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
 
@@ -481,6 +530,7 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     else {
         environment.goBack = false;
         environment.advance = false;
+        assets.music.pause();
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     return;
