@@ -43,6 +43,8 @@ winMsgSent=False
 inputEvents = []
 eventSem = threading.Semaphore()
 
+newSounds = ""
+
 def checkInput():
     global inputEvents, eventSem
     while True:
@@ -132,7 +134,9 @@ krellshot=None
 
 class explosion:
     def __init__(self, pos, duration=5, is_ship=False, rate=6, source=None, is_krell=False):
-#        if sound and duration==5: explodechannel.play(explosionsfx)
+        global newSounds
+        if duration==5:
+            newSounds += "e"
         self.pos=pos
         self.multiplier=1-.075/duration
         self.rate=rate
@@ -192,7 +196,8 @@ class krell:
 
 class krelldestructor:
     def __init__(self, direction):
-#        if sound: krellshotsound.play()
+        global newSounds
+        newSounds += "k"
         self.direction=direction
         self.end1_dist=1
         self.end2_dist=1
@@ -207,7 +212,7 @@ def primetoshoot(): # Machine gun shoots every 13th frame; this changes the fram
 
 def events():
     global mouse, veloc, brake, start, respawn, alive, stopshoot, LLactive, LLangle,\
-framessincearrow, screenNum, restart, sound, framessincesound
+framessincearrow, screenNum, restart, sound, newSounds, framessincesound
     for thisevent in getInputEvents():
         if len(thisevent) == 0:
             continue
@@ -225,7 +230,7 @@ framessincearrow, screenNum, restart, sound, framessincesound
                 else:
                     destructors.add(destructor())
                     if SHIPTYPE==MBOT: destructors.add(destructor())
-#                    if sound: destructorsound.play()
+                    newSounds += "d"
             elif nextChar == " ":
                 brake=True
             elif nextChar == "R" and (not alive or not krell.life): # If key is Return or "\"
@@ -248,8 +253,8 @@ framessincearrow, screenNum, restart, sound, framessincesound
             elif nextChar == "e" and alive and SHIPTYPE!=POCO: death(False)
         elif firstChar == "(": start=True # Left click
         elif firstChar == ")" and alive and start: # Right click
-#            if not LLactive:
-#                if sound: LLfiringsound.play()
+            if not LLactive:
+                newSounds += "L"
             LLactive = not LLactive
         elif firstChar == "+": # Mouse scroll wheel up
             LLangle-=45
@@ -524,7 +529,7 @@ def encodeLineSegmCoords(coords): # If one end of a line segment goes offscreen,
     return encodeSingleCoord(coords[0], format3dig) + encodeSingleCoord(coords[1], format3dig)
 
 def updategraphics():
-    global rotationangle
+    global rotationangle, newSounds
 
     rotationangle += 3
     graphicsstring = ""
@@ -602,12 +607,14 @@ def updategraphics():
         graphicsstring += encodeNum(crashes, format2dig)
     graphicsstring += "."
 
-    print(graphicsstring, flush = True, end = "")
+    print(graphicsstring + newSounds + "<", flush = True, end = "")
+    newSounds = ""
 
 
 def collisionship():
-    global krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap, start, alive
-    if (pos[0]>scrsize[0]+900 or pos[0]<-900 or pos[1]<-900 or pos[1]>scrsize[1]+900) and start: return True
+    global krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap, start, alive, newSounds
+    if (pos[0]>scrsize[0]+900 or pos[0]<-900 or pos[1]<-900 or pos[1]>scrsize[1]+900) and start:
+        return True
     for meteor in obstacles:
         z=vectdiff(pos, meteor.pos)
         if meteor.life and abs(z[0])<68 and abs(z[1])<68:
@@ -620,7 +627,7 @@ def collisionship():
                 if distance<40:
                     impactforce=scalrproject(relative_veloc, vectdiff(meteor.pos, pos))
                     if impactforce>.82 and not prev_rock_overlap and alive:
-#                        if sound: wilhelmchannel.play(wilhelm)
+                        newSounds += "w"
                         return True
                     rock_overlap=True
     prev_krell_overlap=krell_overlap
@@ -633,7 +640,7 @@ def collisionship():
             if impactforce>.82 and not prev_krell_overlap and alive:
                 if krell.shield>0: krell.shield-=(impactforce-.82)*SHIPMASS*25/ROCKMASS
                 else: krell.health-=(impactforce-.82)*SHIPMASS*25/ROCKMASS
-#                if sound: wilhelmchannel.play(wilhelm)
+                newSounds += "w"
                 return 2
 
     if krellshot!=None:
@@ -664,12 +671,12 @@ def collisionkrell(point, radius):
         return False
 
 def destructor_hit_rock():
-    global destructorsToCull
+    global destructorsToCull, newSounds
     for meteor in obstacles:
         if meteor.breaking: meteor.countdown-=1
         if meteor.countdown==0:
             meteor.life=False
-#            if sound: rockbreak.play()
+            newSounds += "r"
             explosions2.add(explosion(meteor.pos, duration=1, rate=20))
         if meteor.life:
             for shot in destructors:
@@ -679,7 +686,7 @@ def destructor_hit_rock():
                         destructorsToCull += 1
                     shot.markedForRemoval = True
             if krellshot!=None and distpointlinesegm(meteor.pos, krellshot.pos1, krellshot.pos2)<40 and not meteor.offscreen:
-#                if sound: rockbreak.play()
+                newSounds += "r"
                 explosions2.add(explosion(meteor.pos, duration=1, rate=20))
                 meteor.life=False
 
@@ -741,11 +748,11 @@ def anglecalculations():
         newcollisionvects[x]=vectorrotate(collisionvects[x], anglerad)
 
 def manageframes():
-    global frames, start, obstacles, destructors, framessincearrow, untilkrellshoots, beginning, framessincesound
+    global frames, start, obstacles, destructors, framessincearrow, untilkrellshoots, beginning, framessincesound, newSounds
     if frames%13==0 and not stopshoot and alive and start:
         destructors.add(destructor())
         if SHIPTYPE==MBOT: destructors.add(destructor())
-#        if sound: destructorsound.play()
+        newSounds += "d"
     frames+=1
     if magn(veloc)<0.07 and start and alive and not krell.exploding: untilkrellshoots-=1
     elif krellshot==None: untilkrellshoots=400
@@ -809,7 +816,7 @@ def bounce():
     spearedrock.speed=magn(spearedrock.veloc)
 
 def lightlancing():
-    global directionfired, LLvector, LLtip, LLactive, spearedrock, LLlength
+    global directionfired, LLvector, LLtip, LLactive, spearedrock, LLlength, newSounds
     if LLactive:
         movelightlance()
         if spearedrock==None:
@@ -818,7 +825,7 @@ def lightlancing():
                     spearedrock=rock
                     rock.beenspeared=True
                     LLlength=magn(vectdiff(pos, rock.pos))
-#                    if sound: LLattachsound.play()
+                    newSounds += "l"
         else:
             stringphysics()
     else:
@@ -828,7 +835,7 @@ def lightlancing():
         spearedrock=None
 
 def managekrell():
-    global LLactive, untilkrellshoots, krellshot, tophits
+    global LLactive, untilkrellshoots, krellshot, tophits, newSounds
     if krell.shield<0: krell.shield=0
     if krell.health<0: krell.health=0
     for rock in obstacles:
@@ -849,7 +856,7 @@ def managekrell():
         explosions.add(explosion([725, 390], rate=20, source=krell, is_krell=True))
         krell.exploding=True
     if untilkrellshoots==0:
-#        if sound: wilhelmchannel.play(wilhelm)
+        newSounds += "w"
         global diff
         diff=vectdiff(pos, [725, 390])
         krellshot=krelldestructor(unit(diff))

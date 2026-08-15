@@ -94,7 +94,6 @@ function loadAssetsProm(imgNames) {
                 silence: [87966, 453]
             },
             onend: () => {
-                console.log("done!");
                 if (musicSilent) {
                     music.play("main");
                 }
@@ -235,17 +234,11 @@ function parseExplosions(explStr, is_on_top) { /* is_on_top represents whether t
 
 function parseData(environment) {
     var rawString = environment.renderingStr;
-    var frameStrings = rawString.slice(0, -1).split(",");
+    var frameStrings = rawString.split(",");
 
     var frameData = Object();
     frameData.won = false;
-    frameData.error = false;
 
-    if (rawString[rawString.length - 1] !== ".") {
-        frameData.error = true;
-        console.log("Frame rendering error: " + rawString);
-        return frameData;
-    }
     if (frameStrings.length === 1) {
         //console.log(frameStrings[0]);
         frameData.won = true;
@@ -271,9 +264,7 @@ function parseData(environment) {
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     frameData.status = parseInt(frameStrings[10], 36);
     frameData.deaths = parseInt(frameStrings[11], 36);
-/*     if (!isNaN(frameData.deaths)) {
-        console.log("renderStr: " + frameStrings[0]);
-    } */
+
     return frameData;
 }
 
@@ -291,13 +282,18 @@ function deathText(environment, gameWindow, deaths, is_win) {
     }
 }
 
+export function playSounds(soundStr) {
+    if (soundStr) {
+        console.log(soundStr);
+    }
+}
+
 function render(environment, gameWindow, assets) {
     if (environment.restarting) {
         reset(environment, assets);
         environment.restarting = false;
     }
     var frameData = parseData(environment);
-    if (frameData.error) {return;}
     if (frameData.won) {
         if (!environment.won) {
             deathText(environment, gameWindow, frameData.deaths, true);

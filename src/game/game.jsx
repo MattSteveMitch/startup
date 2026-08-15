@@ -45,6 +45,7 @@ export function Game() {
         environment.loaded = false;
         environment.started = false;
         environment.renderingStr = "";
+        environment.soundStr = "";
         environment.restarting = false;
 
         const keyDownHandler = (event) => {

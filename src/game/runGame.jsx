@@ -1,4 +1,5 @@
 import {updateScores, updateHits, resetHitStyling} from "./updateScores.jsx";
+import {playSounds} from "./animation.jsx";
 
 const newScoreBestness = {"$": 0, "+": 1, "!": 2}; // Characters representing score bestnesses
 const newHitBestness = {"*": 0, "#": 1, "@": 2}; // Characters representing hit bestnesses
@@ -29,7 +30,21 @@ export function runGame(windowRef, environment) {
             }
         }
         else {
-            environment.renderingStr = event.data;
+            let strings = event.data.split(".");
+            if (strings.length < 2) { // Frame data should end with a period
+                console.log("Frame rendering error: " + event.data);
+                return;
+            }
+            else {
+                environment.renderingStr = strings[0];
+                let soundStrings = strings[1].split("<");
+                if (soundStrings.length < 2 || soundStrings[1].length != 0) { // Sound data should end with "<"
+                    console.log("Sound error: " + strings[1]);
+                }
+                else {
+                    playSounds(soundStrings[0]);
+                }
+            }
         }
     };
 
