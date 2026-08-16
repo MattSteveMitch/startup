@@ -10,6 +10,8 @@ const steeringCenter = [windowSize[0] / 2, windowSize[1] / 2];
 const readyAssets = Object();
 
 var musicSilent, firstLoop;
+var musicPlaying = false;
+var musicPausedDueToEnd = false;
 
 function vectSum(vect1, vect2) {
     return [vect1[0] + vect2[0], vect1[1] + vect2[1]];
@@ -73,14 +75,14 @@ function loadAssetsProm(imgNames) {
         {
             src: "assets/sfx.mp3",
             sprite: {
-                e: [0, 2408],
-                explosion: [2409, 1639],
-                krellshot: [4048, 310],
-                laser: [4358, 84],
-                LLAttached: [4442, 181],
-                LLFire: [4623, 523],
-                rockbreak: [5146, 361],
-                wilhelm: [5507, 973]
+                E: [0, 2408], // E
+                e: [2409, 1639], // explosion
+                k: [4048, 310], // krell shot
+                d: [4358, 84], // destructor
+                l: [4442, 181], // light-lance attached
+                L: [4623, 523], // light-lance fired
+                r: [5146, 361], // rock destroyed
+                w: [5507, 973] // wilhelm scream
             }
         }
     );
@@ -98,7 +100,7 @@ function loadAssetsProm(imgNames) {
                     music.play("main");
                 }
                 else {
-                    sfx.play("e");
+                    sfx.play("E");
                     music.play("silence");
                 }
                 musicSilent = !musicSilent;
@@ -282,9 +284,9 @@ function deathText(environment, gameWindow, deaths, is_win) {
     }
 }
 
-export function playSounds(soundStr) {
-    if (soundStr) {
-        console.log(soundStr);
+export function playSounds(assets, soundStr) {
+    for (let i = 0; i < soundStr.length; i++) {
+        assets.sfx.play(soundStr[i]);
     }
 }
 
@@ -295,6 +297,11 @@ function render(environment, gameWindow, assets) {
     }
     var frameData = parseData(environment);
     if (frameData.won) {
+        if (musicPlaying) {
+            assets.music.pause();
+            musicPlaying = false;
+            musicPausedDueToEnd = true;
+        }
         if (!environment.won) {
             deathText(environment, gameWindow, frameData.deaths, true);
             environment.won = true;
@@ -367,7 +374,19 @@ function render(environment, gameWindow, assets) {
         [70, 67], 400);
 
     if (!isNaN(frameData.deaths)) {
+        if (musicPlaying) {
+            assets.music.pause();
+            musicPlaying = false;
+            musicPausedDueToEnd = true;
+        }
         deathText(environment, gameWindow, frameData.deaths, false);
+    }
+    else {
+        if (!musicPlaying) {
+            assets.music.play();
+            musicPlaying = true;
+            musicPausedDueToEnd = false;
+        }
     }
 }
 
@@ -474,10 +493,12 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         environment.advance = false;
         if (firstLoop) {
             assets.music.play("with_intro");
+            musicPlaying = true;
             firstLoop = false;
         }
-        else {
+        else if (!musicPlaying && !musicPausedDueToEnd) {
             assets.music.play();
+            musicPlaying = true;
         }
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
@@ -526,7 +547,10 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     else {
         environment.goBack = false;
         environment.advance = false;
-        assets.music.pause();
+        if (musicPlaying) {
+            assets.music.pause();
+            musicPlaying = false;
+        }
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     return;

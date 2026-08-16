@@ -1,3 +1,10 @@
+printf "Before deploying, remember:\n"
+printf " -change \"Starsight - win.py\" to \"Starsight.py\"\n"
+printf " -remove /ws from websocket URL in runGame.jsx\n"
+printf " -change protocol to wss\n"
+printf " -change \"python\" to \"python3\"\n"
+printf " -change title card time to 2 seconds\n"
+
 while getopts k:h:s: flag
 do
     case "${flag}" in

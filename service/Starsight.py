@@ -531,7 +531,7 @@ def updategraphics():
     graphicsstring += encodeNum(angledeg % 360, format2dig) # The angle of the ship
 
     if framessincearrow<110:
-        arrow = str((LLangle / 45) % 8) # Light-lance arrow is at the given angle
+        arrow = str(round((LLangle / 45) % 8)) # Light-lance arrow is at the given angle
 
     shield = encodeNum(rotationangle % 360, format2dig) # Shield is rotated at the given angle
     # Will hard-code on client side that shield should be rendered with its center at (690, 390), with

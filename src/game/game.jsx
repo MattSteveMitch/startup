@@ -189,7 +189,7 @@ export function Game() {
                         width={windowSize[0]} height={windowSize[1]} id="gameWindow"
                         onClick={(event) => {
                             if (!environment.started) {
-                                runGame(windowRef, environment);
+                                runGame(windowRef, environment, assetsMap);
                                 loadAssets(environment, assetsMap, img_names);
                             }
                             else {

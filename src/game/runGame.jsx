@@ -5,7 +5,7 @@ const newScoreBestness = {"$": 0, "+": 1, "!": 2}; // Characters representing sc
 const newHitBestness = {"*": 0, "#": 1, "@": 2}; // Characters representing hit bestnesses
 
 
-export function runGame(windowRef, environment) {
+export function runGame(windowRef, environment, assets) {
     windowRef.current.className = "";
     console.log("running");
 
@@ -42,7 +42,7 @@ export function runGame(windowRef, environment) {
                     console.log("Sound error: " + strings[1]);
                 }
                 else {
-                    playSounds(soundStrings[0]);
+                    playSounds(assets, soundStrings[0]);
                 }
             }
         }
