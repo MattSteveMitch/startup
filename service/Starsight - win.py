@@ -10,25 +10,6 @@ ROCKMASS=4
 SHIPMASS=1
 
 PI=3.14159265359
-captions=['''Hello! You have nearly died, and so I will try to distract you from the mind-numbing implications of your own
- mortality! I hate your shoes.''', 'Scud. Scud. SCUD.', '''By the way, if you do get us killed, be warned that I intend
- to haunt you.''', '''By the way, if you do get us killed, be warned that I intend
- to haunt you.''', 'Resigned sigh.']
-
-part2=['To move:                                   Move your cursor in relation to the dot in the',\
-'                                           center of the screen. The position of your cursor',\
-'                                           in relation to the dot will determine the direction',\
-'                                           and magnitude of your ship\'s acceleration.', '',\
-'To apply your ship\'s brake:                Hold down the space bar. Not for too long, though!',\
-'To fire destructors:                       Press "/".',\
-'To adjust light-lance angle of fire:       Use the scroll wheel on your mouse.',\
-'To fire light-lance:                       Right-click.',\
-'To start game:                             Left-click.',\
-'To return to this screen:                  Press SHIFT.',\
-'To respawn:                                Press ENTER.',\
-'To restart completely:                     Press "R".',\
-'To exit this screen:                       Press the right arrow key.',\
-'To turn sound on/off:                      Press "S".']
 
 scrsize=[1100, 850]
 
@@ -100,7 +81,7 @@ def chooseship():
 
 
 chooseship()
-#print("ship chosen", flush = True)
+
 if SHIPTYPE==MBOT:
     sensitivity = 13.33
     collisionvects=[[-22, 0], [-19, -9], [-28.0,-21.0], [-21.0,-20.0], [-8.0,-14.0], [3.0,-12.0], [13.0, -9.0], [9, 0], [13.0,9.0], [3.0,12.0], [-8.0,14.0], [-21.0,20.0], [-28.0,21.0], [-19, 9]]
@@ -130,7 +111,6 @@ krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap = False, Fals
 crashes=0
 untilkrellshoots=400
 krellshot=None
-#tophits=shelve.open('starsight best hit')
 
 class explosion:
     def __init__(self, pos, duration=5, is_ship=False, rate=6, source=None, is_krell=False):
@@ -238,14 +218,6 @@ framessincearrow, screenNum, restart, sound, newSounds, framessincesound
             elif nextChar == "r": restart=True
             elif nextChar == "S": # If key is Shift
                 screenNum=1
-    #            musicchannel.pause()
-#            elif nextChar == "s":
- #               if sound:
-  #                  musicchannel.pause()
-   #             else:
-    #                if alive: musicchannel.unpause()
-     #           sound = not sound
-      #          framessincesound=0
         elif firstChar == "l": # (lowercase "L") Key up
             nextChar = thisevent[1]
             if nextChar == "/": stopshoot=True
@@ -433,34 +405,16 @@ def brakeon():
         veloc=[0.0, 0.0]
         accel=[0.0, 0.0]
 
-def deathtext():
-#    drawtext('Best Score: '+str(bestscore), pygame.font.SysFont('cambria', 60), window, (100, 260), GREEN)
-    plural = crashes!=1
-  #  if plural: times=' times.'
-   # else: times=' time.'
-    #if krell.life and not krell.exploding:
-     #   drawtext('You have died '+str(crashes)+times, pygame.font.SysFont('cambria', 60), window, (100, 100), GREEN)
-      #  musicchannel.pause()
-#    else:
- #       drawtext('Game finished! You died', pygame.font.SysFont('cambria', 60), window, (100, 100), GREEN)
-  #      drawtext('a total of '+str(crashes)+times, pygame.font.SysFont('cambria', 60), window, (100, 160), GREEN)
-   #     musicchannel.stop()
-    #    pygame.display.update()
-
 def end():
     global done, bestscore, winMsgSent
     if not MACHINEGUN: legit=True
     else: legit=False
-#    scorefile=shelve.open('starsight bestscore')
- #   bestscore=scorefile['bestscore']
-  #  if ((not krell.life) or krell.exploding) and crashes<bestscore and legit: scorefile['bestscore']=crashes
-   # scorefile.close()
+
     if ((not krell.life) or krell.exploding) and legit:
         print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
         if not winMsgSent:
             print("S" + str(crashes), file = sys.stderr)
             winMsgSent = True
-    deathtext()
     done=True
 
 def explode():
@@ -548,8 +502,6 @@ def updategraphics():
         arrow = str(round((LLangle / 45) % 8)) # Light-lance arrow is at the given angle
 
     shield = encodeNum(rotationangle % 360, format2dig) # Shield is rotated at the given angle
-    # Will hard-code on client side that shield should be rendered with its center at (690, 390), with
-    # the other shield layer rotated at the opposite angle as this one
 
     if framessincearrow<110 and alive:
         graphicsstring += arrow
@@ -645,7 +597,6 @@ def collisionship():
 
     if krellshot!=None:
         disttokrellshot=distpointlinesegm(pos, krellshot.pos1, krellshot.pos2)
-        #print(disttokrellshot)
         if disttokrellshot<=35:
             for i in range(len(newcollisionvects)):
                 point = newcollisionvects[i]
@@ -695,7 +646,6 @@ def moverocks():
     for rock in obstacles:
         rock.pos=vectsum(rock.pos, rock.veloc)
         rock.offscreen=rock.pos[0]>scrsize[0]+40 or rock.pos[0]<-40 or rock.pos[1]>scrsize[1]+40 or rock.pos[1]<-40
-       # rock.overlap=518<rock.pos[0]<876 and 238<rock.pos[1]<542
         rock.distance+=rock.speed
         if rock.distance>500 and rock.offscreen and spearedrock!=rock: rock.reset()
 
@@ -726,11 +676,6 @@ winMsgSent, MACHINEGUN
     if complete or not krell.life:
         krell.reset()
         crashes=0
-#        if sound: musicchannel.play(intro)
- #       firstmusicloop = True
-  #  else:
-   #     if sound: musicchannel.unpause()
-#    pygame.display.set_caption(captions[random.randint(0,4)])
 
 def kinematics():
     global brake, accel, veloc, pos
@@ -925,7 +870,6 @@ def startloop():
             elif firstChar == "q":
                 sys.exit()
 
-#    if sound: musicchannel.unpause()
 
 def endloop():
     global screenNum
@@ -937,20 +881,11 @@ def endloop():
 obstaclelist()
 krell=krell()
 startloop()
-#musicchannel.play(intro)
 
 startTime = time.time_ns()
 
 #mark = time.time()
 while True:
-#    if not (musicchannel.get_busy()) and sound:
- #       musicchannel.play(musicloop)
-  #      if not firstmusicloop:
-   #         musicsilent = not musicsilent
-    #        if musicsilent and krell.life and not krell.exploding:
-     #           musicchannel.play(silence)
-      #          e.play()
-       # firstmusicloop = False
     explode()
     manageframes()
     destructor_hit_krell()

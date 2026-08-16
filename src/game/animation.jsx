@@ -298,7 +298,7 @@ function render(environment, gameWindow, assets) {
     var frameData = parseData(environment);
     if (frameData.won) {
         if (musicPlaying) {
-            assets.music.pause();
+            assets.music.stop();
             musicPlaying = false;
             musicPausedDueToEnd = true;
         }
@@ -311,6 +311,10 @@ function render(environment, gameWindow, assets) {
     else {
         if (environment.won) {
             reset(environment, assets);
+            assets.music.play("with_intro");
+            musicPlaying = true;
+            musicPausedDueToEnd = false;
+            musicSilent = false;
         }
         environment.won = false;
     }
@@ -390,7 +394,7 @@ function render(environment, gameWindow, assets) {
     }
 }
 
-function reset(environment, assets) {    
+function reset(environment, assets) {
     readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
     resetStyling(environment);
 }
