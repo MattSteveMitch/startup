@@ -197,7 +197,7 @@ export function Game() {
                             }
                         }}
                         onMouseMove={(event) => { handleMouseMove(event, environment); }} 
-                        /*onWheel={(event) => {event.preventDefault(); handleScroll(event, eventsMap);}}*/ />
+                    />
                 </section>
             </main>
         </div>

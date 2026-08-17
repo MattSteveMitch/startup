@@ -2,10 +2,11 @@ import {resetStyling} from "./updateScores.jsx";
 import * as howl from "howler";
 
 const pi = 3.14159265358979;
+const shrinkFactor = 0.9;
 export const windowSize = [880, 560];
 const LLRed = "rgb(255, 100, 70)";
 const destructorYellow = "rgb(255, 255, 200)";
-const steeringCenter = [windowSize[0] / 2, windowSize[1] / 2];
+const steeringCenter = [(windowSize[0] - 80) / (2 * shrinkFactor), windowSize[1] / (2 * shrinkFactor)];
 
 const readyAssets = Object();
 
@@ -290,18 +291,23 @@ export function playSounds(assets, soundStr) {
     }
 }
 
+function stopMusic(assets) {
+    if (musicPlaying) {
+        assets.music.stop();
+        musicPlaying = false;
+        musicPausedDueToEnd = true;
+    }
+}
+
 function render(environment, gameWindow, assets) {
+    var frameData = parseData(environment);
     if (environment.restarting) {
+        stopMusic(assets);
         reset(environment, assets);
         environment.restarting = false;
     }
-    var frameData = parseData(environment);
     if (frameData.won) {
-        if (musicPlaying) {
-            assets.music.stop();
-            musicPlaying = false;
-            musicPausedDueToEnd = true;
-        }
+        stopMusic(assets);
         if (!environment.won) {
             deathText(environment, gameWindow, frameData.deaths, true);
             environment.won = true;
@@ -311,16 +317,12 @@ function render(environment, gameWindow, assets) {
     else {
         if (environment.won) {
             reset(environment, assets);
-            assets.music.play("with_intro");
-            musicPlaying = true;
-            musicPausedDueToEnd = false;
-            musicSilent = false;
         }
-        environment.won = false;
     }
     let shieldUp = !isNaN(frameData.shieldAngle);
 
-    gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
+    gameWindow.drawImage(readyAssets.background, 0, 0, 
+        windowSize[0] / shrinkFactor, windowSize[1] / shrinkFactor);
     if (!isNaN(frameData.LLArrow)) {
         drawModified(gameWindow, assets.arrow, frameData.shipPos, 
             frameData.shipAngle - frameData.LLArrow, [1, 1], true);
@@ -397,6 +399,11 @@ function render(environment, gameWindow, assets) {
 function reset(environment, assets) {
     readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
     resetStyling(environment);
+    assets.music.play("with_intro");
+    musicPlaying = true;
+    musicPausedDueToEnd = false;
+    musicSilent = false;
+    environment.won = false;
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -475,7 +482,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     }
     else {
         environment.advance = false;
-        reset(environment, assets);
+        readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
 
@@ -529,10 +536,10 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
         try {
-//            gameWindow.scale(0.2, 0.2);
+            gameWindow.scale(shrinkFactor, shrinkFactor);
             render(environment, gameWindow, assets);
-  //          gameWindow.restore();
-    //        gameWindow.save();
+            gameWindow.restore();
+            gameWindow.save();
         }
         catch (error) {
             handleError(error, gameWindow, environment, renderStr);

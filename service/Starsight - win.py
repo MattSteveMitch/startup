@@ -89,7 +89,7 @@ if SHIPTYPE==POCO:
     sensitivity = 6.67
     collisionvects=[[-12, -9], [0.0,-10.0], [-7, -3], [25.0,0.0], [-7, 3], [0.0,10.0], [-12, 9], [-19.0,20.0], [-22.0,19.0], [-23.0,0.0], [-22.0,-19.0], [-19.0,-20.0]]
 newcollisionvects=collisionvects.copy()
-exploding=False
+shipVisible=True
 frames=0
 explosions=set([])
 explosions2=set([])
@@ -167,8 +167,8 @@ class destructor:
 class krell:
     def reset(self):
         self.collisionvects=[[669, 472], [669, 304]]
-        self.health=100
-        self.shield=900
+        self.health=10
+        self.shield=9
         self.life=True
         self.exploding=False
     def __init__(self):
@@ -418,7 +418,7 @@ def end():
     done=True
 
 def explode():
-    global pos, veloc, explosions
+    global pos, veloc, explosions, shipVisible
     explosionsToCull = [0, 0]
     expl_sets = [explosions, explosions2];
 
@@ -430,7 +430,7 @@ def explode():
                 if expl.rate<0.24:
                     if expl.source!=None: expl.source.life=False
                     if expl.is_ship:
-                        pos=[-1500, 0]
+                        shipVisible = False
                         end()
                     expl.markedForRemoval = True
                     explosionsToCull[i] += 1
@@ -488,7 +488,7 @@ def updategraphics():
     rotationangle += 3
     graphicsstring = ""
 
-    if alive:
+    if shipVisible:
         if LLactive:
             graphicsstring += encodeLineSegmCoords(pos) # If the light-lance is active, we're going to be drawing a line segment coming from
             # the ship; even if the ship is offscreen, the light-lance might be onscreen, and we need to know what direction it's pointing
@@ -650,10 +650,10 @@ def moverocks():
         if rock.distance>500 and rock.offscreen and spearedrock!=rock: rock.reset()
 
 def newgame(complete=False):
-    global exploding, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
+    global shipVisible, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
 LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, firstmusicloop, \
 winMsgSent, MACHINEGUN
-    exploding=False
+    shipVisible=True
     done=False
     winMsgSent=False
     pos=[scrsize[0]/2-200, scrsize[1]/2]
@@ -680,7 +680,7 @@ winMsgSent, MACHINEGUN
 def kinematics():
     global brake, accel, veloc, pos
     if brake: brakeon()
-    elif start and alive: accel=scalrmult(vectsum(mouse, [-440, -280]), 1.5/(300000/sensitivity))
+    elif start and alive: accel=scalrmult(vectsum(mouse, [-400, -280]), 1.5/(300000/sensitivity))
     veloc=vectsum(veloc, accel)
     pos=vectsum(pos, veloc)
 
