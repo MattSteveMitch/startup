@@ -1,7 +1,6 @@
 POCO, MBOT = 1, 2
 import sys, math, random, time, threading, numpy
 
-#print("starting", flush = True)
 MACHINEGUN=False
 SHIMMER = True
 sound=True
@@ -410,17 +409,15 @@ def end():
     if not MACHINEGUN: legit=True
     else: legit=False
 
-    if ((not krell.life) or krell.exploding) and legit:
-        print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
-        if not winMsgSent:
-            print("S" + str(crashes), file = sys.stderr)
-            winMsgSent = True
+    if ((not krell.life) or krell.exploding) and legit and not winMsgSent:
+        print("S" + str(crashes), file = sys.stderr)
+        winMsgSent = True
     done=True
 
 def explode():
     global pos, veloc, explosions, shipVisible
     explosionsToCull = [0, 0]
-    expl_sets = [explosions, explosions2];
+    expl_sets = [explosions, explosions2]
 
     for i in (0, 1):
         for expl in expl_sets[i]:
@@ -555,8 +552,10 @@ def updategraphics():
         status = numpy.base_repr(math.ceil(krell.health), 36)
     graphicsstring += status + ","
 
-    if done and krell.life and not krell.exploding:
+    if done:
         graphicsstring += encodeNum(crashes, format2dig)
+        if (not krell.life) or krell.exploding:
+            graphicsstring += "|"
     graphicsstring += "."
 
     print(graphicsstring + newSounds + "<", flush = True, end = "")
@@ -680,7 +679,7 @@ winMsgSent, MACHINEGUN
 def kinematics():
     global brake, accel, veloc, pos
     if brake: brakeon()
-    elif start and alive: accel=scalrmult(vectsum(mouse, [-400, -280]), 1.5/(300000/sensitivity))
+    elif start and alive: accel=scalrmult(vectsum(mouse, [-440, -280]), 1.5/(300000/sensitivity))
     veloc=vectsum(veloc, accel)
     pos=vectsum(pos, veloc)
 
@@ -894,6 +893,7 @@ while True:
     if hit and alive: death(hit==2)
     if not krell.life:
         end()
+        print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
         endloop()
     if respawn: newgame()
     if restart: newgame(complete=True)

@@ -1,7 +1,6 @@
 POCO, MBOT = 1, 2
 import sys, math, random, time, select, numpy
 
-#print("starting", flush = True)
 MACHINEGUN=False
 SHIMMER = True
 sound=True
@@ -75,7 +74,7 @@ if SHIPTYPE==POCO:
     sensitivity = 6.67
     collisionvects=[[-12, -9], [0.0,-10.0], [-7, -3], [25.0,0.0], [-7, 3], [0.0,10.0], [-12, 9], [-19.0,20.0], [-22.0,19.0], [-23.0,0.0], [-22.0,-19.0], [-19.0,-20.0]]
 newcollisionvects=collisionvects.copy()
-exploding=False
+shipVisible=True
 frames=0
 explosions=set([])
 explosions2=set([])
@@ -396,17 +395,15 @@ def end():
     if not MACHINEGUN: legit=True
     else: legit=False
 
-    if ((not krell.life) or krell.exploding) and legit:
-        print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
-        if not winMsgSent:
-            print("S" + str(crashes), file = sys.stderr)
-            winMsgSent = True
+    if ((not krell.life) or krell.exploding) and legit and not winMsgSent:
+        print("S" + str(crashes), file = sys.stderr)
+        winMsgSent = True
     done=True
 
 def explode():
-    global pos, veloc, explosions
+    global pos, veloc, explosions, shipVisible
     explosionsToCull = [0, 0]
-    expl_sets = [explosions, explosions2];
+    expl_sets = [explosions, explosions2]
 
     for i in (0, 1):
         for expl in expl_sets[i]:
@@ -416,7 +413,7 @@ def explode():
                 if expl.rate<0.24:
                     if expl.source!=None: expl.source.life=False
                     if expl.is_ship:
-                        pos=[-1500, 0]
+                        shipVisible = False
                         end()
                     expl.markedForRemoval = True
                     explosionsToCull[i] += 1
@@ -474,7 +471,7 @@ def updategraphics():
     rotationangle += 3
     graphicsstring = ""
 
-    if alive:
+    if shipVisible:
         if LLactive:
             graphicsstring += encodeLineSegmCoords(pos) # If the light-lance is active, we're going to be drawing a line segment coming from
             # the ship; even if the ship is offscreen, the light-lance might be onscreen, and we need to know what direction it's pointing
@@ -541,8 +538,10 @@ def updategraphics():
         status = numpy.base_repr(math.ceil(krell.health), 36)
     graphicsstring += status + ","
 
-    if done and krell.life and not krell.exploding:
+    if done:
         graphicsstring += encodeNum(crashes, format2dig)
+        if (not krell.life) or krell.exploding:
+            graphicsstring += "|"
     graphicsstring += "."
 
     print(graphicsstring + newSounds + "<", flush = True, end = "")
@@ -636,10 +635,10 @@ def moverocks():
         if rock.distance>500 and rock.offscreen and spearedrock!=rock: rock.reset()
 
 def newgame(complete=False):
-    global exploding, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
+    global shipVisible, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
 LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, firstmusicloop, \
 winMsgSent, MACHINEGUN
-    exploding=False
+    shipVisible=True
     done=False
     winMsgSent=False
     pos=[scrsize[0]/2-200, scrsize[1]/2]
@@ -880,6 +879,7 @@ while True:
     if hit and alive: death(hit==2)
     if not krell.life:
         end()
+        print(encodeNum(crashes, format2dig) + ".", flush = True, end = "")
         endloop()
     if respawn: newgame()
     if restart: newgame(complete=True)

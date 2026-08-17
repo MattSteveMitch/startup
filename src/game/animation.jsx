@@ -2,13 +2,13 @@ import {resetStyling} from "./updateScores.jsx";
 import * as howl from "howler";
 
 const pi = 3.14159265358979;
-const shrinkFactor = 0.9;
 export const windowSize = [880, 560];
 const LLRed = "rgb(255, 100, 70)";
 const destructorYellow = "rgb(255, 255, 200)";
-const steeringCenter = [(windowSize[0] - 80) / (2 * shrinkFactor), windowSize[1] / (2 * shrinkFactor)];
+const steeringCenter = [windowSize[0] / 2, windowSize[1] / 2];
 
 const readyAssets = Object();
+const frameData = Object();
 
 var musicSilent, firstLoop;
 var musicPlaying = false;
@@ -239,16 +239,14 @@ function parseData(environment) {
     var rawString = environment.renderingStr;
     var frameStrings = rawString.split(",");
 
-    var frameData = Object();
     frameData.won = false;
 
     if (frameStrings.length === 1) {
         //console.log(frameStrings[0]);
         frameData.won = true;
         frameData.deaths = parseInt(frameStrings[0], 36);
-        return frameData;
+        return;
     }
-//    if (frameStrings[0][0] === "b") {console.log("new");}
     if (frameStrings[0].length > 4) {
         frameData.shipPos = parseCoords(frameStrings[0], 3);
     }
@@ -267,8 +265,11 @@ function parseData(environment) {
     frameData.explosionsTop = parseExplosions(frameStrings[9], true);
     frameData.status = parseInt(frameStrings[10], 36);
     frameData.deaths = parseInt(frameStrings[11], 36);
+    if (!isNaN(frameData.deaths) && frameStrings[11][frameStrings[11].length - 1] === "|") {
+        frameData.won = true;
+    }
 
-    return frameData;
+    return;
 }
 
 function deathText(environment, gameWindow, deaths, is_win) {
@@ -300,7 +301,8 @@ function stopMusic(assets) {
 }
 
 function render(environment, gameWindow, assets) {
-    var frameData = parseData(environment);
+    parseData(environment);
+
     if (environment.restarting) {
         stopMusic(assets);
         reset(environment, assets);
@@ -309,10 +311,8 @@ function render(environment, gameWindow, assets) {
     if (frameData.won) {
         stopMusic(assets);
         if (!environment.won) {
-            deathText(environment, gameWindow, frameData.deaths, true);
             environment.won = true;
         }
-        return;
     }
     else {
         if (environment.won) {
@@ -321,8 +321,7 @@ function render(environment, gameWindow, assets) {
     }
     let shieldUp = !isNaN(frameData.shieldAngle);
 
-    gameWindow.drawImage(readyAssets.background, 0, 0, 
-        windowSize[0] / shrinkFactor, windowSize[1] / shrinkFactor);
+    gameWindow.drawImage(readyAssets.background, 0, 0, windowSize[0], windowSize[1]);
     if (!isNaN(frameData.LLArrow)) {
         drawModified(gameWindow, assets.arrow, frameData.shipPos, 
             frameData.shipAngle - frameData.LLArrow, [1, 1], true);
@@ -385,7 +384,7 @@ function render(environment, gameWindow, assets) {
             musicPlaying = false;
             musicPausedDueToEnd = true;
         }
-        deathText(environment, gameWindow, frameData.deaths, false);
+        deathText(environment, gameWindow, frameData.deaths, frameData.won);
     }
     else {
         if (!musicPlaying) {
@@ -536,10 +535,10 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
         try {
-            gameWindow.scale(shrinkFactor, shrinkFactor);
+//            gameWindow.scale(0.2, 0.2);
             render(environment, gameWindow, assets);
-            gameWindow.restore();
-            gameWindow.save();
+  //          gameWindow.restore();
+    //        gameWindow.save();
         }
         catch (error) {
             handleError(error, gameWindow, environment, renderStr);
