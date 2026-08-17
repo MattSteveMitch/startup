@@ -2,6 +2,7 @@ POCO, MBOT = 1, 2
 import sys, math, random, time, threading, numpy
 
 MACHINEGUN=False
+legit=True
 SHIMMER = True
 sound=True
 
@@ -406,8 +407,6 @@ def brakeon():
 
 def end():
     global done, bestscore, winMsgSent
-    if not MACHINEGUN: legit=True
-    else: legit=False
 
     if ((not krell.life) or krell.exploding) and legit and not winMsgSent:
         print("S" + str(crashes), file = sys.stderr)
@@ -442,7 +441,9 @@ def explode():
 
 
 def destructormove():
-    global destructorsToCull
+    global destructorsToCull, legit
+
+    legit = legit and (not MACHINEGUN) and len(destructors) <= 13 * SHIPTYPE
     for this in destructors:
         this.pos1=vectsum(this.pos1, this.veloc)
         this.pos2=vectsum(this.pos1, scalrmult(this.direction, this.LENGTH))
@@ -651,7 +652,7 @@ def moverocks():
 def newgame(complete=False):
     global shipVisible, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
 LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, firstmusicloop, \
-winMsgSent, MACHINEGUN
+winMsgSent, MACHINEGUN, legit
     shipVisible=True
     done=False
     winMsgSent=False
@@ -669,7 +670,9 @@ winMsgSent, MACHINEGUN
     restart=False
     krellshot=None
     untilkrellshoots=400
-    if complete: MACHINEGUN = False
+    if complete:
+        MACHINEGUN = False
+        legit = True
     obstaclelist()
     if krell.exploding: krell.life=False
     if complete or not krell.life:
@@ -679,7 +682,7 @@ winMsgSent, MACHINEGUN
 def kinematics():
     global brake, accel, veloc, pos
     if brake: brakeon()
-    elif start and alive: accel=scalrmult(vectsum(mouse, [-440, -280]), 1.5/(300000/sensitivity))
+    elif start and alive: accel=scalrmult(vectsum(mouse, [-400, -280]), 1.5/(300000/sensitivity))
     veloc=vectsum(veloc, accel)
     pos=vectsum(pos, veloc)
 
