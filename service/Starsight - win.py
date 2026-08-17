@@ -166,8 +166,8 @@ class destructor:
 class krell:
     def reset(self):
         self.collisionvects=[[669, 472], [669, 304]]
-        self.health=10
-        self.shield=9
+        self.health=100
+        self.shield=900
         self.life=True
         self.exploding=False
     def __init__(self):
