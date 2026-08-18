@@ -7,8 +7,8 @@ import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from 
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "controls", 
-    "choose_ship", "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "poco", "rock", 
-    "sound_off", "sound_on", "text"];
+    "choose_ship", "explosion_img", "flame", "intro_screen", "krell", "logo", "m-bot", "music_off", 
+    "music_on", "poco", "rock"];
 
 const assetsMap = Object();
 const environment = Object();
@@ -47,6 +47,9 @@ export function Game() {
         environment.renderingStr = "";
         environment.soundStr = "";
         environment.restarting = false;
+        environment.onMainGameScreen = false;
+        environment.musicOn = true;
+        environment.framesSinceMusicChange = 111;
 
         const keyDownHandler = (event) => {
             event.preventDefault();

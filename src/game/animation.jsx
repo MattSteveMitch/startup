@@ -395,6 +395,14 @@ function render(environment, gameWindow, assets) {
             musicPausedDueToEnd = false;
         }
     }
+
+    if (environment.framesSinceMusicChange < 110) {
+        if (environment.framesSinceMusicChange === 0) {
+            readyAssets.music = environment.musicOn ? assets.music_on : assets.music_off;
+        }
+        drawCentered(gameWindow, readyAssets.music, [440 / shrinkFactor, 200 / shrinkFactor]);
+    }
+    environment.framesSinceMusicChange++;
 }
 
 function reset(environment, assets) {
@@ -503,6 +511,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     else {
         environment.goBack = false;
         environment.advance = false;
+        environment.onMainGameScreen = true;
         if (firstLoop) {
             assets.music.play("with_intro");
             musicPlaying = true;
@@ -559,6 +568,8 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     else {
         environment.goBack = false;
         environment.advance = false;
+        environment.onMainGameScreen = false;
+        environment.framesSinceMusicChange = 111;
         if (musicPlaying) {
             assets.music.pause();
             musicPlaying = false;

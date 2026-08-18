@@ -1,6 +1,6 @@
 const pi = 3.14159265358979;
 let keyStrings = {"Slash": "/", "Space": " ", "Enter": "R", "Backslash": "R", "KeyR": "r", 
-    "ShiftLeft": "S", "ShiftRight": "S", "KeyS": "s", "ArrowRight": ">", "ArrowLeft": "S",
+    "ShiftLeft": "S", "ShiftRight": "S", "ArrowRight": ">", "ArrowLeft": "S",
     "KeyP": "p", "KeyM": "m"
 };
 
@@ -23,12 +23,22 @@ function chooseShip(environment, ship) {
     }
 }
 
+function MHandler(environment) {
+    if (environment.onMainGameScreen) {
+        environment.musicOn = !environment.musicOn;
+        environment.framesSinceMusicChange = 0;
+    }
+    else {
+        chooseShip(environment, "m");
+    }
+}
+
 let clientActions = {
     "/": (environment) => {environment.shooting = true;}, 
-    "S": goBack, "s": (_) => {console.log("sound toggled");}, 
-    ">": advanceOne, "r": (environment) => {environment.restarting = true;},
+    "S": goBack, ">": advanceOne, 
+    "r": (environment) => {environment.restarting = true;},
     "p": (environment) => {chooseShip(environment, "p");}, 
-    "m": (environment) => {chooseShip(environment, "m");},
+    "m": MHandler,
     " ": (environment) => {environment.brakeOn = true;}
 };
 
