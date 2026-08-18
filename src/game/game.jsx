@@ -48,7 +48,7 @@ export function Game() {
         environment.soundStr = "";
         environment.restarting = false;
         environment.onMainGameScreen = false;
-        environment.musicOn = true;
+        environment.musicEnabled = true;
         environment.framesSinceMusicChange = 111;
 
         const keyDownHandler = (event) => {

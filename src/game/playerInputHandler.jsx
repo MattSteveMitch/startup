@@ -25,7 +25,7 @@ function chooseShip(environment, ship) {
 
 function MHandler(environment) {
     if (environment.onMainGameScreen) {
-        environment.musicOn = !environment.musicOn;
+        environment.musicEnabled = !environment.musicEnabled;
         environment.framesSinceMusicChange = 0;
     }
     else {

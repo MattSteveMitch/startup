@@ -11,9 +11,7 @@ const steeringCenter = [400 / shrinkFactor, 280 / shrinkFactor];
 const readyAssets = Object();
 const frameData = Object();
 
-var musicSilent, firstLoop;
-var musicPlaying = false;
-var musicPausedDueToEnd = false;
+var musicSilent, firstLoop, musicPauseState, musicPausedForDeathText;
 
 function vectSum(vect1, vect2) {
     return [vect1[0] + vect2[0], vect1[1] + vect2[1]];
@@ -135,6 +133,7 @@ export function loadAssets(environment, assetsRef, img_names) {
         musicSilent = false;
         firstLoop = true;
         environment.loaded = true;
+        musicPausedForDeathText = false;
     });
 }
 
@@ -293,11 +292,37 @@ export function playSounds(assets, soundStr) {
     }
 }
 
+function beginMusic(environment, assets) {
+    /* Play music from the beginning. If music is disabled at the moment, set it to play from
+    the beginning once resumed. If it was already playing, start over. */
+    stopMusic(assets);
+
+    musicPauseState = 0;
+    assets.music.play("with_intro");
+    if (!environment.musicEnabled) {
+        assets.music.pause();
+        musicPauseState = 1;
+    }
+}
+
 function stopMusic(assets) {
-    if (musicPlaying) {
+    if (musicPauseState !== 2) {
         assets.music.stop();
-        musicPlaying = false;
-        musicPausedDueToEnd = true;
+        musicPauseState = 2;
+    }
+}
+
+function pauseMusic(assets) {
+    if (!musicPauseState) {
+        assets.music.pause();
+        musicPauseState = 1;
+    }
+}
+
+function resumeMusic(environment, assets) {
+    if (environment.musicEnabled && !musicPausedForDeathText && musicPauseState === 1) {
+        assets.music.play();
+        musicPauseState = 0;
     }
 }
 
@@ -305,11 +330,11 @@ function render(environment, gameWindow, assets) {
     parseData(environment);
 
     if (environment.restarting) {
-        stopMusic(assets);
         reset(environment, assets);
         environment.restarting = false;
     }
     if (frameData.won) {
+        musicPausedForDeathText = true;
         stopMusic(assets);
         if (!environment.won) {
             environment.won = true;
@@ -381,24 +406,24 @@ function render(environment, gameWindow, assets) {
         [70, 67], 400);
 
     if (!isNaN(frameData.deaths)) {
-        if (musicPlaying) {
-            assets.music.pause();
-            musicPlaying = false;
-            musicPausedDueToEnd = true;
-        }
+        musicPausedForDeathText = true;
+        pauseMusic(assets);
         deathText(environment, gameWindow, frameData.deaths, frameData.won);
     }
     else {
-        if (!musicPlaying) {
-            assets.music.play();
-            musicPlaying = true;
-            musicPausedDueToEnd = false;
-        }
+        musicPausedForDeathText = false;
+        resumeMusic(environment, assets);
     }
 
     if (environment.framesSinceMusicChange < 110) {
         if (environment.framesSinceMusicChange === 0) {
-            readyAssets.music = environment.musicOn ? assets.music_on : assets.music_off;
+            readyAssets.music = environment.musicEnabled ? assets.music_on : assets.music_off;
+            if (environment.musicEnabled) {
+                resumeMusic(environment, assets);
+            }
+            else {
+                pauseMusic(assets);
+            }
         }
         drawCentered(gameWindow, readyAssets.music, [440 / shrinkFactor, 200 / shrinkFactor]);
     }
@@ -408,9 +433,8 @@ function render(environment, gameWindow, assets) {
 function reset(environment, assets) {
     readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
     resetStyling(environment);
-    assets.music.play("with_intro");
-    musicPlaying = true;
-    musicPausedDueToEnd = false;
+    beginMusic(environment, assets);
+    musicPausedForDeathText = false;
     musicSilent = false;
     environment.won = false;
 }
@@ -513,13 +537,12 @@ function updateGraphicsP4(assets, gameWindow, environment) {
         environment.advance = false;
         environment.onMainGameScreen = true;
         if (firstLoop) {
-            assets.music.play("with_intro");
-            musicPlaying = true;
+            //musicPauseState = 2
+            beginMusic(environment, assets);
             firstLoop = false;
         }
-        else if (!musicPlaying && !musicPausedDueToEnd) {
-            assets.music.play();
-            musicPlaying = true;
+        else {
+            resumeMusic(environment, assets);
         }
         requestAnimationFrame((frameEnd) => {updateGraphicsP5(assets, gameWindow, environment);});
     }
@@ -570,10 +593,7 @@ function updateGraphicsP5(assets, gameWindow, environment) {
         environment.advance = false;
         environment.onMainGameScreen = false;
         environment.framesSinceMusicChange = 111;
-        if (musicPlaying) {
-            assets.music.pause();
-            musicPlaying = false;
-        }
+        pauseMusic(assets);
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     return;
