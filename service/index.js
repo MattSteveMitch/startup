@@ -247,6 +247,10 @@ function newScoreHandler(authToken, score, is_hit) {
             }
             else {
                 var username = result.username;
+                if (username === "test") {
+                    resolve(null);
+                    return;
+                }
                 Promise.all([
                     db.updateOverallBests(username, score, is_hit),
                     db.updatePersonalBests(username, score, is_hit)
@@ -367,6 +371,7 @@ wsServer.on("connection", (client, request) => {
             return;
         }
         newScoreHandler(client.authToken, score, is_hit).then((old_bests) => {
+            if (old_bests === null) {return;}
             let bestness = getBestness(old_bests, score, is_hit);
 
             let symbol = bestnessSymbols[+is_hit][bestness];
@@ -384,6 +389,5 @@ wsServer.on("connection", (client, request) => {
 
     client.on("close", (_) => {
         client.pyProc.stdin.write("q\n"); // Send signal to end program
-        console.log("Closed Python");
     });
 });

@@ -856,6 +856,8 @@ def startloop():
                     screenNum += 1
                 elif nextChar == "/":
                     MACHINEGUN=True
+                elif nextChar == "S" and screenNum > 0:
+                    screenNum -= 1
             elif firstChar == "q":
                 sys.exit()
 

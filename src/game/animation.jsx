@@ -358,14 +358,14 @@ function render(environment, gameWindow, assets) {
         drawLine(gameWindow, destructorYellow, frameData.krellshot[0], frameData.krellshot[1], 6);
     }
     if (frameData.shipPos) {
-        drawModified(gameWindow, readyAssets.ship, frameData.shipPos, frameData.shipAngle, 
-            [0.3333, 0.3333], true);
         let angleRad = frameData.shipAngle * pi / 180;
         drawModified(gameWindow, assets.flame,
             [Math.round(frameData.shipPos[0] - readyAssets.back * Math.cos(angleRad)),
             Math.round(frameData.shipPos[1] - readyAssets.back * Math.sin(angleRad))],
             frameData.shipAngle, [frameData.accel_magnitude / (assets.flame.width * 5), 0.5], 
             true);
+        drawModified(gameWindow, readyAssets.ship, frameData.shipPos, frameData.shipAngle, 
+            [0.3333, 0.3333], true);
     }
     for (let i = 0; i < frameData.destructors.length; i++) {
         drawLine(gameWindow, destructorYellow, frameData.destructors[i][0], 
@@ -489,12 +489,13 @@ function updateGraphicsP2(assets, gameWindow, environment) {
     else {
         if (environment.shipChoice == "p") {
             readyAssets.ship = assets.poco;
-            readyAssets.back = 29;
+            readyAssets.back = 25;
         }
         else if (environment.shipChoice == "m") {
             readyAssets.ship = assets["m-bot"];
             readyAssets.back = 24;
         }
+        readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
         requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
     }
 
@@ -513,7 +514,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     }
     else {
         environment.advance = false;
-        readyAssets.background = assets["background" + Math.ceil(Math.random() * 3)];
+        environment.goBack = false;
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
 
@@ -527,7 +528,12 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     if (!environment.keepAnimating) {
         return;
     }
-    if (!environment.advance) {
+    if (environment.goBack) {
+        environment.goBack = false;
+        environment.advance = false;
+        requestAnimationFrame((frameEnd) => {updateGraphicsP3(assets, gameWindow, environment);});
+    }
+    else if (!environment.advance) {
         requestAnimationFrame((frameEnd) => {updateGraphicsP4(assets, gameWindow, environment);});
     }
     else {
