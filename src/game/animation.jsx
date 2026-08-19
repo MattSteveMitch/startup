@@ -548,34 +548,13 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     return;
 }
 
-function handleError(error, gameWindow, environment, renderStr) {
-    console.log(error);
-    console.log("Rendering data: \"" + renderStr + "\"");
-    gameWindow.fillStyle = "black";
-    gameWindow.fillRect(-1, -1, 1110, 710);
-    drawText(gameWindow, "Rendering error; see debug console for details.", "red", 
-        "bold 24px Consolas", [50, 200], 700);
-    gameWindow.fillText("Please email details to mattstevemitch@gmail.com.", 50, 230, 700);
-    drawText(gameWindow, "Rendering data: \"" + renderStr + "\"", "red", 
-        "bold 16px Consolas", [50, 260], 800);
-    gameWindow.font = "bold 16px Consolas";
-    environment.websocket.close();
-    environment.connected = false;
-}
-
 function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
-        try {
-            gameWindow.scale(shrinkFactor, shrinkFactor);
-            render(environment, gameWindow, assets);
-            gameWindow.restore();
-            gameWindow.save();
-        }
-        catch (error) {
-            handleError(error, gameWindow, environment, renderStr);
-            return;
-        }
+        gameWindow.scale(shrinkFactor, shrinkFactor);
+        render(environment, gameWindow, assets);
+        gameWindow.restore();
+        gameWindow.save();
     }
 
     if (!environment.keepAnimating) {

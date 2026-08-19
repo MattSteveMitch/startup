@@ -4,7 +4,7 @@
 
 ### Elevator pitch
 
-For anyone who's read and enjoyed the [Skyward series](https://www.brandonsanderson.com/pages/skyward-series), or just likes simple 2D space action games à la [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)), this is for you! Take down evil Commander Winzik's ship by using your light-lance to grapple rocks thrown by the [Delver](https://coppermind.net/wiki/Delver) and sling them at the battleship. The plan is to make a website will all the basic functionality necessary to one day implement the full game online (originally written by me as an offline game in Python; source code [here](https://github.com/MattSteveMitch/Starsight)).
+For anyone who's read and enjoyed the [Skyward series](https://www.brandonsanderson.com/pages/skyward-series), or just likes simple 2D space action games à la [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)), this is for you! Take down evil Commander Winzik's ship by using your light-lance to grapple rocks thrown by the [Delver](https://coppermind.net/wiki/Delver) and sling them at the battleship. (Originally written by me as an offline game in Python; source code [here](https://github.com/MattSteveMitch/Starsight)).
 
 ### Design
 
@@ -32,4 +32,4 @@ I am going to use the required technologies in the following ways.
 - **React** - Handle transitions between homepage, game UI, and account creation screen. Also handle registering of interactions with game, and animation
 - **Service** - To log in, log out, create account, update scores, fetch updated scores, and fetch a random XKCD comic on the login page
 - **DB/Login** - Store authentication tokens, accounts, most recent scores, and high scores
-- **WebSocket** - Game itself will depend on a websocket connection to the server to prevent cheating; client will send player input events to the server, which will process them and send back data indicating how to draw the next animation frame. I've got the browser to register all the input events that I'll need to play the game, and it responds to most of them (including mouse movement, clicks, scroll wheel movement, pressing slash or spacebar) but at this point the game is very boring. Press the right arrow key to start, restart, or finish the game. The "hit" aspect is represented by how many times you press the slash key in a game. The scores page accurately reflects whatever "scores" and "hits" were achieved by various players.
+- **WebSocket** - Game itself relies on a websocket connection to the server to prevent cheating; client sends player input events to the server, which processes them and sends back data indicating how to draw the next animation frame.
