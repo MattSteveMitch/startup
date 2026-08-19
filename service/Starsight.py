@@ -202,7 +202,8 @@ framessincearrow, screenNum, restart, sound, newSounds, framessincesound
             elif nextChar == "R" and (not alive or not krell.life): # If key is Return or "\"
                 respawn=True
             elif nextChar == "r": restart=True
-            elif nextChar == "S": # If key is Shift
+            elif nextChar == "S" and \
+                 ((krell.life and not krell.exploding) or not done): # If key is Shift and the game isn't officially over yet
                 screenNum=1
         elif firstChar == "l": # (lowercase "L") Key up
             nextChar = thisevent[1]

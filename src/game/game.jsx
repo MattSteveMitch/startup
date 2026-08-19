@@ -26,7 +26,6 @@ export function Game() {
     environment.bestScoreSetterRef = React.useRef(null);
     environment.currentScoreRef = React.useRef(null);
     environment.shareButtonRef = React.useRef(null);
-    environment.keepAnimating = React.useRef(true);
     environment.personalBestHitRef = React.useRef(null);
     environment.overallBestHitRef = React.useRef(null);
     environment.bestHitSetterRef = React.useRef(null);
@@ -44,6 +43,7 @@ export function Game() {
         environment.brakeOn = false;
         environment.loaded = false;
         environment.started = false;
+        environment.keepAnimating = true;
         environment.renderingStr = "";
         environment.soundStr = "";
         environment.restarting = false;
@@ -101,7 +101,7 @@ export function Game() {
             document.removeEventListener("keydown", keyDownHandler);
             document.removeEventListener("keyup", keyUpHandler);
 
-            environment.keepAnimating.current = false; /* You may ask why I don't just call `cancelAnimationFrame`,
+            environment.keepAnimating = false; /* You may ask why I don't just call `cancelAnimationFrame`,
             and I'll tell you why. Because you have to give it the index of the next frame that it's supposed 
             to cancel, and the animation loop is in the "animation.jsx" file, so I have to pass it a function
             to update the variable in this file keeping track of which frame is next up. But because of 
@@ -114,8 +114,10 @@ export function Game() {
                 environment.websocket.close();
                 environment.websocket = null;
             }
-            assetsMap.sfx.unload();
-            assetsMap.music.unload();
+            if (environment.loaded) {
+                assetsMap.sfx.unload();
+                assetsMap.music.unload();
+            }
         });
     }, []);
 

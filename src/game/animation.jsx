@@ -336,9 +336,7 @@ function render(environment, gameWindow, assets) {
     if (frameData.won) {
         musicPausedForDeathText = true;
         stopMusic(assets);
-        if (!environment.won) {
-            environment.won = true;
-        }
+        environment.won = true;
     }
     else {
         if (environment.won) {
@@ -447,7 +445,7 @@ export function updateGraphicsP0(assets, gameWindow, environment) {
     else {
         drawText(gameWindow, "Loading...", "white", "50px starsight", [345, 540], 600);
     }
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
     if (environment.loaded && environment.connected) {
@@ -464,7 +462,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
     gameWindow.fillRect(0, 0, windowSize[0], windowSize[1]);
     gameWindow.drawImage(assets.logo, (windowSize[0] - 700) / 2, (windowSize[1] - 202) / 2, 700, 202);
 
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
     if (prevFrame - pageBeginTime < 2000) {
@@ -482,7 +480,7 @@ function updateGraphicsP1(prevFrame, assets, gameWindow, environment, pageBeginT
 function updateGraphicsP2(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.choose_ship, 0, 0,  windowSize[0], windowSize[1]);
 
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
     if (!environment.shipChoice) {
@@ -507,7 +505,7 @@ function updateGraphicsP3(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.intro_screen, 0, 0,  windowSize[0], windowSize[1]);
     rightKeyText(gameWindow);
 
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
     if (!environment.advance) {
@@ -526,7 +524,7 @@ function updateGraphicsP4(assets, gameWindow, environment) {
     gameWindow.drawImage(assets.controls, 0, 0,  windowSize[0], windowSize[1]);
     rightKeyText(gameWindow);
 
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
     if (!environment.advance) {
@@ -580,7 +578,7 @@ function updateGraphicsP5(assets, gameWindow, environment) {
         }
     }
 
-    if (!environment.keepAnimating.current) {
+    if (!environment.keepAnimating) {
         return;
     }
 

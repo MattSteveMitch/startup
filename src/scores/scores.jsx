@@ -35,9 +35,14 @@ export function Scores() {
     }, []);
 
     let best_scores_table = [];
+    let name = null;
     for (let i = 0; i < best_scores.length; i++) {
+        let prevName = name;
+        name = (i !== 0) ?
+            ((best_scores[i].score === best_scores[i - 1].score) ? prevName : (i + 1)) : 1;
+
         best_scores_table.push(
-            <tr name={i + 1} key={i}>
+            <tr name={name} key={i}>
                 <td className="rank">{i + 1}</td>
                 <td className="player">{best_scores[i].username}</td>
                 <td className="number">{best_scores[i].score}</td>
@@ -57,8 +62,13 @@ export function Scores() {
 
     let best_hits_table = [];
     for (let i = 0; i < best_hits.length; i++) {
+        let prevName = name;
+        name = (i !== 0) ? 
+            ((best_hits[i].score === best_hits[i - 1].score) ? prevName : (i + 1)) : 1;
+        // This makes color coding of the top 3 account for ties
+        
         best_hits_table.push(
-            <tr name={i + 1} key={i}>
+            <tr name={name} key={i}>
                 <td className="rank">{i + 1}</td>
                 <td className="player">{best_hits[i].username}</td>
                 <td className="number">{best_hits[i].score}</td>
