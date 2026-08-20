@@ -2,7 +2,7 @@ import {resetStyling} from "./updateScores.jsx";
 import * as howl from "howler";
 
 const pi = 3.14159265358979;
-const shrinkFactor = 0.9;
+const shrinkFactor = 0.8;
 export const windowSize = [880, 560];
 const LLRed = "rgb(255, 100, 70)";
 const destructorYellow = "rgb(255, 255, 200)";
@@ -36,10 +36,17 @@ function drawModified(canvas, img, pos, rotationAngle, scale_factor, is_deg) {
         angleRad = pi * rotationAngle / 180;
     }
     canvas.save();
-    canvas.translate(pos[0], pos[1]);
-    canvas.rotate(angleRad);
-    canvas.scale(scale_factor[0], scale_factor[1]);
-    drawCentered(canvas, img, [0, 0]);
+
+    try { /* If we get interrupted by an exception here, we can't afford to break
+    out of this function without restoring the canvas first */
+        canvas.translate(pos[0], pos[1]);
+        canvas.rotate(angleRad);
+        canvas.scale(scale_factor[0], scale_factor[1]);
+        drawCentered(canvas, img, [0, 0]);
+    }
+    catch (error) {
+        handleError(error);
+    }
 
     canvas.restore();
 }
@@ -295,34 +302,54 @@ export function playSounds(assets, soundStr) {
 function beginMusic(environment, assets) {
     /* Play music from the beginning. If music is disabled at the moment, set it to play from
     the beginning once resumed. If it was already playing, start over. */
-    stopMusic(assets);
+    try {
+        stopMusic(assets);
 
-    musicPauseState = 0;
-    assets.music.play("with_intro");
-    if (!environment.musicEnabled) {
-        assets.music.pause();
-        musicPauseState = 1;
+        musicPauseState = 0;
+        assets.music.play("with_intro");
+        if (!environment.musicEnabled) {
+            assets.music.pause();
+            musicPauseState = 1;
+        }
+    }
+    catch (error) {
+        handleError(error);
     }
 }
 
 function stopMusic(assets) {
-    if (musicPauseState !== 2) {
-        assets.music.stop();
-        musicPauseState = 2;
+    try {
+        if (musicPauseState !== 2) {
+            assets.music.stop();
+            musicPauseState = 2;
+        }
+    }
+    catch (error) {
+        handleError(error);
     }
 }
 
 function pauseMusic(assets) {
-    if (!musicPauseState) {
-        assets.music.pause();
-        musicPauseState = 1;
+    try {
+        if (!musicPauseState) {
+            assets.music.pause();
+            musicPauseState = 1;
+        }
+    }
+    catch (error) {
+        handleError(error);
     }
 }
 
 function resumeMusic(environment, assets) {
-    if (environment.musicEnabled && !musicPausedForDeathText && musicPauseState === 1) {
-        assets.music.play();
-        musicPauseState = 0;
+    try {
+        if (environment.musicEnabled && !musicPausedForDeathText && musicPauseState === 1) {
+            assets.music.play();
+            musicPauseState = 0;
+        }
+    }
+    catch (error) {
+        handleError(error);
     }
 }
 
@@ -347,7 +374,7 @@ function render(environment, gameWindow, assets) {
 
     gameWindow.drawImage(readyAssets.background, 0, 0, 
         windowSize[0] / shrinkFactor, windowSize[1] / shrinkFactor);
-    if (!isNaN(frameData.LLArrow)) {
+    if (!isNaN(frameData.LLArrow) && frameData.shipPos != null) {
         drawModified(gameWindow, assets.arrow, frameData.shipPos, 
             frameData.shipAngle - frameData.LLArrow, [1, 1], true);
     }
@@ -435,6 +462,12 @@ function reset(environment, assets) {
     musicPausedForDeathText = false;
     musicSilent = false;
     environment.won = false;
+}
+
+function handleError(error, renderStr) {
+    console.log(error);
+    console.log("Rendering data: \"" + renderStr + "\"");
+    console.log("Please email these error details to mattstevemitch@gmail.com.");
 }
 
 export function updateGraphicsP0(assets, gameWindow, environment) {
@@ -558,7 +591,12 @@ function updateGraphicsP5(assets, gameWindow, environment) {
     var renderStr = environment.renderingStr;
     if (renderStr) {
         gameWindow.scale(shrinkFactor, shrinkFactor);
-        render(environment, gameWindow, assets);
+        try {
+            render(environment, gameWindow, assets);
+        }
+        catch (error) {
+            handleError(error, renderStr);
+        }
         gameWindow.restore();
         gameWindow.save();
     }
