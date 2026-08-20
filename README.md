@@ -6,6 +6,8 @@
 
 For anyone who's read and enjoyed the [Skyward series](https://www.brandonsanderson.com/pages/skyward-series), or just likes simple 2D space action games à la [Asteroids](https://en.wikipedia.org/wiki/Asteroids_(video_game)), this is for you! Take down evil Commander Winzik's ship by using your light-lance to grapple rocks thrown by the [Delver](https://coppermind.net/wiki/Delver) and sling them at the battleship. (Originally written by me as an offline game in Python; source code [here](https://github.com/MattSteveMitch/Starsight)).
 
+None of this code is AI-generated.
+
 ### Design
 
 View it at <https://startup.starsight.click>
