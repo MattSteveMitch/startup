@@ -20,20 +20,6 @@ const router = express.Router();
 app.use("/api", router);
 app.use(express.static("public"));
 
-router.get("/availableEmail/:email", async (request, response) => {
-    let userEmail = request.params.email;
-    db.getEmail(userEmail).then((result) => {
-        if (result) {
-            response.status(409);
-            response.send();
-        }
-        else {
-            response.status(200);
-            response.send();
-        }
-    });
-});
-
 function handleGoodUsernameAPI(request, response, creatingAccount) {
     let username = request.params.username;
     db.usernameExists(username).then((result) => {
@@ -58,33 +44,17 @@ router.get("/goodUsername/:username/register", (request, response) => {
 });
 
 function verifyLength(request, response, next) {
-    if (request.body.email.length > 60) {
-        response.status(400);
-        response.send({ msg: "Email too long" });
-    }
-    else if (request.body.username.length > 16) {
+    if (request.body.username.length > 16) {
         response.status(400);
         response.send({ msg: "Username too long" });
     }
-/*    else if (request.body.password.length > 16) {
-        response.status(400);
-        response.send({ msg: "Password too long" });
-    }*/
     else {
         next();
     }
 }
 
 router.post("/account", verifyLength, async (request, response) => {
-    db.getEmail(request.body.email).then((result) => {
-        if (result) {
-            response.status(409);
-            response.send({ msg: "Email already registered" });
-        }
-        else {
-            return db.usernameExists(request.body.username);
-        }
-    }).then((result) => {
+    db.usernameExists(request.body.username).then((result) => {
         if (result === undefined) {
         }
         else if (result) {
@@ -96,7 +66,7 @@ router.post("/account", verifyLength, async (request, response) => {
         }
     }).then((hashedPass) => {
         if (hashedPass !== undefined) {
-            return db.createAccount(request.body.username, hashedPass, request.body.email);
+            return db.createAccount(request.body.username, hashedPass);
         }
     }).then((result) => {
         if (result !== undefined) {

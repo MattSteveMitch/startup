@@ -12,25 +12,17 @@ db.command({ ping: 1 }).then(() => {
     process.exit(1);
 });
 
-const emails = db.collection("emails");
 const sessions = db.collection("sessions");
 const accounts = db.collection("accounts");
 const score_tables = [db.collection("best_scores"),
 db.collection("best_hits")];
 
-export function getEmail(email) {
-    return emails.findOne({ _id: email });
-}
-
 export function usernameExists(username) {
     return accounts.findOne({ _id: username }, { _id: 1 });
 }
 
-export function createAccount(username, password, email) {
-    return Promise.all([
-        accounts.insertOne({ _id: username, password: password, email: email, token: null }),
-        emails.insertOne({ _id: email })
-    ]);
+export function createAccount(username, password) {
+    return accounts.insertOne({ _id: username, password: password, token: null });
 }
 
 export function getAccount(username) {

@@ -24,8 +24,15 @@ export function Login() {
     var xkcd = new Image();
 
     React.useEffect(() => {
-        let comicNum = Math.floor((Math.random() * 2176 + 1101)); // Some of the earlier comics are more dirty, so I don't select before 1100.
-        // That's not to say that the ones I do select are all clean, but they seem more so.
+        let comicNum = 0;
+        let blackListedComics = [0, 1238, 1274, 1290, 1291, 1305, 1314, 1357, 1462, 1564, 1615, 1632, 1644, 1751, 1848, 1877, 1925];
+        /* Comics with somewhat questionable language or content, from a (not necessarily comprehensive) list I found online. (0, of course,
+        just means that we haven't yet chosen a comic yet) */
+        while (blackListedComics.includes(comicNum)) {
+            comicNum = Math.floor((Math.random() * 2056 + 1234)); /* Some of the earlier comics are more dirty, so to be safe I don't select 
+            before 1234. Again, That's not to say that the ones I do select are all clean, but they seem more so. */
+        }
+
         fetch(
             "/api/xkcd/" + comicNum,
             {method: "get", 

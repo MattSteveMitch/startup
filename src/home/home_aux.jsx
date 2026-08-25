@@ -1,13 +1,12 @@
-const emailsCache = new Object();
 const usernamesCache = new Object();
 
-function correctLength(fields, emptyMsgs, index, errorMsgRef, isEmail = false) {
+function correctLength(fields, emptyMsgs, index, errorMsgRef) {
     if (!fields[index]) {
         setErrMsg(errorMsgRef, emptyMsgs[index], false);
         return false;
     }
-    else if ((!isEmail && fields[index].length > 16) || (isEmail && fields[index].length > 60)) {
-        setErrMsg(errorMsgRef, "Too many characters in box " + (index + 1), false);
+    else if (index < 2 && fields[index].length > (index ? 60 : 16)) {
+        setErrMsg(errorMsgRef, "Too many characters in " + (index ? "password" : "username"), false);
         return false;
     }
 
@@ -24,57 +23,6 @@ export function setErrMsg(errorMsgRef, msg, isGood) {
     }
 }
 
-export function checkUniqueEmail(fields, emptyMsgs, errorMsgRef) {
-    let failMsg = "Email already registered";
-
-    return new Promise((resolve, reject) => {
-        if (correctLength(fields, emptyMsgs, 0, errorMsgRef)) {
-            var cachedResult = emailsCache[fields[0]];
-            if (cachedResult === undefined) {
-                fetch("/api/availableEmail/" + fields[0], {
-                    method: "get",
-                    headers: { "Content-type": "application/json; charset=UTF-8" }
-                }).then(
-                    (response) => {
-                        switch (response.status) {
-                            case 200:
-                                setErrMsg(errorMsgRef, "", true);
-                                emailsCache[fields[0]] = true;
-                                resolve(true);
-                                break;
-                            case 409:
-                                setErrMsg(errorMsgRef, failMsg, false);
-                                emailsCache[fields[0]] = false;
-                                resolve(false);
-                                break;
-                            default:
-                                setErrMsg(errorMsgRef, response.status + ": " + response.statusText, false);
-                                console.log(response);
-                                resolve(false);
-                        }
-                    }
-                ).catch((error) => {
-                    setErrMsg(errorMsgRef, "Server unavailable. Please try again later.", false);
-                });
-            }
-            else if (cachedResult === true) {
-                setErrMsg(errorMsgRef, "", true);
-                resolve(true);
-            }
-            else if (cachedResult === false) {
-                setErrMsg(errorMsgRef, failMsg, false);
-                resolve(false);
-            }
-            else {
-                setErrMsg(errorMsgRef, "Unexpected cache result", false)
-            }
-        }
-        else {
-            resolve(false);
-        }
-    });
-}
-
 export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
     /* The reason why I do all the previous check along with the current check, even if 
     the previous checks have already been done, is because I want the error messages 
@@ -84,24 +32,22 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
     let failMsg = "Username already taken";
 
     return new Promise((resolve, reject) => {
-        checkUniqueEmail(fields, emptyMsgs, errorMsgRef).then((goodEmail) => {
-            if (goodEmail) {
-                if (correctLength(fields, emptyMsgs, 1, errorMsgRef)) {
-                    var cachedResult = usernamesCache[fields[1]];
+                if (correctLength(fields, emptyMsgs, 0, errorMsgRef)) {
+                    var cachedResult = usernamesCache[fields[0]];
                     if (cachedResult === undefined) {
-                        fetch("/api/goodUsername/" + fields[1] + "/register", {
+                        fetch("/api/goodUsername/" + fields[0] + "/register", {
                             method: "get",
                             headers: { "Content-type": "application/json; charset=UTF-8" }
                         }).then((response) => {
                             switch (response.status) {
                                 case 200:
                                     setErrMsg(errorMsgRef, successMsg, true);
-                                    usernamesCache[fields[1]] = true;
+                                    usernamesCache[fields[0]] = true;
                                     resolve(true);
                                     break;
                                 case 409:
                                     setErrMsg(errorMsgRef, failMsg, false);
-                                    usernamesCache[fields[1]] = false;
+                                    usernamesCache[fields[0]] = false;
                                     resolve(false);
                                     break;
                                 default:
@@ -128,11 +74,6 @@ export function checkUniqueUsername(fields, emptyMsgs, errorMsgRef) {
                 else {
                     resolve(false);
                 }
-            }
-            else {
-                resolve(false);
-            }
-        });
     });
 }
 
@@ -141,7 +82,7 @@ export function checkRegPassword(fields, emptyMsgs, errorMsgRef) {
     return new Promise((resolve, reject) => {
         checkUniqueUsername(fields, emptyMsgs, errorMsgRef).then((goodUsername) => {
             if (goodUsername) {
-                if (correctLength(fields, emptyMsgs, 2, errorMsgRef)) {
+                if (correctLength(fields, emptyMsgs, 1, errorMsgRef)) {
                     clearError(errorMsgRef);
                     resolve(true);
                 }
@@ -162,7 +103,7 @@ export function checkPasswordsMatch(fields, emptyMsgs, errorMsgRef) {
         checkRegPassword(fields, emptyMsgs, errorMsgRef).then((goodPassword) => {
             if (goodPassword) {
                 if (correctLength(fields, emptyMsgs, 2, errorMsgRef)) {
-                    if (fields[2] === fields[3]) {
+                    if (fields[2] === fields[1]) {
                         setErrMsg(errorMsgRef, "Passwords match", true);
                         resolve(true);
                     }
@@ -188,7 +129,7 @@ export function attemptCreateAccount(fields, emptyMsgs, errorMsgRef) {
         if (fieldsOK) {
             fetch("/api/account", {
                 method: "post",
-                body: JSON.stringify({ email: fields[0], username: fields[1], password: fields[2] }),
+                body: JSON.stringify({ username: fields[0], password: fields[1] }),
                 headers: { "Content-type": "application/json; charset=UTF-8" }
             }).then((response) => {
                 console.log(response.body);

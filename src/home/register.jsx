@@ -1,18 +1,17 @@
 import React from "react";
-import { checkUniqueUsername, checkUniqueEmail, checkPasswordsMatch, 
+import { checkUniqueUsername, checkPasswordsMatch, 
     checkRegPassword, attemptCreateAccount, clearError } from "./home_aux.jsx";
 import "./home.css"
 import { Navbar } from "../misc.jsx";
 
-var fields_register = [null, null, null, null];
-const emptyRegisterMsgs = ["Must enter email", "Must enter username", "Must enter password", "Must confirm password"];
+var fields_register = [null, null, null];
+const emptyRegisterMsgs = ["Must enter username", "Must enter password", "Must confirm password"];
 
 export function Register() {
-    var setInputEmail, setInputUsernameR, setInputPasswordR, setInputRepeatPassword;
-    [fields_register[0], setInputEmail] = React.useState("");
-    [fields_register[1], setInputUsernameR] = React.useState("");
-    [fields_register[2], setInputPasswordR] = React.useState("");
-    [fields_register[3], setInputRepeatPassword] = React.useState("");
+    var setInputUsernameR, setInputPasswordR, setInputRepeatPassword;
+    [fields_register[0], setInputUsernameR] = React.useState("");
+    [fields_register[1], setInputPasswordR] = React.useState("");
+    [fields_register[2], setInputRepeatPassword] = React.useState("");
     var RegisterErrorMsgRef = React.useRef(null);
 
     return (
@@ -29,12 +28,6 @@ export function Register() {
 
             <main className="home">
                 <div className="form">
-                    <section>
-                        <label htmlFor="email">E-mail:</label>
-                        <input type="email" onBlur={(event) => { checkUniqueEmail(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef); }}
-                            onChange={(event) => { clearError(RegisterErrorMsgRef); setInputEmail(event.target.value); }}></input>
-                    </section>
-
                     <section>
                         <label htmlFor="username">Username:</label>
                         <input type="username" onBlur={(event) => { console.log("checking... " + checkUniqueUsername(fields_register, emptyRegisterMsgs, RegisterErrorMsgRef)); }}
