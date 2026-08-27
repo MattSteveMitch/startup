@@ -119,10 +119,10 @@ class meteor:
         self.countdown = 3
         self.breaking = False
         self.offscreen = True
-        angle = random.random()*PI*2
-        self.speed = random.random()*.5+.25
+        angle = random.random() * PI * 2
+        self.speed = random.random() * .5+.25
         self.pos = vectsum(scalrmult([math.cos(angle), math.sin(angle)], -840), scalrmult(scrsize, .5))
-        angle+= random.random()*PI - PI/2
+        angle+= random.random() * PI - PI/2
         self.veloc = scalrmult([math.cos(angle), math.sin(angle)], self.speed)
         self.was_in_krellarea = False
         self.beenspeared = False
@@ -142,13 +142,13 @@ class destructor:
         self.side = side
         self.veloc = vectsum(scalrmult(self.direction, self.SPEED), veloc)
         self.LENGTH = 20
-        if SHIPTYPE == MBOT: shift = scalrmult(vectorrotate(self.direction, side*PI/2), 11)
+        if SHIPTYPE == MBOT: shift = scalrmult(vectorrotate(self.direction, side * PI/2), 11)
         else: shift = scalrmult(self.direction, 20)
         self.pos1 = vectsum(pos, scalrmult(self.direction, 4), shift)
         self.pos2 = self.pos1
         self.can_hit_krell = not collisionkrell(self.pos1, 0)
         self.markedForRemoval = False
-        side*= -1
+        side *= -1
 
 class krell:
     def reset(self):
@@ -230,13 +230,13 @@ def lineintersection(m1, b1, m2, b2):
 
     if m1 == float('inf'):
         x = b1
-        y = m2*x + b2
+        y = m2 * x + b2
     elif m2 == float('inf'):
         x = b2
-        y = m1*x + b1
+        y = m1 * x + b1
     else:
         x = (b1 - b2) / (m2 - m1)
-        y = m1*x + b1
+        y = m1 * x + b1
     
     return (round(x, 7), round(y, 7))
 
@@ -291,7 +291,7 @@ def distpointlinesegm(point, beginpoint, endpoint):
     line = linesegmenttoline(beginpoint, endpoint)
     if round(line[0], 7)!= 0:
         perplinem = -1/line[0]
-        perplineb = point[1] - perplinem*point[0]
+        perplineb = point[1] - perplinem * point[0]
     else:
         perplinem = float('inf')
         perplineb = point[0]
@@ -337,25 +337,25 @@ def vectortoangle(vector, rad_or_deg):
     elif vector[1] > 0: angle = PI/2
     elif vector[1] < 0: angle = -PI/2
     if vector[0] < 0: angle+= PI
-    if rad_or_deg == 1: angle = angle*180/PI
+    if rad_or_deg == 1: angle = angle * 180/PI
     return angle
 
 def magn(vector):
     summ = 0
     for component in vector:
-        summ+= component**2
+        summ+= component ** 2
     return math.sqrt(summ)
 
 def vectorrotate(vector, angle):
     theta = vectortoangle(vector, 0)
     theta+= angle
     magnitude = magn(vector)
-    return [magnitude*math.cos(theta), magnitude*math.sin(theta)]
+    return [magnitude * math.cos(theta), magnitude * math.sin(theta)]
 
 def scalrmult(vector, scalar):
     product = []
     for x in vector:
-        product.append(x*scalar)
+        product.append(x * scalar)
     return product
 
 def unit(vector):
@@ -364,7 +364,7 @@ def unit(vector):
 def dotPr(vector1, vector2):
     product = 0
     for part in range(len(vector1)):
-        product+= (vector1[part]*vector2[part])
+        product+= (vector1[part] * vector2[part])
     return product
 
 def vectproject(projected, onto):
@@ -376,18 +376,18 @@ def scalrproject(projected, onto):
     return dotp/magn(onto)
 
 def quadraticsolve(a, b, c):
-    radicand = b**2 - 4*a*c
+    radicand = b ** 2 - 4 * a * c
     if radicand < 0: return ()
-    if radicand == 0: return -b/(2*a)
+    if radicand == 0: return -b/(2 * a)
     root = math.sqrt(radicand)
-    return ((-b+root)/(2*a), (-b - root)/(2*a))
+    return ((-b+root)/(2 * a), (-b - root)/(2 * a))
 
 def screenpos(vector):
     return (round(vector[0]), round(vector[1]))
 
 def brakeon():
     global accel, veloc
-    if magn(veloc)!= 0: accel = scalrmult(veloc, -sensitivity/(magn(veloc)*1000))
+    if magn(veloc)!= 0: accel = scalrmult(veloc, -sensitivity/(magn(veloc) * 1000))
     if magn(veloc) < 0.009:
         veloc = [0, 0]
         accel = [0, 0]
@@ -409,7 +409,7 @@ def explode():
         for expl in expl_sets[i]:
             if expl!= None:
                 expl.radius+= expl.rate
-                expl.rate*= expl.multiplier
+                expl.rate *= expl.multiplier
                 if expl.rate < 0.24:
                     if expl.source!= None: expl.source.life = False
                     if expl.is_ship:
@@ -496,7 +496,7 @@ def updategraphics():
         graphicsstring += encodeLineSegmCoords(LLtip)
     graphicsstring += ","
     
-    graphicsstring += numpy.base_repr(round(magn(accel)*20000), 36) + "," # Magnitude of acceleration of the ship,
+    graphicsstring += numpy.base_repr(round(magn(accel) * 20000), 36) + "," # Magnitude of acceleration of the ship,
     # for the purposes of flame length and steering arrow length
 
     if krellshot!= None:
@@ -577,8 +577,8 @@ def collisionship():
             impactforce = scalrproject(veloc, vectdiff([725, 390], pos))
             krell_overlap = True
             if impactforce > .82 and not prev_krell_overlap and alive:
-                if krell.shield > 0: krell.shield -= (impactforce - .82)*SHIPMASS*25/ROCKMASS
-                else: krell.health -= (impactforce - .82)*SHIPMASS*25/ROCKMASS
+                if krell.shield > 0: krell.shield -= (impactforce - .82) * SHIPMASS * 25/ROCKMASS
+                else: krell.health -= (impactforce - .82) * SHIPMASS * 25/ROCKMASS
                 newSounds += "w"
                 return 2
 
@@ -705,7 +705,7 @@ def obstaclelist():
 def movelightlance():
     global directionfired, accel, LLlength, LLvector, LLtip, LLactive, pos, LLangle
     if directionfired == None:
-        directionfired = [math.cos(anglerad - PI*LLangle/180), math.sin(anglerad - PI*LLangle/180)]
+        directionfired = [math.cos(anglerad - PI * LLangle/180), math.sin(anglerad - PI * LLangle/180)]
     LLvector = scalrmult(directionfired, LLlength)
     LLtip = vectsum(pos, LLvector)
     if spearedrock == None:
@@ -721,15 +721,15 @@ def bounce():
     ship_v_proj = scalrproject(veloc, diff)
     rock_v_proj = scalrproject(spearedrock.veloc, diff)
     
-    momentum_proj = ROCKMASS*rock_v_proj + SHIPMASS*ship_v_proj
-    kin_energy_proj = .5*ROCKMASS*rock_v_proj**2 + .5*SHIPMASS*ship_v_proj**2
+    momentum_proj = ROCKMASS * rock_v_proj + SHIPMASS * ship_v_proj
+    kin_energy_proj = .5 * ROCKMASS * rock_v_proj ** 2 + .5 * SHIPMASS * ship_v_proj ** 2
 
     veloc = vectdiff(veloc, vectproject(veloc, diff))
     spearedrock.veloc = vectdiff(spearedrock.veloc, vectproject(spearedrock.veloc, diff))
     
-    a = ROCKMASS**2/(2*SHIPMASS)+.5*ROCKMASS
-    b = -momentum_proj*ROCKMASS/SHIPMASS
-    c = momentum_proj**2/(2*SHIPMASS) - kin_energy_proj
+    a = ROCKMASS ** 2/(2 * SHIPMASS)+.5 * ROCKMASS
+    b = -momentum_proj * ROCKMASS/SHIPMASS
+    c = momentum_proj ** 2/(2 * SHIPMASS) - kin_energy_proj
 
     solutions = quadraticsolve(a, b, c)
     for soln in solutions:
@@ -737,7 +737,7 @@ def bounce():
             if round(soln/rock_v_proj, 6)!= 1: rock_v_scalar = soln
         elif not (-.00005 < rock_v_proj - soln < .00005): rock_v_scalar = soln
     
-    ship_v_component = scalrmult(unit(diff), (momentum_proj - ROCKMASS*rock_v_scalar)/SHIPMASS)
+    ship_v_component = scalrmult(unit(diff), (momentum_proj - ROCKMASS * rock_v_scalar)/SHIPMASS)
     rock_v_component = scalrmult(unit(diff), rock_v_scalar)
     
     veloc = vectsum(ship_v_component, veloc)
@@ -776,7 +776,7 @@ def managekrell():
         if rock.life and collisionkrell(rock.pos, 40):
             impactforce = scalrproject(rock.veloc, vectdiff([725, 390], rock.pos))
             if not rock.was_in_krellarea and impactforce > .82:
-                damage = (impactforce - .82)*150
+                damage = (impactforce - .82) * 150
                 if krell.shield <= 0: krell.health -= damage
                 else: krell.shield -= damage
                 explosions.add(explosion(get_explsn_point(rock), source = rock))
