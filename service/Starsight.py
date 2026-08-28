@@ -120,9 +120,9 @@ class meteor:
         self.breaking = False
         self.offscreen = True
         angle = random.random() * PI * 2
-        self.speed = random.random() * .5+.25
+        self.speed = random.random() * .5 + .25
         self.pos = vectsum(scalrmult([math.cos(angle), math.sin(angle)], -840), scalrmult(scrsize, .5))
-        angle+= random.random() * PI - PI/2
+        angle += random.random() * PI - PI/2
         self.veloc = scalrmult([math.cos(angle), math.sin(angle)], self.speed)
         self.was_in_krellarea = False
         self.beenspeared = False
@@ -133,7 +133,7 @@ class meteor:
 class destructor:
     def __init__(self):
         global anglerad, veloc, side, accel
-        if accel!= [0, 0]:
+        if accel != [0, 0]:
             self.direction = unit(accel)
         else:
             self.direction = [math.cos(anglerad), math.sin(anglerad)]
@@ -172,7 +172,7 @@ class krelldestructor:
 
 def primetoshoot(): # Machine gun shoots every 13th frame; this changes the frame number so that the first shot is fired immediately
     global frames, excessframes
-    round_up = frames%2 # coin flip to see whether we move the frame counter up or down
+    round_up = frames % 2 # coin flip to see whether we move the frame counter up or down
     frames = (frames // 13 + round_up) * 13
 
 
@@ -209,7 +209,7 @@ framessincearrow, screenNum, restart, sound, newSounds, framessincesound
             nextChar = thisevent[1]
             if nextChar == "/": stopshoot = True
             elif nextChar == " ": brake = False
-            elif nextChar == "e" and alive and SHIPTYPE!= POCO: death(False)
+            elif nextChar == "e" and alive and SHIPTYPE != POCO: death(False)
         elif firstChar == "(": start = True # Left click
         elif firstChar == ")" and alive and start: # Right click
             if not LLactive:
@@ -219,9 +219,8 @@ framessincearrow, screenNum, restart, sound, newSounds, framessincesound
             LLangle -= 45
             framessincearrow = 0
         elif firstChar == "-": # Mouse scroll wheel down
-            LLangle+= 45
+            LLangle += 45
             framessincearrow = 0
-
 
 def lineintersection(m1, b1, m2, b2):
     if round(m1 - m2, 7) == 0:
@@ -262,7 +261,6 @@ def linesegmentsintersect(begin1, end1, begin2, end2):
                 return True
             else:
                 return False
-    
 
     if line1[0] != float('inf'): coord = 0
     else: coord = 1
@@ -270,7 +268,6 @@ def linesegmentsintersect(begin1, end1, begin2, end2):
     line1coordincreases = end1[coord] >= begin1[coord]
     isonline1 = (line1coordincreases and intersectpoint[coord] >= begin1[coord] and intersectpoint[coord] <= end1[coord]) or \
                 (not line1coordincreases and intersectpoint[coord] <= begin1[coord] and intersectpoint[coord] >= end1[coord])
-
 
     if line2[0] != float('inf'): coord = 0
     else: coord = 1
@@ -289,13 +286,12 @@ def linesegmenttoline(point1, point2):
 
 def distpointlinesegm(point, beginpoint, endpoint):
     line = linesegmenttoline(beginpoint, endpoint)
-    if round(line[0], 7)!= 0:
+    if round(line[0], 7) != 0:
         perplinem = -1/line[0]
         perplineb = point[1] - perplinem * point[0]
     else:
         perplinem = float('inf')
         perplineb = point[0]
-    
 
     intersect = lineintersection(line[0], line[1], perplinem, perplineb)
 
@@ -324,31 +320,31 @@ def vectsum(vect1, vect2, vect3 = None):
     summ = []
     pos = 0
     for x in vect1:
-        if vect3!= None: summ.append(x+vect2[pos]+vect3[pos])
-        else: summ.append(x+vect2[pos])
-        pos = pos+1
+        if vect3 != None: summ.append(x + vect2[pos] + vect3[pos])
+        else: summ.append(x + vect2[pos])
+        pos = pos + 1
     return summ
 
 def vectdiff(minuend, subtrahend):
     return vectsum(minuend, scalrmult(subtrahend, -1))
 
 def vectortoangle(vector, rad_or_deg):
-    if vector[0]!= 0: angle = math.atan(vector[1]/vector[0])
+    if vector[0] != 0: angle = math.atan(vector[1]/vector[0])
     elif vector[1] > 0: angle = PI/2
     elif vector[1] < 0: angle = -PI/2
-    if vector[0] < 0: angle+= PI
+    if vector[0] < 0: angle += PI
     if rad_or_deg == 1: angle = angle * 180/PI
     return angle
 
 def magn(vector):
     summ = 0
     for component in vector:
-        summ+= component ** 2
+        summ += component ** 2
     return math.sqrt(summ)
 
 def vectorrotate(vector, angle):
     theta = vectortoangle(vector, 0)
-    theta+= angle
+    theta += angle
     magnitude = magn(vector)
     return [magnitude * math.cos(theta), magnitude * math.sin(theta)]
 
@@ -364,7 +360,7 @@ def unit(vector):
 def dotPr(vector1, vector2):
     product = 0
     for part in range(len(vector1)):
-        product+= (vector1[part] * vector2[part])
+        product += (vector1[part] * vector2[part])
     return product
 
 def vectproject(projected, onto):
@@ -380,14 +376,14 @@ def quadraticsolve(a, b, c):
     if radicand < 0: return ()
     if radicand == 0: return -b/(2 * a)
     root = math.sqrt(radicand)
-    return ((-b+root)/(2 * a), (-b - root)/(2 * a))
+    return ((-b + root)/(2 * a), (-b - root)/(2 * a))
 
 def screenpos(vector):
     return (round(vector[0]), round(vector[1]))
 
 def brakeon():
     global accel, veloc
-    if magn(veloc)!= 0: accel = scalrmult(veloc, -sensitivity/(magn(veloc) * 1000))
+    if magn(veloc) != 0: accel = scalrmult(veloc, -sensitivity/(magn(veloc) * 1000))
     if magn(veloc) < 0.009:
         veloc = [0, 0]
         accel = [0, 0]
@@ -407,11 +403,11 @@ def explode():
 
     for i in (0, 1):
         for expl in expl_sets[i]:
-            if expl!= None:
-                expl.radius+= expl.rate
+            if expl != None:
+                expl.radius += expl.rate
                 expl.rate *= expl.multiplier
                 if expl.rate < 0.24:
-                    if expl.source!= None: expl.source.life = False
+                    if expl.source != None: expl.source.life = False
                     if expl.is_ship:
                         shipVisible = False
                         end()
@@ -456,7 +452,7 @@ def encodeNum(num, format_):
     return format_.format(numpy.base_repr(round(num), 36))
 
 def encodeCoords(coords):
-    if coords[0] > scrsize[0]+97 or coords[0] < -97 or coords[1] > scrsize[1]+97 or coords[1] < -97: #If its center is far enough offscreen
+    if coords[0] > scrsize[0] + 97 or coords[0] < -97 or coords[1] > scrsize[1] + 97 or coords[1] < -97: #If its center is far enough offscreen
     # that no part of it will be seen onscreen, don't render it. It just so happens that 97 pixels is about how much tolerance
     # I can give before the number won't always fit in an unsigned 2-digit base-36 representation.
         return ""
@@ -499,7 +495,7 @@ def updategraphics():
     graphicsstring += numpy.base_repr(round(magn(accel) * 20000), 36) + "," # Magnitude of acceleration of the ship,
     # for the purposes of flame length and steering arrow length
 
-    if krellshot!= None:
+    if krellshot != None:
         graphicsstring += encodeLineSegmCoords(krellshot.pos1) + encodeLineSegmCoords(krellshot.pos2)
     graphicsstring += ","
 
@@ -552,7 +548,7 @@ def updategraphics():
 
 def collisionship():
     global krell_overlap, rock_overlap, prev_rock_overlap, prev_krell_overlap, start, alive, newSounds
-    if (pos[0] > scrsize[0]+900 or pos[0] < -900 or pos[1] < -900 or pos[1] > scrsize[1]+900) and start:
+    if (pos[0] > scrsize[0] + 900 or pos[0] < -900 or pos[1] < -900 or pos[1] > scrsize[1] + 900) and start:
         return True
     for meteor in obstacles:
         z = vectdiff(pos, meteor.pos)
@@ -582,12 +578,12 @@ def collisionship():
                 newSounds += "w"
                 return 2
 
-    if krellshot!= None:
+    if krellshot != None:
         disttokrellshot = distpointlinesegm(pos, krellshot.pos1, krellshot.pos2)
         if disttokrellshot <= 35:
             for i in range(len(newcollisionvects)):
                 point = newcollisionvects[i]
-                if i != len(newcollisionvects) - 1: nextpoint = newcollisionvects[i+1]
+                if i != len(newcollisionvects) - 1: nextpoint = newcollisionvects[i + 1]
                 else: nextpoint = newcollisionvects[0]
                 if linesegmentsintersect(vectsum(point, pos), vectsum(nextpoint, pos), krellshot.pos1, krellshot.pos2):
                     return True                    
@@ -596,13 +592,13 @@ def collisionship():
 def collisionkrell(point, radius):
     if not krell.life: return False
     if krell.shield > 0:
-        if magn(vectdiff(point, [690, 390])) < 150+radius: return True
+        if magn(vectdiff(point, [690, 390])) < 150 + radius: return True
     else:
-        if 626 - radius < point[0] < 839+radius and 298 - radius < point[1] < 478+radius:
+        if 626 - radius < point[0] < 839 + radius and 298 - radius < point[1] < 478 + radius:
             if 669 < point[0] < 748:
-                if 304 - radius < point[1] < 472+radius: return True
-            elif point[0] <= 644 and magn(vectdiff([748, 389], point)) < 116+radius: return True
-            elif point[0] >= 748 and magn(vectdiff([748, 389], point)) < 85+radius: return True
+                if 304 - radius < point[1] < 472 + radius: return True
+            elif point[0] <= 644 and magn(vectdiff([748, 389], point)) < 116 + radius: return True
+            elif point[0] >= 748 and magn(vectdiff([748, 389], point)) < 85 + radius: return True
             elif radius == 40:
                 for vect in krell.collisionvects:
                     if magn(vectdiff(vect, point)) < 40: return True
@@ -623,7 +619,7 @@ def destructor_hit_rock():
                     if not shot.markedForRemoval: # If it has already been marked for removal, then we shouldn't increment the cull counter again!
                         destructorsToCull += 1
                     shot.markedForRemoval = True
-            if krellshot!= None and distpointlinesegm(meteor.pos, krellshot.pos1, krellshot.pos2) < 40 and not meteor.offscreen:
+            if krellshot != None and distpointlinesegm(meteor.pos, krellshot.pos1, krellshot.pos2) < 40 and not meteor.offscreen:
                 newSounds += "r"
                 explosions2.add(explosion(meteor.pos, duration = 1, rate = 20))
                 meteor.life = False
@@ -632,9 +628,9 @@ def moverocks():
     global spearedrock, obstacles
     for rock in obstacles:
         rock.pos = vectsum(rock.pos, rock.veloc)
-        rock.offscreen = rock.pos[0] > scrsize[0]+40 or rock.pos[0] < -40 or rock.pos[1] > scrsize[1]+40 or rock.pos[1] < -40
-        rock.distance+= rock.speed
-        if rock.distance > 500 and rock.offscreen and spearedrock!= rock: rock.reset()
+        rock.offscreen = rock.pos[0] > scrsize[0] + 40 or rock.pos[0] < -40 or rock.pos[1] > scrsize[1] + 40 or rock.pos[1] < -40
+        rock.distance += rock.speed
+        if rock.distance > 500 and rock.offscreen and spearedrock != rock: rock.reset()
 
 def newgame(complete = False):
     global shipVisible, done, pos, veloc, accel, start, respawn, alive, LLangle, destructors, \
@@ -683,15 +679,15 @@ def anglecalculations():
 
 def manageframes():
     global frames, start, obstacles, destructors, framessincearrow, untilkrellshoots, beginning, framessincesound, newSounds
-    if frames%13 == 0 and not stopshoot and alive and start:
+    if frames % 13 == 0 and not stopshoot and alive and start:
         destructors.add(destructor())
         if SHIPTYPE == MBOT: destructors.add(destructor())
         newSounds += "d"
-    frames+= 1
+    frames += 1
     if magn(veloc) < 0.07 and start and alive and not krell.exploding: untilkrellshoots -= 1
     elif krellshot == None: untilkrellshoots = 400
-    framessincearrow+= 1
-    framessincesound+= 1
+    framessincearrow += 1
+    framessincesound += 1
     if frames > 1400: frames = 1
     if frames == 3 and start:
         obstacles.append(meteor())
@@ -709,7 +705,7 @@ def movelightlance():
     LLvector = scalrmult(directionfired, LLlength)
     LLtip = vectsum(pos, LLvector)
     if spearedrock == None:
-        LLlength+= 4.5
+        LLlength += 4.5
         if LLlength > 500: LLactive = False
 
 def bounce():
@@ -727,14 +723,14 @@ def bounce():
     veloc = vectdiff(veloc, vectproject(veloc, diff))
     spearedrock.veloc = vectdiff(spearedrock.veloc, vectproject(spearedrock.veloc, diff))
     
-    a = ROCKMASS ** 2/(2 * SHIPMASS)+.5 * ROCKMASS
+    a = ROCKMASS ** 2/(2 * SHIPMASS) + .5 * ROCKMASS
     b = -momentum_proj * ROCKMASS/SHIPMASS
     c = momentum_proj ** 2/(2 * SHIPMASS) - kin_energy_proj
 
     solutions = quadraticsolve(a, b, c)
     for soln in solutions:
-        if rock_v_proj!= 0:
-            if round(soln/rock_v_proj, 6)!= 1: rock_v_scalar = soln
+        if rock_v_proj != 0:
+            if round(soln/rock_v_proj, 6) != 1: rock_v_scalar = soln
         elif not (-.00005 < rock_v_proj - soln < .00005): rock_v_scalar = soln
     
     ship_v_component = scalrmult(unit(diff), (momentum_proj - ROCKMASS * rock_v_scalar)/SHIPMASS)
@@ -755,7 +751,7 @@ def lightlancing():
         movelightlance()
         if spearedrock == None:
             for rock in obstacles:
-                if magn(vectdiff(rock.pos, LLtip)) <= 40 and rock.life and rock.veloc!= [0, 0]:
+                if magn(vectdiff(rock.pos, LLtip)) <= 40 and rock.life and rock.veloc != [0, 0]:
                     spearedrock = rock
                     rock.beenspeared = True
                     LLlength = magn(vectdiff(pos, rock.pos))
@@ -795,10 +791,10 @@ def managekrell():
         diff = vectdiff(pos, [725, 390])
         krellshot = krelldestructor(unit(diff))
     if untilkrellshoots < 0:
-        krellshot.end1_dist+= 18
+        krellshot.end1_dist += 18
         krellshot.pos1 = vectsum(scalrmult(krellshot.direction, krellshot.end1_dist), [725, 390])
         if krellshot.end1_dist > 900:
-            krellshot.end2_dist+= 18
+            krellshot.end2_dist += 18
             krellshot.pos2 = vectsum(scalrmult(krellshot.direction, krellshot.end2_dist), [725, 390])
         if krellshot.end2_dist > 860:
             krellshot = None
@@ -823,7 +819,7 @@ def death(hit_krell):
     else: explosions.add(explosion(pos, is_ship = True))
     LLactive = False
     if crashes < 1295: # "zz" in base 36
-        crashes+= 1
+        crashes += 1
 
 def destructor_hit_krell():
     global destructorsToCull
@@ -904,7 +900,7 @@ while True:
         if elapsedTime < 16000000:
             time.sleep(0.016 - (elapsedTime/1000000000))
         startTime = time.time_ns()
-#    if frames%700 == 0:
+#    if frames % 700 == 0:
  #       print(time.time_ns() - mark, file = sys.stderr)
   #      mark = time.time_ns()
 
