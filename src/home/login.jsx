@@ -25,7 +25,7 @@ export function Login() {
 
     React.useEffect(() => {
         let comicNum = 0;
-        let blackListedComics = [0, 1238, 1274, 1290, 1291, 1305, 1314, 1357, 1462, 1564, 1615, 1632, 1644, 1751, 1848, 1877, 1925];
+        let blackListedComics = [0, 1238, 1274, 1290, 1291, 1305, 1314, 1357, 1462, 1564, 1615, 1632, 1644, 1679, 1751, 1848, 1877, 1925];
         /* Comics with somewhat questionable language or content, from a (not necessarily comprehensive) list I found online. (0, of course,
         just means that we haven't yet chosen a comic yet) */
         while (blackListedComics.includes(comicNum)) {

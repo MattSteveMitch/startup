@@ -410,7 +410,7 @@ function render(environment, gameWindow, assets) {
         drawModified(gameWindow, assets.bubble, [690, 390], -frameData.shieldAngle,
             [1, 1], true);
     }
-    drawCentered(gameWindow, assets.krell, [600, 390]);
+    drawCentered(gameWindow, assets.krell, [600, 391]);
     if (shieldUp) {
         drawModified(gameWindow, assets.bubble, [690, 390], frameData.shieldAngle,
             [1, 1], true);

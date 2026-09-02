@@ -6,6 +6,8 @@ sound = True
 
 ROCKMASS = 4
 SHIPMASS = 1
+KRELL_CENTER = (733, 390)
+SHIELD_CENTER = (690, 390)
 
 PI = 3.14159265359
 
@@ -139,7 +141,6 @@ class destructor:
 
 class krell:
     def reset(self):
-        self.collisionPoints = [[669, 472], [669, 304]]
         self.health = 100
         self.shield = 900
         self.life = True
@@ -154,7 +155,7 @@ class krelldestructor:
         self.direction = direction
         self.end1_dist = 1
         self.end2_dist = 1
-        self.pos1 = [725, 390]
+        self.pos1 = [KRELL_CENTER[0], KRELL_CENTER[1]]
         self.pos2 = self.pos1.copy()
 
 def primetoshoot(): # Machine gun shoots every 13th frame; this changes the frame number so that the first shot is fired immediately
@@ -211,7 +212,7 @@ framessincearrow, screenNum, restart, sound, newSounds, framessincesound
 
 def resetVars(complete = False):
     global shipVisible, showDeathText, pos, veloc, accel, start, respawn, alive, destructors, \
-LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, explosions2, \
+LLactive, explosions, restart, crashes, krellshot, untilkrellshoots, impactCenter, explosions2, \
 winMsgSent, MACHINEGUN, legit
     shipVisible = True
     showDeathText = False
@@ -238,6 +239,7 @@ winMsgSent, MACHINEGUN, legit
     if complete or not krell.life:
         krell.reset()
         crashes = 0
+        impactCenter = SHIELD_CENTER
 
 def lineintersection(m1, b1, m2, b2):
     if round(m1 - m2, 7) == 0:
@@ -587,10 +589,10 @@ def collisionship():
     for point in rotatedCollisionPoints:
         spot = vectsum(pos, point)
         if collisionkrell(spot, 0):
-            impactforce = scalrproject(veloc, vectdiff([725, 390], pos))
+            impactforce = scalrproject(veloc, vectdiff(impactCenter, pos))
             krell_overlap = True
             if impactforce > .82 and not prev_krell_overlap and alive:
-                if krell.shield > 0: krell.shield -= (impactforce - .82) * SHIPMASS * 25 / ROCKMASS
+                if krell.shield > 0: weakenShield((impactforce - .82) * SHIPMASS * 25 / ROCKMASS)
                 else: krell.health -= (impactforce - .82) * SHIPMASS * 25 / ROCKMASS
                 newSounds += "w"
                 return 2
@@ -609,16 +611,12 @@ def collisionship():
 def collisionkrell(point, radius):
     if not krell.life: return False
     if krell.shield > 0:
-        if magn(vectdiff(point, [690, 390])) < 150 + radius: return True
+        if magn(vectdiff(point, SHIELD_CENTER)) < 150 + radius: return True
     else:
-        if 626 - radius < point[0] < 839 + radius and 298 - radius < point[1] < 478 + radius:
-            if 669 < point[0] < 748:
-                if 304 - radius < point[1] < 472 + radius: return True
-            elif point[0] <= 644 and magn(vectdiff([748, 389], point)) < 116 + radius: return True
-            elif point[0] >= 748 and magn(vectdiff([748, 389], point)) < 85 + radius: return True
-            elif radius == 40:
-                for vect in krell.collisionPoints:
-                    if magn(vectdiff(vect, point)) < 40: return True
+        if 626 - radius < point[0] < 839 + radius and 305 - radius < point[1] < 474 + radius:
+            if 669 < point[0] < 748: return True
+            elif point[0] <= 669 and magn(vectdiff([748, 389.5], point)) < 116 + radius: return True
+            elif point[0] >= 748 and magn(vectdiff([751, 389.5], point)) < 82.5 + radius: return True
         return False
 
 def destructor_hit_rock():
@@ -756,11 +754,11 @@ def managekrell():
     if krell.health < 0: krell.health = 0
     for rock in obstacles:
         if rock.life and collisionkrell(rock.pos, 40):
-            impactforce = scalrproject(rock.veloc, vectdiff([725, 390], rock.pos))
+            impactforce = scalrproject(rock.veloc, vectdiff(impactCenter, rock.pos))
             if not rock.was_in_krellarea and impactforce > .82:
                 damage = (impactforce - .82) * 150
                 if krell.shield <= 0: krell.health -= damage
-                else: krell.shield -= damage
+                else: weakenShield(damage)
                 explosions.add(explosion(get_explsn_point(rock), source = rock))
                 rock.veloc = [0, 0]
                 LLactive = False
@@ -769,19 +767,18 @@ def managekrell():
             rock.was_in_krellarea = True
         else: rock.was_in_krellarea = False
     if krell.health <= 0 and not krell.exploding:
-        explosions.add(explosion([725, 390], rate = 20, source = krell, is_krell = True))
+        explosions.add(explosion(KRELL_CENTER, rate = 20, source = krell, is_krell = True))
         krell.exploding = True
     if untilkrellshoots == 0:
         newSounds += "w"
-        global diff
-        diff = vectdiff(pos, [725, 390])
+        diff = vectdiff(pos, KRELL_CENTER)
         krellshot = krelldestructor(unit(diff))
     if untilkrellshoots < 0:
         krellshot.end1_dist += 18
-        krellshot.pos1 = vectsum(scalrmult(krellshot.direction, krellshot.end1_dist), [725, 390])
+        krellshot.pos1 = vectsum(scalrmult(krellshot.direction, krellshot.end1_dist), KRELL_CENTER)
         if krellshot.end1_dist > 900:
             krellshot.end2_dist += 18
-            krellshot.pos2 = vectsum(scalrmult(krellshot.direction, krellshot.end2_dist), [725, 390])
+            krellshot.pos2 = vectsum(scalrmult(krellshot.direction, krellshot.end2_dist), KRELL_CENTER)
         if krellshot.end2_dist > 860:
             krellshot = None
             untilkrellshoots = 400
@@ -807,6 +804,13 @@ def death(hit_krell):
     if crashes < 1295: # "zz" in base 36
         crashes += 1
 
+def weakenShield(amount):
+    global impactCenter
+    krell.shield -= amount
+    if krell.shield <= 0:
+        krell.shield = 0
+        impactCenter = KRELL_CENTER
+
 def destructor_hit_krell():
     global destructorsToCull
     for shot in destructors:
@@ -815,14 +819,14 @@ def destructor_hit_krell():
                 destructorsToCull += 1
             shot.markedForRemoval = True
             if krell.shield > 0:
-                if SHIPTYPE == MBOT: krell.shield -= .2
-                else: krell.shield -= .4
+                if SHIPTYPE == MBOT: weakenShield(.2)
+                else: weakenShield(.4)
             else:
                 if SHIPTYPE == MBOT: krell.health -= .2
                 else: krell.health -= .4
 
 def get_explsn_point(meteor):
-    return vectsum(scalrmult(unit(vectdiff([725, 390], meteor.pos)), 40), meteor.pos)
+    return vectsum(scalrmult(unit(vectdiff(impactCenter, meteor.pos)), 40), meteor.pos)
 
 def startloop():
     global screenNum, MACHINEGUN
@@ -889,4 +893,3 @@ while True:
 #    if frames % 700 == 0:
  #       print(time.time_ns() - mark, file = sys.stderr)
   #      mark = time.time_ns()
-
