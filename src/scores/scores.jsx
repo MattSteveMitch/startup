@@ -1,5 +1,5 @@
 import React from "react";
-import { getScores, Navbar } from "../misc.jsx";
+import { Navbar } from "../misc.jsx";
 import "./scores.css";
 
 export function Scores() {

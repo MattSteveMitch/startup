@@ -1,19 +1,5 @@
 import {NavLink} from "react-router-dom";
 
-export function getScores(record_name) {
-    let record;
-    let record_str = localStorage.getItem(record_name);
-    
-    if (!record_str) {
-        record = [];
-    }
-    else {
-        record = JSON.parse(record_str);
-    }
-
-    return record;
-}
-
 export function Navbar() {
     if (localStorage.getItem("username")) {
         return (
@@ -21,6 +7,7 @@ export function Navbar() {
                 <div className="main">
                     <NavLink className="navlink" to="/game">Game</NavLink>
                     <NavLink className="navlink" to="/scores">Scores</NavLink>
+                    <NavLink className="navlink" to="/about">About</NavLink>
                 </div>
                 <p>Logged in as <span>{localStorage.getItem("username")}</span></p>
                 <NavLink className="navlink" to="/">Log out</NavLink>
@@ -30,7 +17,9 @@ export function Navbar() {
     else {
         return (
             <nav>
-                <NavLink className="navlink" to="/">Back to Login</NavLink>
+                <div className="main">
+                    <NavLink className="navlink" to="/">Back to Login</NavLink>
+                </div>
             </nav>
         );
     }

@@ -1,4 +1,5 @@
 import React from "react";
+import {NavLink} from "react-router-dom";
 import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut, setErrMsg } from "./home_aux.jsx";
 import "./home.css";
 
@@ -25,7 +26,7 @@ export function Login() {
 
     React.useEffect(() => {
         let comicNum = 0;
-        let blackListedComics = [0, 1238, 1274, 1290, 1291, 1305, 1314, 1357, 1462, 1564, 1615, 1632, 1644, 1679, 1751, 1848, 1877, 1925];
+        let blackListedComics = [0, 1238, 1274, 1290, 1291, 1305, 1314, 1357, 1462, 1564, 1571, 1615, 1632, 1644, 1679, 1751, 1848, 1877, 1925];
         /* Comics with somewhat questionable language or content, from a (not necessarily comprehensive) list I found online. (0, of course,
         just means that we haven't yet chosen a comic yet) */
         while (blackListedComics.includes(comicNum)) {
@@ -93,10 +94,13 @@ export function Login() {
         <div className="body home">
             <div className="page-info">
                 <link rel="icon" href="delver.png" />
-                <title>Log into Starsight</title>
+                <title>Starsight Login</title>
             </div>
             <header>
-                <h1>Log into Starsight</h1>
+                <h1>Starsight Login</h1>
+                <nav>
+                    <NavLink className="navlink" to="/about">About</NavLink>
+                </nav>
             </header>
             <main className="home">
                 <div className="form">
@@ -115,7 +119,7 @@ export function Login() {
                     </section>
 
                     <button onClick={() => { submitLoginInfo(fields_login, emptyLoginMsgs, LoginErrorMsgRef); }}>Log in</button>
-                    <button onClick={() => { document.location.href = "/register"; }}>Sign up</button>
+                    <button onClick={() => { document.location.href = "/register"; }}>Create account</button>
 
                     <div className="errorMsg" ref={LoginErrorMsgRef}></div>
                 </div>
@@ -126,7 +130,7 @@ export function Login() {
                 <p>View on</p>
                 <p>
                     <a href="https://github.com/MattSteveMitch/startup">
-                        <img src="github.png" alt="Github logo" width="70" />
+                        <img src="github.png" alt="Github logo" width="40" />
                     </a>
                 </p>
                 <p id="author">Matthew Mitchell</p>

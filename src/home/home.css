@@ -6,18 +6,14 @@
 
 main.home {
     flex: 1 0 180px;
+    margin-top: 40px;
     display: flex;
     flex-direction: row;
 }
 
 .imgBox {
     margin-left: 500px;
-    margin-top: 40px;
     position: absolute;
-}
-
-div.form {
-    margin-top: 20px;
 }
 
 button:hover {
@@ -28,6 +24,10 @@ input {
     margin-top: 20px;
     background-color: white;
     font-size: 18px;
+}
+
+input[type="username"] {
+    margin-top: 0px;
 }
 
 label {
@@ -48,7 +48,7 @@ button {
 footer {
     width: 116px;
     text-align: center;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: bold;
     margin-left: 5px;
 }

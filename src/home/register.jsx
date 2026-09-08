@@ -18,11 +18,11 @@ export function Register() {
         <div className="body home">
             <div className="page-info">
                 <link rel="icon" href="delver.png" />
-                <title>Sign up for Starsight account</title>
+                <title>Create an account</title>
             </div>
 
             <header>
-                <h1>Sign up for Starsight account</h1>
+                <h1>Create an account</h1>
                 <Navbar />
             </header>
 
@@ -50,7 +50,15 @@ export function Register() {
                     <div className="errorMsg" ref={RegisterErrorMsgRef}></div>
                 </div>
             </main>
-
+            <footer>
+                <p>View on</p>
+                <p>
+                    <a href="https://github.com/MattSteveMitch/startup">
+                        <img src="github.png" alt="Github logo" width="40" />
+                    </a>
+                </p>
+                <p id="author">Matthew Mitchell</p>
+            </footer>
         </div>
     );
 }

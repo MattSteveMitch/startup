@@ -5,6 +5,7 @@ import {Game} from "/src/game/game";
 import {Scores} from "/src/scores/scores";
 import {Register} from "/src/home/register";
 import {Secret} from "/src/secret/secret";
+import {About} from "/src/about/about";
 import {NotFound} from "./not_found";
 import "./app.css"
 
@@ -13,12 +14,13 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />}></Route>
-                <Route path="/game" element={<Game />}></Route>
-                <Route path="/scores" element={<Scores />}></Route>
-                <Route path="/register" element={<Register />}></Route>
-                <Route path="/secret" element={<Secret />}></Route>
-                <Route path="*" element={<NotFound />}></Route>
+                <Route path="/" element={<Login />} />
+                <Route path="/game" element={<Game />} />
+                <Route path="/scores" element={<Scores />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/secret" element={<Secret />} />
+                <Route path="/about" element={<About />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
