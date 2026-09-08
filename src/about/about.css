@@ -1,8 +1,11 @@
-@scope (.about) {
+.about {
     display: flex;
     flex-direction: row;
     margin-top: 30px;
     margin-right: 20px;
+}
+
+@scope (.about) {
 
     .glossary-text {
         margin-left: 8px;

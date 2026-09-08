@@ -3,7 +3,7 @@ import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handle
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
 import { PageHeading } from "../misc.jsx";
-import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from "./updateScores.jsx";
+import { updateBests } from "./updateScores.jsx";
 import "./game.css";
 
 const img_names = ["arrow", "background1", "background2", "background3", "bubble", "bubble2", "controls", 
