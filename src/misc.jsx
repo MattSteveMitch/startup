@@ -1,7 +1,14 @@
 import {NavLink} from "react-router-dom";
 
-export function Navbar() {
-    if (localStorage.getItem("username")) {
+function Navbar({isLoginPage}) {
+    if (isLoginPage) {
+        return (
+            <nav>
+                <NavLink className="navlink" to="/about">About</NavLink>
+            </nav>
+        );
+    }
+    else if (localStorage.getItem("username")) {
         return (
             <nav>
                 <div className="main">
@@ -23,6 +30,22 @@ export function Navbar() {
             </nav>
         );
     }
+}
+
+export function PageHeading({title, isLoginPage}) {
+    return (
+        <div>
+            <div className="page-info">
+                <link rel="icon" href="delver.png" />
+                <title>{title}</title>
+            </div>
+
+            <header>
+                <h1>{title}</h1>
+                <Navbar isLoginPage={isLoginPage}/>
+            </header>
+        </div>
+    );
 }
 
 export function nullish(val) {

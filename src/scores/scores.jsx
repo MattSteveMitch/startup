@@ -1,9 +1,8 @@
 import React from "react";
-import { Navbar } from "../misc.jsx";
+import { PageHeading } from "../misc.jsx";
 import "./scores.css";
 
 export function Scores() {
-    //var best_scores, pers_best_scores, best_hits, pers_best_hits;
     var [best_scores, set_best_scores] = React.useState([]);
     var [pers_best_scores, set_pers_best_scores] = React.useState([]);
     var [best_hits, set_best_hits] = React.useState([]);
@@ -88,15 +87,7 @@ export function Scores() {
 
     return (
         <div className="body">
-            <div className="page-info">
-                <link rel="icon" href="delver.png" />
-                <title>Best Scores</title>
-            </div>
-
-            <header>
-                <h1>Best Scores</h1>
-                <Navbar />
-            </header>
+            <PageHeading title="Best Scores"/>
 
             <main className="scores">
                 <div className="all-scores">

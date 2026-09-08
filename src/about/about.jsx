@@ -1,18 +1,11 @@
-import {Navbar} from "../misc.jsx";
+import {PageHeading} from "../misc.jsx";
 import "./about.css";
 
 export function About() {
     return (
         <div className="body">
-            <div className="page-info">
-                <link rel="icon" href="delver.png" />
-                <title>About Starsight</title>
-            </div>
+            <PageHeading title="About Starsight"/>
 
-            <header>
-                <h1>About Starsight</h1>
-                <Navbar />
-            </header>
             <main className="about">
                 <div className="text">
                     <section>

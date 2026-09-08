@@ -2,7 +2,7 @@ import React from "react";
 import { checkUniqueUsername, checkPasswordsMatch, 
     checkRegPassword, attemptCreateAccount, clearError } from "./home_aux.jsx";
 import "./home.css"
-import { Navbar } from "../misc.jsx";
+import { PageHeading } from "../misc.jsx";
 
 var fields_register = [null, null, null];
 const emptyRegisterMsgs = ["Must enter username", "Must enter password", "Must confirm password"];
@@ -16,15 +16,7 @@ export function Register() {
 
     return (
         <div className="body home">
-            <div className="page-info">
-                <link rel="icon" href="delver.png" />
-                <title>Create an account</title>
-            </div>
-
-            <header>
-                <h1>Create an account</h1>
-                <Navbar />
-            </header>
+            <PageHeading title="Create an Account"/>
 
             <main className="home">
                 <div className="form">

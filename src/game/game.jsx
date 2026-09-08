@@ -2,7 +2,7 @@ import React from "react";
 import { handleKeyPress, handleKeyRelease, handleMouseMove, handleScroll, handleClick } from "./playerInputHandler.jsx";
 import { loadAssets, loadThumbnail, updateGraphicsP0, windowSize } from "./animation.jsx";
 import { runGame } from "./runGame.jsx";
-import { Navbar } from "../misc.jsx";
+import { PageHeading } from "../misc.jsx";
 import { updateScores, updateHits, updateBests, setBestScore, setBestHit } from "./updateScores.jsx";
 import "./game.css";
 
@@ -127,14 +127,7 @@ export function Game() {
 
     return (
         <div className="body">
-            <div className="page-info">
-                <link rel="icon" href="delver.png" />
-                <title>Play Starsight</title>
-            </div>
-            <header>
-                <h1>Play Starsight</h1>
-                <Navbar />
-            </header>
+            <PageHeading title="Play Starsight"/>
 
             <main className="game">
                 <section className="sidebar">

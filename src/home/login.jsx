@@ -1,6 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut, setErrMsg } from "./home_aux.jsx";
+import {PageHeading} from "../misc.jsx";
 import "./home.css";
 
 var fields_login = [null, null];
@@ -92,16 +93,8 @@ export function Login() {
 
     return (
         <div className="body home">
-            <div className="page-info">
-                <link rel="icon" href="delver.png" />
-                <title>Starsight Login</title>
-            </div>
-            <header>
-                <h1>Starsight Login</h1>
-                <nav>
-                    <NavLink className="navlink" to="/about">About</NavLink>
-                </nav>
-            </header>
+            <PageHeading title="Starsight Login" isLoginPage={true}/>
+
             <main className="home">
                 <div className="form">
                     <section>
