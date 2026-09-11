@@ -48,6 +48,20 @@ export function PageHeading({title, isLoginPage}) {
     );
 }
 
+export function GithubFooter() {
+    return (
+        <footer>
+            <p>View on</p>
+            <p>
+                <a href="https://github.com/MattSteveMitch/startup">
+                    <img src="github.png" alt="Github logo" width="40" />
+                </a>
+            </p>
+            <p id="author">Matthew Mitchell</p>
+        </footer>
+    );
+}
+
 export function nullish(val) {
     return (val === null || val === undefined);
 }

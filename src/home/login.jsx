@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import { checkValidUsername, checkLoginPassword, submitLoginInfo, clearError, logOut, setErrMsg } from "./home_aux.jsx";
-import {PageHeading} from "../misc.jsx";
+import {PageHeading, GithubFooter} from "../misc.jsx";
 import "./home.css";
 
 var fields_login = [null, null];
@@ -119,15 +119,7 @@ export function Login() {
                 <div className="imgBox" ref={imgBoxRef}></div>
             </main>
 
-            <footer>
-                <p>View on</p>
-                <p>
-                    <a href="https://github.com/MattSteveMitch/startup">
-                        <img src="github.png" alt="Github logo" width="40" />
-                    </a>
-                </p>
-                <p id="author">Matthew Mitchell</p>
-            </footer>
+            <GithubFooter />
         </div>
     );
 }

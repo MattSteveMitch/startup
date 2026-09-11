@@ -2,7 +2,7 @@ import React from "react";
 import { checkUniqueUsername, checkPasswordsMatch, 
     checkRegPassword, attemptCreateAccount, clearError } from "./home_aux.jsx";
 import "./home.css"
-import { PageHeading } from "../misc.jsx";
+import { PageHeading, GithubFooter } from "../misc.jsx";
 
 var fields_register = [null, null, null];
 const emptyRegisterMsgs = ["Must enter username", "Must enter password", "Must confirm password"];
@@ -42,15 +42,8 @@ export function Register() {
                     <div className="errorMsg" ref={RegisterErrorMsgRef}></div>
                 </div>
             </main>
-            <footer>
-                <p>View on</p>
-                <p>
-                    <a href="https://github.com/MattSteveMitch/startup">
-                        <img src="github.png" alt="Github logo" width="40" />
-                    </a>
-                </p>
-                <p id="author">Matthew Mitchell</p>
-            </footer>
+
+            <GithubFooter />
         </div>
     );
 }
